@@ -1,0 +1,1 @@
+Placeholder content for /mnt/data/Decentralized_Credit_Scoring_System/code/blockchain/migrations/1_initial_migration.js

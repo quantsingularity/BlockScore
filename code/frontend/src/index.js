@@ -1,0 +1,1 @@
+Placeholder content for /mnt/data/Decentralized_Credit_Scoring_System/code/frontend/src/index.js
