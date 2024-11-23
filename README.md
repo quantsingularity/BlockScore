@@ -4,6 +4,8 @@
 ## Overview
 The Decentralized Credit Scoring System is a blockchain-powered platform that leverages AI and quantitative finance to assess creditworthiness transparently and fairly. It aims to provide unbiased credit scores, especially for underbanked populations.
 
+> **Note**: BlockScore is currently under active development. Features and functionalities are being added and improved continuously to enhance user experience.
+
 ## Features
 - Immutable credit transaction records using blockchain.
 - AI-powered risk analysis and credit scoring models.
