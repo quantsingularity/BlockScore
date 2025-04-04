@@ -1,1 +1,6 @@
-Placeholder content for /mnt/data/Decentralized_Credit_Scoring_System/code/backend/requirements.txt
+flask==2.0.1
+web3==5.24.0
+python-dotenv==0.19.0
+pandas==1.3.3
+xgboost==1.4.2
+joblib==1.0.1
