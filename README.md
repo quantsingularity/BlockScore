@@ -1,4 +1,3 @@
-
 # Decentralized Credit Scoring System
 
 ## Overview
