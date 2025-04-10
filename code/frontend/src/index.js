@@ -1,18 +1,30 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 import App from './App';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import theme from './theme';
+import { AuthProvider } from './contexts/AuthContext';
+import { Web3Provider } from './contexts/Web3Context';
+import { CreditProvider } from './contexts/CreditContext';
+import './index.css';
 
-const theme = createTheme({
-  palette: {
-    primary: { main: '#2e7d32' },
-    secondary: { main: '#1565c0' }
-  }
-});
+const container = document.getElementById('root');
+const root = createRoot(container);
 
-ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>,
-  document.getElementById('root')
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Web3Provider>
+            <CreditProvider>
+              <App />
+            </CreditProvider>
+          </Web3Provider>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

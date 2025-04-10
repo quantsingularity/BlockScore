@@ -1,1 +1,7 @@
-Placeholder content for /mnt/data/Decentralized_Credit_Scoring_System/code/blockchain/migrations/2_deploy_contracts.js
+const CreditScore = artifacts.require("CreditScore");
+const LoanContract = artifacts.require("LoanContract");
+
+module.exports = function(deployer) {
+  deployer.deploy(CreditScore)
+    .then(() => deployer.deploy(LoanContract));
+};

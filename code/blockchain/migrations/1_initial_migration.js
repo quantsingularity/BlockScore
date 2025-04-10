@@ -1,1 +1,5 @@
-Placeholder content for /mnt/data/Decentralized_Credit_Scoring_System/code/blockchain/migrations/1_initial_migration.js
+const Migrations = artifacts.require("Migrations");
+
+module.exports = function(deployer) {
+  deployer.deploy(Migrations);
+};
