@@ -1,8 +1,8 @@
-import { Dimensions, PixelRatio } from 'react-native';
-import { 
+import { Dimensions } from 'react-native';
+import {
   responsiveHeight,
   responsiveWidth,
-  responsiveFontSize
+  responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 
 const { width, height } = Dimensions.get('window');
@@ -23,5 +23,5 @@ export {
   verticalScale,
   moderateScale,
   width,
-  height
+  height,
 };
