@@ -19,29 +19,29 @@ export const Web3Provider = ({ children }) => {
         if (window.ethereum) {
           const web3Instance = new Web3(window.ethereum);
           setWeb3(web3Instance);
-          
+
           try {
             // Request account access if needed
             await window.ethereum.request({ method: 'eth_requestAccounts' });
-            
+
             // Get accounts
             const accs = await web3Instance.eth.getAccounts();
             setAccounts(accs);
-            
+
             // Get network ID
             const netId = await web3Instance.eth.net.getId();
             setNetworkId(netId);
-            
+
             // Listen for account changes
             window.ethereum.on('accountsChanged', (newAccounts) => {
               setAccounts(newAccounts);
             });
-            
+
             // Listen for chain changes
             window.ethereum.on('chainChanged', () => {
               window.location.reload();
             });
-            
+
           } catch (error) {
             // User denied account access
             console.error("User denied account access");
@@ -52,11 +52,11 @@ export const Web3Provider = ({ children }) => {
         else if (window.web3) {
           const web3Instance = new Web3(window.web3.currentProvider);
           setWeb3(web3Instance);
-          
+
           // Get accounts
           const accs = await web3Instance.eth.getAccounts();
           setAccounts(accs);
-          
+
           // Get network ID
           const netId = await web3Instance.eth.net.getId();
           setNetworkId(netId);

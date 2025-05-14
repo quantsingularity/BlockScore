@@ -11,15 +11,15 @@ const creditContract = require('../blockchain/build/contracts/CreditScore.json')
 
 app.post('/calculate-score', async (req, res) => {
   const { walletAddress } = req.body;
-  
+
   // Get blockchain data
   const txHistory = await creditContract.methods
     .getCreditHistory(walletAddress)
     .call();
-  
+
   // AI prediction
   const score = CreditModel.predict(txHistory);
-  
+
   res.json({ address: walletAddress, score });
 });
 

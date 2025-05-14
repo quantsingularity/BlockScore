@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Box, 
-  Typography, 
-  Button, 
-  Container, 
-  Grid, 
-  Card, 
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  Grid,
+  Card,
   CardContent,
   useTheme
 } from '@mui/material';
@@ -22,9 +22,9 @@ const Landing = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.3
       }
     }
@@ -32,21 +32,21 @@ const Landing = () => {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: { duration: 0.5 }
     }
   };
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       minHeight: '100vh',
       bgcolor: 'background.default',
       overflow: 'hidden'
     }}>
       {/* Hero Section */}
-      <Box sx={{ 
+      <Box sx={{
         background: 'linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%)',
         pt: { xs: 10, md: 15 },
         pb: { xs: 12, md: 18 },
@@ -75,7 +75,7 @@ const Landing = () => {
           background: 'rgba(255, 255, 255, 0.05)',
           zIndex: 0
         }} />
-        
+
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
           <motion.div
             variants={containerVariants}
@@ -85,10 +85,10 @@ const Landing = () => {
             <Grid container spacing={4} alignItems="center">
               <Grid item xs={12} md={6}>
                 <motion.div variants={itemVariants}>
-                  <Typography 
-                    variant="h2" 
-                    component="h1" 
-                    sx={{ 
+                  <Typography
+                    variant="h2"
+                    component="h1"
+                    sx={{
                       fontWeight: 700,
                       mb: 2,
                       fontFamily: '"Poppins", sans-serif',
@@ -97,11 +97,11 @@ const Landing = () => {
                     Decentralized Credit Scoring
                   </Typography>
                 </motion.div>
-                
+
                 <motion.div variants={itemVariants}>
-                  <Typography 
-                    variant="h5" 
-                    sx={{ 
+                  <Typography
+                    variant="h5"
+                    sx={{
                       mb: 4,
                       fontWeight: 300,
                       opacity: 0.9
@@ -110,15 +110,15 @@ const Landing = () => {
                     Transparent, secure, and fair credit scoring powered by blockchain technology
                   </Typography>
                 </motion.div>
-                
+
                 <motion.div variants={itemVariants}>
-                  <Button 
-                    variant="contained" 
+                  <Button
+                    variant="contained"
                     size="large"
                     color="secondary"
                     endIcon={<ArrowForwardIcon />}
                     onClick={() => navigate('/dashboard')}
-                    sx={{ 
+                    sx={{
                       py: 1.5,
                       px: 4,
                       borderRadius: 2,
@@ -129,18 +129,18 @@ const Landing = () => {
                   </Button>
                 </motion.div>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  <Box 
+                  <Box
                     component="img"
                     src="/hero-image.svg"
                     alt="BlockScore Hero"
-                    sx={{ 
+                    sx={{
                       width: '100%',
                       maxWidth: 500,
                       display: 'block',
@@ -153,7 +153,7 @@ const Landing = () => {
           </motion.div>
         </Container>
       </Box>
-      
+
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <motion.div
@@ -161,11 +161,11 @@ const Landing = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Typography 
-            variant="h3" 
-            component="h2" 
+          <Typography
+            variant="h3"
+            component="h2"
             align="center"
-            sx={{ 
+            sx={{
               mb: 6,
               fontFamily: '"Poppins", sans-serif',
               fontWeight: 600
@@ -174,7 +174,7 @@ const Landing = () => {
             Why Choose BlockScore
           </Typography>
         </motion.div>
-        
+
         <Grid container spacing={4}>
           {[
             {
@@ -199,9 +199,9 @@ const Landing = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + (index * 0.2) }}
               >
-                <Card 
+                <Card
                   className="card-hover-effect"
-                  sx={{ 
+                  sx={{
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -214,11 +214,11 @@ const Landing = () => {
                     {feature.icon}
                   </Box>
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography 
-                      gutterBottom 
-                      variant="h5" 
+                    <Typography
+                      gutterBottom
+                      variant="h5"
                       component="h3"
-                      sx={{ 
+                      sx={{
                         fontWeight: 600,
                         mb: 2
                       }}
@@ -235,9 +235,9 @@ const Landing = () => {
           ))}
         </Grid>
       </Container>
-      
+
       {/* CTA Section */}
-      <Box sx={{ 
+      <Box sx={{
         bgcolor: 'primary.light',
         py: 8,
         mt: 8
@@ -248,17 +248,17 @@ const Landing = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Card sx={{ 
+            <Card sx={{
               p: 4,
               borderRadius: 4,
               boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
               background: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)'
             }}>
               <CardContent sx={{ textAlign: 'center' }}>
-                <Typography 
-                  variant="h4" 
+                <Typography
+                  variant="h4"
                   component="h3"
-                  sx={{ 
+                  sx={{
                     mb: 2,
                     fontWeight: 600,
                     fontFamily: '"Poppins", sans-serif',
@@ -266,18 +266,18 @@ const Landing = () => {
                 >
                   Ready to Get Started?
                 </Typography>
-                <Typography 
-                  variant="body1" 
+                <Typography
+                  variant="body1"
                   color="text.secondary"
                   sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
                 >
                   Join thousands of users who are already benefiting from our decentralized credit scoring system. Check your score, apply for loans, and take control of your financial future.
                 </Typography>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   size="large"
                   onClick={() => navigate('/dashboard')}
-                  sx={{ 
+                  sx={{
                     py: 1.5,
                     px: 4,
                     borderRadius: 2
@@ -290,9 +290,9 @@ const Landing = () => {
           </motion.div>
         </Container>
       </Box>
-      
+
       {/* Footer */}
-      <Box sx={{ 
+      <Box sx={{
         bgcolor: 'background.paper',
         py: 6,
         borderTop: '1px solid',

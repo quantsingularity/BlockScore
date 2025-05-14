@@ -38,13 +38,13 @@ function App() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Landing />} />
-          
+
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/loan-calculator" element={<LoanCalculator />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
-          
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>

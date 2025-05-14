@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemIcon, 
-  ListItemText, 
-  Divider, 
-  Box, 
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Box,
   useTheme,
   useMediaQuery,
   Collapse,
@@ -29,7 +29,7 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
-  
+
   const [open, setOpen] = useState({
     transactions: false,
     settings: false
@@ -77,16 +77,16 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
 
   const drawer = (
     <div>
-      <Box sx={{ 
-        height: 64, 
-        display: 'flex', 
-        alignItems: 'center', 
+      <Box sx={{
+        height: 64,
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         borderBottom: `1px solid ${theme.palette.divider}`
       }}>
-        <Typography 
-          variant="h6" 
-          sx={{ 
+        <Typography
+          variant="h6"
+          sx={{
             fontFamily: '"Poppins", sans-serif',
             fontWeight: 600,
             color: theme.palette.primary.main
@@ -97,8 +97,8 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
       </Box>
       <List sx={{ pt: 2 }}>
         {menuItems.map((item) => (
-          <ListItem 
-            button 
+          <ListItem
+            button
             key={item.text}
             onClick={() => navigate(item.path)}
             sx={{
@@ -127,15 +127,15 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
               })
             }}
           >
-            <ListItemIcon sx={{ 
+            <ListItemIcon sx={{
               minWidth: 40,
               color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.secondary
             }}>
               {item.icon}
             </ListItemIcon>
-            <ListItemText 
-              primary={item.text} 
-              primaryTypographyProps={{ 
+            <ListItemText
+              primary={item.text}
+              primaryTypographyProps={{
                 fontWeight: location.pathname === item.path ? 500 : 400,
                 color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.primary
               }}
@@ -167,8 +167,8 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
         }}
         sx={{
           display: { xs: 'block', sm: 'none' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box', 
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
             width: drawerWidth,
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'
           },
@@ -176,14 +176,14 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
       >
         {drawer}
       </Drawer>
-      
+
       {/* Desktop drawer */}
       <Drawer
         variant="permanent"
         sx={{
           display: { xs: 'none', sm: 'block' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box', 
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
             width: drawerWidth,
             borderRight: `1px solid ${theme.palette.divider}`,
             boxShadow: 'none'

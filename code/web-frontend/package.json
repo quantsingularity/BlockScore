@@ -20,9 +20,8 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
     "web-vitals": "^3.3.1",
-    "web3": "^1.9.0"
+    "web3": "^4.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -48,5 +47,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "babel-jest": "^29.7.0",
+    "react-scripts": "^5.0.1"
+  }
 }

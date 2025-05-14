@@ -6,11 +6,11 @@ contract CreditScore {
         uint256 amount;
         bool repaid;
     }
-    
+
     mapping(address => CreditRecord[]) public creditHistory;
-    
+
     event NewCreditRecord(address indexed user, uint256 amount);
-    
+
     function addRecord(uint256 amount) external {
         creditHistory[msg.sender].push(CreditRecord(
             block.timestamp,
@@ -19,7 +19,7 @@ contract CreditScore {
         ));
         emit NewCreditRecord(msg.sender, amount);
     }
-    
+
     function getCreditHistory(address user) external view returns (CreditRecord[] memory) {
         return creditHistory[user];
     }

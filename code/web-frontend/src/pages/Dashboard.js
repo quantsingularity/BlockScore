@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Box, 
-  Grid, 
-  Typography, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Grid,
+  Typography,
+  Card,
+  CardContent,
   CircularProgress,
   Button,
   Divider,
@@ -61,31 +61,31 @@ const Dashboard = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
+              <CardContent sx={{
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 p: 3
               }}>
                 <Typography variant="h6" gutterBottom>
                   Your Credit Score
                 </Typography>
-                
+
                 <Box sx={{ my: 2, width: '100%', maxWidth: 250 }}>
                   <CreditScoreGauge score={creditData?.score || 0} />
                 </Box>
-                
+
                 <Typography variant="body2" color="text.secondary" align="center">
                   Last updated: {new Date().toLocaleDateString()}
                 </Typography>
-                
+
                 <Divider sx={{ width: '100%', my: 2 }} />
-                
+
                 <Box sx={{ width: '100%' }}>
                   <Typography variant="body2" gutterBottom>
                     Score Category:
                   </Typography>
-                  <Chip 
+                  <Chip
                     label={
                       creditData?.score >= 750 ? "Excellent" :
                       creditData?.score >= 700 ? "Good" :
@@ -105,7 +105,7 @@ const Dashboard = () => {
             </Card>
           </motion.div>
         </Grid>
-        
+
         {/* Credit Factors */}
         <Grid item xs={12} md={6} lg={4}>
           <motion.div
@@ -118,13 +118,13 @@ const Dashboard = () => {
                 <Typography variant="h6" gutterBottom>
                   Credit Factors
                 </Typography>
-                
+
                 <CreditFactors features={creditData?.features} />
               </CardContent>
             </Card>
           </motion.div>
         </Grid>
-        
+
         {/* Quick Actions */}
         <Grid item xs={12} md={6} lg={4}>
           <motion.div
@@ -137,13 +137,13 @@ const Dashboard = () => {
                 <Typography variant="h6" gutterBottom>
                   Quick Actions
                 </Typography>
-                
+
                 <QuickActions />
               </CardContent>
             </Card>
           </motion.div>
         </Grid>
-        
+
         {/* Transaction History */}
         <Grid item xs={12}>
           <motion.div
@@ -156,7 +156,7 @@ const Dashboard = () => {
                 <Typography variant="h6" gutterBottom>
                   Transaction History
                 </Typography>
-                
+
                 <TransactionHistory history={creditData?.history || []} />
               </CardContent>
             </Card>

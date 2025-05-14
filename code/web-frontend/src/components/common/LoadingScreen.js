@@ -21,16 +21,16 @@ const LoadingScreen = () => {
       >
         <CircularProgress size={60} thickness={4} />
       </motion.div>
-      
+
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
       >
-        <Typography 
-          variant="h5" 
-          sx={{ 
-            mt: 3, 
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 3,
             fontFamily: '"Poppins", sans-serif',
             fontWeight: 500
           }}
@@ -38,14 +38,14 @@ const LoadingScreen = () => {
           Loading BlockScore
         </Typography>
       </motion.div>
-      
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.5 }}
       >
-        <Typography 
-          variant="body2" 
+        <Typography
+          variant="body2"
           color="text.secondary"
           sx={{ mt: 1 }}
         >

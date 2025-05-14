@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  Box, 
-  Button, 
+import {
+  Box,
+  Button,
   Grid,
   Card,
   CardActionArea,
@@ -20,7 +20,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 const QuickActions = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  
+
   const actions = [
     {
       title: 'Calculate Loan',
@@ -47,13 +47,13 @@ const QuickActions = () => {
       action: () => navigate('/help')
     }
   ];
-  
+
   return (
     <Grid container spacing={2}>
       {actions.map((action, index) => (
         <Grid item xs={6} key={index}>
-          <Card 
-            sx={{ 
+          <Card
+            sx={{
               height: '100%',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': {
@@ -62,7 +62,7 @@ const QuickActions = () => {
               }
             }}
           >
-            <CardActionArea 
+            <CardActionArea
               sx={{ height: '100%', p: 1 }}
               onClick={action.action}
             >

@@ -24,10 +24,10 @@ const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Typography 
-            variant="h1" 
-            component="h1" 
-            sx={{ 
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
               fontSize: { xs: '6rem', md: '10rem' },
               fontWeight: 700,
               background: 'linear-gradient(45deg, #3f51b5 30%, #f50057 90%)',
@@ -45,10 +45,10 @@ const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Typography 
-            variant="h4" 
+          <Typography
+            variant="h4"
             component="h2"
-            sx={{ 
+            sx={{
               mb: 3,
               fontWeight: 600,
               fontFamily: '"Poppins", sans-serif',
@@ -63,8 +63,8 @@ const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <Typography 
-            variant="body1" 
+          <Typography
+            variant="body1"
             color="text.secondary"
             sx={{ mb: 4, maxWidth: 500 }}
           >
@@ -77,15 +77,15 @@ const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             size="large"
             onClick={() => navigate('/dashboard')}
             sx={{ mr: 2 }}
           >
             Go to Dashboard
           </Button>
-          <Button 
+          <Button
             variant="outlined"
             size="large"
             onClick={() => navigate('/')}

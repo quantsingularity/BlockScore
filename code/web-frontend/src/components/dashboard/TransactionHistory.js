@@ -1,22 +1,22 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Divider, 
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
   Chip,
-  useTheme 
+  useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
 
 const TransactionHistory = ({ history }) => {
   const theme = useTheme();
-  
+
   // Sort history by timestamp (newest first)
   const sortedHistory = [...history].sort((a, b) => b.timestamp - a.timestamp);
-  
+
   return (
     <Box>
       {history.length === 0 ? (
@@ -28,9 +28,9 @@ const TransactionHistory = ({ history }) => {
           {sortedHistory.map((transaction, index) => (
             <React.Fragment key={index}>
               {index > 0 && <Divider component="li" />}
-              <ListItem 
+              <ListItem
                 alignItems="flex-start"
-                sx={{ 
+                sx={{
                   py: 2,
                   transition: 'background-color 0.3s',
                   '&:hover': {
@@ -44,8 +44,8 @@ const TransactionHistory = ({ history }) => {
                       <Typography variant="subtitle1" fontWeight={500}>
                         ${transaction.amount.toLocaleString()}
                       </Typography>
-                      <Chip 
-                        label={transaction.repaid ? "Repaid" : "Outstanding"} 
+                      <Chip
+                        label={transaction.repaid ? "Repaid" : "Outstanding"}
                         color={transaction.repaid ? "success" : "warning"}
                         size="small"
                       />

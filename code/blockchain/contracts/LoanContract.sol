@@ -7,9 +7,9 @@ contract LoanContract {
         uint256 interestRate;
         bool approved;
     }
-    
+
     mapping(address => Loan) public loans;
-    
+
     event LoanCreated(address indexed borrower, uint256 amount);
     event LoanApproved(address indexed borrower);
 

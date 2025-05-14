@@ -59,10 +59,10 @@ def calculate_score():
     """Calculate credit score based on blockchain data and AI model"""
     data = request.json
     wallet_address = data.get('walletAddress')
-    
+
     if not wallet_address:
         return jsonify({'error': 'Wallet address is required'}), 400
-    
+
     # For demo purposes, if no blockchain connection, use mock data
     if not web3 or not contract_abi:
         # Mock blockchain data for demonstration
@@ -75,12 +75,12 @@ def calculate_score():
         try:
             # Get contract instance
             contract = web3.eth.contract(address=CONTRACT_ADDRESS, abi=contract_abi)
-            
+
             # Get credit history from blockchain
             tx_history = contract.functions.getCreditHistory(wallet_address).call()
         except Exception as e:
             return jsonify({'error': f'Blockchain error: {str(e)}'}), 500
-    
+
     # Process blockchain data for model input
     try:
         # Extract features from transaction history
@@ -90,14 +90,14 @@ def calculate_score():
             total_amount = sum(tx['amount'] for tx in tx_history)
             repaid_ratio = sum(1 for tx in tx_history if tx['repaid']) / total_loans if total_loans > 0 else 0
             avg_loan_amount = total_amount / total_loans if total_loans > 0 else 0
-            
+
             features = {
                 'total_loans': total_loans,
                 'total_amount': total_amount,
                 'repaid_ratio': repaid_ratio,
                 'avg_loan_amount': avg_loan_amount
             }
-            
+
             # If model doesn't exist or there's a feature mismatch, use a simple scoring function
             try:
                 if model is None:
@@ -122,10 +122,10 @@ def calculate_score():
                 print(f"Model prediction error: {e}")
                 # Fallback to simple scoring
                 score = int(300 + (repaid_ratio * 550))
-            
+
             # Ensure score is within reasonable bounds
             score = max(300, min(score, 850))
-            
+
             return jsonify({
                 'address': wallet_address,
                 'score': score,
@@ -155,16 +155,16 @@ def calculate_loan():
         amount = float(data.get('amount', 1000))
         rate = float(data.get('rate', 5))
         wallet_address = data.get('walletAddress')
-        
+
         if not wallet_address:
             return jsonify({'error': 'Wallet address is required'}), 400
-        
+
         # Instead of calling calculate_score directly, make a new calculation
         # Get mock credit score for demo purposes
         if not web3 or not contract_abi:
             # Mock data for demonstration
             score = 720  # Good credit score
-            
+
             # For demo purposes, adjust score based on wallet address
             # This allows testing different scenarios
             if wallet_address.endswith('e'):  # Good credit
@@ -182,18 +182,18 @@ def calculate_loan():
                 score = 720
             except Exception as e:
                 return jsonify({'error': f'Blockchain error: {str(e)}'}), 500
-        
+
         # Calculate approval probability based on score and loan parameters
         # Higher score, lower amount, and lower rate increase approval chances
         base_probability = (score - 300) / 550  # 0 to 1 based on score
         amount_factor = max(0, 1 - (amount / 10000))  # Lower for higher amounts
         rate_factor = min(1, rate / 15)  # Higher for higher rates (up to 15%)
-        
+
         approval_probability = (base_probability * 0.6) + (amount_factor * 0.2) + (rate_factor * 0.2)
         approval_probability = max(0, min(approval_probability, 1)) * 100  # Convert to percentage
-        
+
         monthly_payment = (amount * (rate/100/12) * ((1 + (rate/100/12)) ** 36)) / (((1 + (rate/100/12)) ** 36) - 1)
-        
+
         return jsonify({
             'approval_probability': round(approval_probability, 2),
             'monthly_payment': round(monthly_payment, 2),

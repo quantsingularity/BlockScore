@@ -4,7 +4,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 const CreditScoreGauge = ({ score }) => {
   // Calculate percentage for the progress circle (score range is 300-850)
   const normalizedScore = ((score - 300) / (850 - 300)) * 100;
-  
+
   // Determine color based on score
   const getColor = (score) => {
     if (score >= 750) return '#4caf50'; // Green - Excellent

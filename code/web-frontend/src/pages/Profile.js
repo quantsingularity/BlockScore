@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Box, 
-  Grid, 
-  Typography, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Grid,
+  Typography,
+  Card,
+  CardContent,
   Avatar,
   Divider,
   List,
@@ -32,15 +32,15 @@ const Profile = () => {
   const theme = useTheme();
   const { user, logout } = useAuth();
   const { accounts, networkId } = useWeb3();
-  
+
   const walletAddress = accounts[0] || user?.address || '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-  
+
   // Format wallet address for display
   const formatAddress = (address) => {
     if (!address) return '';
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
-  
+
   // Get network name
   const getNetworkName = (id) => {
     switch (id) {
@@ -52,7 +52,7 @@ const Profile = () => {
       default: return 'Unknown Network';
     }
   };
-  
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -78,72 +78,72 @@ const Profile = () => {
           >
             <Card>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   mb: 3
                 }}>
-                  <Avatar 
-                    sx={{ 
-                      width: 80, 
-                      height: 80, 
+                  <Avatar
+                    sx={{
+                      width: 80,
+                      height: 80,
                       bgcolor: 'primary.main',
                       mb: 2
                     }}
                   >
                     <AccountBalanceWalletIcon sx={{ fontSize: 40 }} />
                   </Avatar>
-                  
+
                   <Typography variant="h6" align="center" gutterBottom>
                     {user?.name || 'Wallet User'}
                   </Typography>
-                  
-                  <Chip 
+
+                  <Chip
                     label={formatAddress(walletAddress)}
                     color="primary"
                     variant="outlined"
                     sx={{ fontFamily: '"Roboto Mono", monospace' }}
                   />
                 </Box>
-                
+
                 <Divider sx={{ my: 2 }} />
-                
+
                 <List disablePadding>
                   <ListItem disablePadding sx={{ mb: 1 }}>
                     <ListItemIcon sx={{ minWidth: 40 }}>
                       <SecurityIcon fontSize="small" color="primary" />
                     </ListItemIcon>
-                    <ListItemText 
-                      primary="Network" 
+                    <ListItemText
+                      primary="Network"
                       secondary={getNetworkName(networkId)}
                     />
                   </ListItem>
-                  
+
                   <ListItem disablePadding sx={{ mb: 1 }}>
                     <ListItemIcon sx={{ minWidth: 40 }}>
                       <HistoryIcon fontSize="small" color="primary" />
                     </ListItemIcon>
-                    <ListItemText 
-                      primary="Transactions" 
+                    <ListItemText
+                      primary="Transactions"
                       secondary="23 completed"
                     />
                   </ListItem>
-                  
+
                   <ListItem disablePadding>
                     <ListItemIcon sx={{ minWidth: 40 }}>
                       <SettingsIcon fontSize="small" color="primary" />
                     </ListItemIcon>
-                    <ListItemText 
-                      primary="Account Type" 
+                    <ListItemText
+                      primary="Account Type"
                       secondary="Standard"
                     />
                   </ListItem>
                 </List>
-                
-                <Button 
-                  variant="outlined" 
-                  color="primary" 
+
+                <Button
+                  variant="outlined"
+                  color="primary"
                   fullWidth
                   sx={{ mt: 3 }}
                   onClick={logout}
@@ -154,7 +154,7 @@ const Profile = () => {
             </Card>
           </motion.div>
         </Grid>
-        
+
         {/* Credit Status */}
         <Grid item xs={12} md={8}>
           <motion.div
@@ -167,13 +167,13 @@ const Profile = () => {
                 <Typography variant="h6" gutterBottom>
                   Credit Status
                 </Typography>
-                
+
                 <Grid container spacing={2} sx={{ mb: 3 }}>
                   <Grid item xs={12} sm={4}>
-                    <Paper 
-                      elevation={0} 
-                      sx={{ 
-                        p: 2, 
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
                         height: '100%'
@@ -190,12 +190,12 @@ const Profile = () => {
                       </Typography>
                     </Paper>
                   </Grid>
-                  
+
                   <Grid item xs={12} sm={4}>
-                    <Paper 
-                      elevation={0} 
-                      sx={{ 
-                        p: 2, 
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
                         height: '100%'
@@ -212,12 +212,12 @@ const Profile = () => {
                       </Typography>
                     </Paper>
                   </Grid>
-                  
+
                   <Grid item xs={12} sm={4}>
-                    <Paper 
-                      elevation={0} 
-                      sx={{ 
-                        p: 2, 
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
                         height: '100%'
@@ -235,41 +235,41 @@ const Profile = () => {
                     </Paper>
                   </Grid>
                 </Grid>
-                
+
                 <Typography variant="subtitle1" gutterBottom sx={{ mt: 4, mb: 2 }}>
                   Credit Factors
                 </Typography>
-                
+
                 <List>
                   {[
-                    { 
-                      factor: 'Payment History', 
-                      status: 'Excellent', 
+                    {
+                      factor: 'Payment History',
+                      status: 'Excellent',
                       description: 'You have a strong history of on-time payments',
                       positive: true
                     },
-                    { 
-                      factor: 'Credit Utilization', 
-                      status: 'Good', 
+                    {
+                      factor: 'Credit Utilization',
+                      status: 'Good',
                       description: 'Your current loan amount is well within your capacity',
                       positive: true
                     },
-                    { 
-                      factor: 'Credit Age', 
-                      status: 'Fair', 
+                    {
+                      factor: 'Credit Age',
+                      status: 'Fair',
                       description: 'Your credit history is relatively new',
                       positive: false
                     },
-                    { 
-                      factor: 'Credit Mix', 
-                      status: 'Poor', 
+                    {
+                      factor: 'Credit Mix',
+                      status: 'Poor',
                       description: 'You have limited variety in credit types',
                       positive: false
                     }
                   ].map((item, index) => (
-                    <ListItem 
+                    <ListItem
                       key={index}
-                      sx={{ 
+                      sx={{
                         py: 1.5,
                         px: 2,
                         mb: 1,
@@ -284,14 +284,14 @@ const Profile = () => {
                           <ErrorIcon color="warning" />
                         )}
                       </ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary={
                           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Typography variant="body1" fontWeight={500}>
                               {item.factor}
                             </Typography>
-                            <Chip 
-                              label={item.status} 
+                            <Chip
+                              label={item.status}
                               size="small"
                               color={
                                 item.status === 'Excellent' ? 'success' :
@@ -307,10 +307,10 @@ const Profile = () => {
                     </ListItem>
                   ))}
                 </List>
-                
+
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                  <Button 
-                    variant="contained" 
+                  <Button
+                    variant="contained"
                     color="primary"
                   >
                     View Detailed Report
@@ -320,7 +320,7 @@ const Profile = () => {
             </Card>
           </motion.div>
         </Grid>
-        
+
         {/* Improvement Tips */}
         <Grid item xs={12}>
           <motion.div
@@ -333,7 +333,7 @@ const Profile = () => {
                 <Typography variant="h6" gutterBottom>
                   Credit Improvement Tips
                 </Typography>
-                
+
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                   {[
                     {
@@ -353,10 +353,10 @@ const Profile = () => {
                     }
                   ].map((tip, index) => (
                     <Grid item xs={12} md={4} key={index}>
-                      <Paper 
+                      <Paper
                         elevation={0}
-                        sx={{ 
-                          p: 2, 
+                        sx={{
+                          p: 2,
                           height: '100%',
                           display: 'flex',
                           flexDirection: 'column',

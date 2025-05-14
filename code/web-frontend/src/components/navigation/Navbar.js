@@ -10,9 +10,9 @@ const Navbar = ({ onDrawerToggle }) => {
   const navigate = useNavigate();
 
   return (
-    <AppBar 
-      position="fixed" 
-      sx={{ 
+    <AppBar
+      position="fixed"
+      sx={{
         zIndex: theme.zIndex.drawer + 1,
         background: 'linear-gradient(90deg, #3f51b5 0%, #5c6bc0 100%)',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
@@ -28,11 +28,11 @@ const Navbar = ({ onDrawerToggle }) => {
         >
           <MenuIcon />
         </IconButton>
-        
-        <Typography 
-          variant="h6" 
-          component="div" 
-          sx={{ 
+
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
             flexGrow: 1,
             fontFamily: '"Poppins", sans-serif',
             fontWeight: 600,
@@ -42,9 +42,9 @@ const Navbar = ({ onDrawerToggle }) => {
           }}
           onClick={() => navigate('/dashboard')}
         >
-          <Box 
-            component="span" 
-            sx={{ 
+          <Box
+            component="span"
+            sx={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -62,16 +62,16 @@ const Navbar = ({ onDrawerToggle }) => {
           </Box>
           BlockScore
         </Typography>
-        
+
         <Box sx={{ display: 'flex' }}>
           <IconButton color="inherit" sx={{ ml: 1 }}>
             <Badge badgeContent={3} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          
-          <IconButton 
-            color="inherit" 
+
+          <IconButton
+            color="inherit"
             sx={{ ml: 1 }}
             onClick={() => navigate('/profile')}
           >

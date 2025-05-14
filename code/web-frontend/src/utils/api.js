@@ -3,8 +3,8 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' 
-    ? '/api' 
+  baseURL: process.env.NODE_ENV === 'production'
+    ? '/api'
     : 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ export const getCreditScore = async (walletAddress) => {
 // Loan calculation API calls
 export const calculateLoan = async (walletAddress, amount, rate) => {
   try {
-    const response = await api.post('/calculate-loan', { 
+    const response = await api.post('/calculate-loan', {
       walletAddress,
       amount,
       rate

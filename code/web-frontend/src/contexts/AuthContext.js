@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
           name: 'Demo User',
           balance: '2.5 ETH'
         };
-        
+
         setUser(demoUser);
         setIsAuthenticated(true);
         setLoading(false);
@@ -39,13 +39,13 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       // In a real app, we would verify the wallet signature here
-      
+
       const user = {
         address,
         name: 'Demo User',
         balance: '2.5 ETH'
       };
-      
+
       setUser(user);
       setIsAuthenticated(true);
       return true;

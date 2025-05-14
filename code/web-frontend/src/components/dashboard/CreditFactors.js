@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  LinearProgress, 
+import {
+  Box,
+  Typography,
+  LinearProgress,
   Grid,
   Paper,
   useTheme
@@ -10,7 +10,7 @@ import {
 
 const CreditFactors = ({ features }) => {
   const theme = useTheme();
-  
+
   // Default values if no features provided
   const defaultFeatures = {
     total_loans: 0,
@@ -18,14 +18,14 @@ const CreditFactors = ({ features }) => {
     repaid_ratio: 0,
     avg_loan_amount: 0
   };
-  
+
   const data = features || defaultFeatures;
-  
+
   // Calculate normalized values for progress bars (0-100)
   const normalizedRepaidRatio = data.repaid_ratio * 100;
   const normalizedTotalLoans = Math.min(data.total_loans / 10 * 100, 100); // Assuming 10+ loans is max
   const normalizedAvgAmount = Math.min(data.avg_loan_amount / 5000 * 100, 100); // Assuming $5000+ is max
-  
+
   // Get color based on value
   const getColorForValue = (value) => {
     if (value >= 80) return theme.palette.success.main;
@@ -34,16 +34,16 @@ const CreditFactors = ({ features }) => {
     if (value >= 20) return theme.palette.warning.main;
     return theme.palette.error.main;
   };
-  
+
   return (
     <Box>
       <Grid container spacing={2}>
         {/* Repayment History */}
         <Grid item xs={12}>
-          <Paper 
+          <Paper
             elevation={0}
-            sx={{ 
-              p: 2, 
+            sx={{
+              p: 2,
               bgcolor: 'background.default',
               borderRadius: 2
             }}
@@ -53,11 +53,11 @@ const CreditFactors = ({ features }) => {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={normalizedRepaidRatio} 
-                  sx={{ 
-                    height: 8, 
+                <LinearProgress
+                  variant="determinate"
+                  value={normalizedRepaidRatio}
+                  sx={{
+                    height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {
@@ -75,13 +75,13 @@ const CreditFactors = ({ features }) => {
             </Typography>
           </Paper>
         </Grid>
-        
+
         {/* Loan Count */}
         <Grid item xs={12}>
-          <Paper 
+          <Paper
             elevation={0}
-            sx={{ 
-              p: 2, 
+            sx={{
+              p: 2,
               bgcolor: 'background.default',
               borderRadius: 2
             }}
@@ -91,11 +91,11 @@ const CreditFactors = ({ features }) => {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={normalizedTotalLoans} 
-                  sx={{ 
-                    height: 8, 
+                <LinearProgress
+                  variant="determinate"
+                  value={normalizedTotalLoans}
+                  sx={{
+                    height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {
@@ -113,13 +113,13 @@ const CreditFactors = ({ features }) => {
             </Typography>
           </Paper>
         </Grid>
-        
+
         {/* Average Loan Amount */}
         <Grid item xs={12}>
-          <Paper 
+          <Paper
             elevation={0}
-            sx={{ 
-              p: 2, 
+            sx={{
+              p: 2,
               bgcolor: 'background.default',
               borderRadius: 2
             }}
@@ -129,11 +129,11 @@ const CreditFactors = ({ features }) => {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={normalizedAvgAmount} 
-                  sx={{ 
-                    height: 8, 
+                <LinearProgress
+                  variant="determinate"
+                  value={normalizedAvgAmount}
+                  sx={{
+                    height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {

@@ -10,7 +10,7 @@ const CreditContext = createContext();
 export const CreditProvider = ({ children }) => {
   const { user } = useAuth();
   const { accounts } = useWeb3();
-  
+
   const [creditData, setCreditData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,21 +19,21 @@ export const CreditProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Use provided wallet address or get from context
       const address = walletAddress || accounts[0] || user?.address;
-      
+
       if (!address) {
         throw new Error('No wallet address available');
       }
-      
+
       const data = await getCreditScore(address);
       setCreditData(data);
       return data;
     } catch (err) {
       console.error('Error fetching credit score:', err);
       setError('Failed to load credit score data. Please try again later.');
-      
+
       // For demo purposes, set mock data if API fails
       const mockData = {
         address: walletAddress || accounts[0] || user?.address || '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
@@ -52,7 +52,7 @@ export const CreditProvider = ({ children }) => {
           { timestamp: Date.now() - 604800000, amount: 5000, repaid: false }
         ]
       };
-      
+
       setCreditData(mockData);
       return mockData;
     } finally {

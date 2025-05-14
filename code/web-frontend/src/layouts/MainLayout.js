@@ -16,13 +16,13 @@ const MainLayout = () => {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* Navbar for mobile */}
       <Navbar onDrawerToggle={handleDrawerToggle} />
-      
+
       {/* Sidebar */}
-      <Sidebar 
-        mobileOpen={mobileOpen} 
-        onDrawerToggle={handleDrawerToggle} 
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onDrawerToggle={handleDrawerToggle}
       />
-      
+
       {/* Main content */}
       <Box
         component="main"
