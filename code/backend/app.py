@@ -65,12 +65,16 @@ def calculate_score():
 
     # For demo purposes, if no blockchain connection, use mock data
     if not web3 or not contract_abi:
-        # Mock blockchain data for demonstration
-        tx_history = [
-            {'timestamp': 1617235200, 'amount': 1000, 'repaid': True},
-            {'timestamp': 1619827200, 'amount': 2000, 'repaid': True},
-            {'timestamp': 1622505600, 'amount': 1500, 'repaid': False}
-        ]
+        # Special case for the no-history wallet address
+        if wallet_address == '0x0000000000000000000000000000000000000000':
+            tx_history = []  # Empty history for the zero address
+        else:
+            # Mock blockchain data for demonstration
+            tx_history = [
+                {'timestamp': 1617235200, 'amount': 1000, 'repaid': True},
+                {'timestamp': 1619827200, 'amount': 2000, 'repaid': True},
+                {'timestamp': 1622505600, 'amount': 1500, 'repaid': False}
+            ]
     else:
         try:
             # Get contract instance
@@ -162,19 +166,23 @@ def calculate_loan():
         # Instead of calling calculate_score directly, make a new calculation
         # Get mock credit score for demo purposes
         if not web3 or not contract_abi:
-            # Mock data for demonstration
-            score = 720  # Good credit score
-
-            # For demo purposes, adjust score based on wallet address
-            # This allows testing different scenarios
-            if wallet_address.endswith('e'):  # Good credit
-                score = 720
-            elif wallet_address.endswith('a'):  # Poor credit
-                score = 580
-            elif wallet_address.endswith('b'):  # Excellent credit
-                score = 800
+            # Special case for the no-history wallet address
+            if wallet_address == '0x0000000000000000000000000000000000000000':
+                score = 300  # Base score for no history
             else:
-                score = 650  # Fair credit
+                # Mock data for demonstration
+                score = 720  # Good credit score
+
+                # For demo purposes, adjust score based on wallet address
+                # This allows testing different scenarios
+                if wallet_address.endswith('e'):  # Good credit
+                    score = 720
+                elif wallet_address.endswith('a'):  # Poor credit
+                    score = 580
+                elif wallet_address.endswith('b'):  # Excellent credit
+                    score = 800
+                else:
+                    score = 650  # Fair credit
         else:
             try:
                 # In a real implementation, we would get this from the blockchain
