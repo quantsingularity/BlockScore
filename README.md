@@ -1,5 +1,6 @@
 # Decentralized Credit Scoring System
 
+[![CI Status](https://img.shields.io/github/actions/workflow/status/abrar2030/BlockScore/ci-cd.yml?branch=main&label=CI&logo=github)](https://github.com/abrar2030/BlockScore/actions)
 [![CI Status](https://img.shields.io/github/workflow/status/abrar2030/BlockScore/CI/main?label=CI)](https://github.com/abrar2030/BlockScore/actions)
 [![Test Coverage](https://img.shields.io/codecov/c/github/abrar2030/BlockScore/main?label=Coverage)](https://codecov.io/gh/abrar2030/BlockScore)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
