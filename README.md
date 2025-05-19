@@ -10,7 +10,7 @@
 BlockScore is an innovative credit scoring platform that leverages blockchain technology and artificial intelligence to create transparent, immutable, and accurate credit profiles for individuals and businesses.
 
 <div align="center">
-  <img src="resources/blockscore_dashboard.png" alt="BlockScore Dashboard" width="80%">
+  <img src="docs/images/BlockScore_dashboard.bmp" alt="BlockScore Dashboard" width="80%">
 </div>
 
 > **Note**: This project is under active development. Features and functionalities are continuously being enhanced to improve credit scoring capabilities and user experience.
