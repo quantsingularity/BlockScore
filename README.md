@@ -1,23 +1,24 @@
-# Decentralized Credit Scoring System
+# BlockScore
 
-[![CI Status](https://img.shields.io/github/actions/workflow/status/abrar2030/BlockScore/ci-cd.yml?branch=main&label=CI&logo=github)](https://github.com/abrar2030/BlockScore/actions)
-[![CI Status](https://img.shields.io/github/workflow/status/abrar2030/BlockScore/CI/main?label=CI)](https://github.com/abrar2030/BlockScore/actions)
+[![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/BlockScore/ci-cd.yml?branch=main&label=CI/CD&logo=github)](https://github.com/abrar2030/BlockScore/actions)
 [![Test Coverage](https://img.shields.io/codecov/c/github/abrar2030/BlockScore/main?label=Coverage)](https://codecov.io/gh/abrar2030/BlockScore)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Smart Contract Audit](https://img.shields.io/badge/audit-passing-brightgreen)](https://github.com/abrar2030/BlockScore)
+[![License](https://img.shields.io/github/license/abrar2030/BlockScore)](https://github.com/abrar2030/BlockScore/blob/main/LICENSE)
 
-## Overview
-The Decentralized Credit Scoring System is a blockchain-powered platform that leverages AI and quantitative finance to assess creditworthiness transparently and fairly. It aims to provide unbiased credit scores, especially for underbanked populations.
+## 📊 Blockchain-Based Credit Scoring Platform
+
+BlockScore is an innovative credit scoring platform that leverages blockchain technology and artificial intelligence to create transparent, immutable, and accurate credit profiles for individuals and businesses.
 
 <div align="center">
-  <img src="docs/BlockScore.bmp" alt="Decentralized Credit Scoring System" width="100%">
+  <img src="resources/blockscore_dashboard.png" alt="BlockScore Dashboard" width="80%">
 </div>
 
-> **Note**: BlockScore is currently under active development. Features and functionalities are being added and improved continuously to enhance user experience.
+> **Note**: This project is under active development. Features and functionalities are continuously being enhanced to improve credit scoring capabilities and user experience.
 
 ## Table of Contents
-- [Features](#features)
-- [Feature Implementation Status](#feature-implementation-status)
-- [Tools and Technologies](#tools-and-technologies)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
 - [Development Steps](#development-steps)
 - [Directory Structure](#directory-structure)
@@ -28,79 +29,165 @@ The Decentralized Credit Scoring System is a blockchain-powered platform that le
 - [License](#license)
 - [Next Steps](#next-steps)
 
-## Features
-- Immutable credit transaction records using blockchain.
-- AI-powered risk analysis and credit scoring models.
-- Quantitative finance models to optimize risk assessment for lenders.
+## Overview
 
-## Feature Implementation Status
+BlockScore revolutionizes traditional credit scoring by combining blockchain's immutability with AI's predictive power. The platform creates transparent credit profiles that users own and control, while providing lenders with reliable risk assessment tools based on a broader range of financial behaviors.
 
-| Feature | Status | Description | Planned Release |
-|---------|--------|-------------|----------------|
-| **Blockchain Integration** |
-| Smart Contracts | ✅ Implemented | Core contracts for credit data storage | v1.0 |
-| Transaction Recording | ✅ Implemented | Immutable credit history tracking | v1.0 |
-| Decentralized Identity | 🔄 In Progress | Self-sovereign identity integration | v1.1 |
-| Multi-chain Support | 📅 Planned | Support for multiple blockchains | v1.2 |
-| **AI/ML Models** |
-| Credit Scoring | ✅ Implemented | Basic credit score calculation | v1.0 |
-| Risk Analysis | ✅ Implemented | Risk assessment for lenders | v1.0 |
-| Default Prediction | 🔄 In Progress | Advanced default probability models | v1.1 |
-| Fraud Detection | 🔄 In Progress | Anomaly detection in credit data | v1.1 |
-| Alternative Data Scoring | 📅 Planned | Non-traditional data sources | v1.2 |
-| **Quantitative Finance** |
-| Risk Metrics | ✅ Implemented | Value at Risk calculations | v1.0 |
-| Portfolio Optimization | 🔄 In Progress | Lender portfolio balancing | v1.1 |
-| Interest Rate Models | 🔄 In Progress | Dynamic rate determination | v1.1 |
-| Stress Testing | 📅 Planned | Portfolio resilience analysis | v1.2 |
-| **User Interface** |
-| Borrower Dashboard | ✅ Implemented | Credit score monitoring | v1.0 |
-| Lender Dashboard | ✅ Implemented | Loan management interface | v1.0 |
-| Mobile Responsiveness | 🔄 In Progress | Adaptation for mobile devices | v1.1 |
-| Analytics Dashboard | 📅 Planned | Advanced data visualization | v1.2 |
-| **API Integration** |
-| Core API | ✅ Implemented | Basic API functionality | v1.0 |
-| Third-party Data | 🔄 In Progress | External data source integration | v1.1 |
-| Financial Institution APIs | 📅 Planned | Bank and lender integrations | v1.2 |
+## Key Features
 
-**Legend:**
-- ✅ Implemented: Feature is complete and available
-- 🔄 In Progress: Feature is currently being developed
-- 📅 Planned: Feature is planned for future release
+### Blockchain-Based Credit Profiles
+- **Immutable Credit History**: All credit events are permanently recorded on the blockchain
+- **Self-Sovereign Identity**: Users own and control access to their credit data
+- **Transparent Scoring**: Clear explanation of factors affecting credit scores
+- **Cross-Border Compatibility**: Universal credit profiles that work across jurisdictions
 
-## Tools and Technologies
-- **Blockchain**: Ethereum or Polygon for implementing smart contracts.
-- **AI/ML**: Python (TensorFlow, PyTorch) for predictive credit scoring.
-- **Database**: MongoDB for decentralized storage (off-chain).
-- **Backend**: Node.js with Express for API development.
-- **Frontend**: React.js for user interfaces.
-- **Smart Contracts**: Solidity for loan agreements and credit data storage.
-- **Quantitative Finance Models**: Risk analysis (Value at Risk, Sharpe Ratio).
+### AI-Powered Risk Assessment
+- **Alternative Data Analysis**: Evaluate creditworthiness using non-traditional data points
+- **Behavioral Scoring**: Analyze patterns to predict repayment likelihood
+- **Fraud Detection**: Identify suspicious activities and potential identity theft
+- **Continuous Learning**: Models improve over time as more data is processed
+
+### Decentralized Finance Integration
+- **Smart Contract Loans**: Automated lending based on credit scores
+- **DeFi Protocol Compatibility**: Integrate with major DeFi lending platforms
+- **Tokenized Credit Scores**: Represent credit worthiness as verifiable credentials
+- **On-Chain Verification**: Allow third parties to verify credit information without accessing raw data
+
+### User Experience
+- **Intuitive Dashboard**: Easy-to-understand credit profile visualization
+- **Score Improvement Recommendations**: Personalized advice to improve credit scores
+- **Privacy Controls**: Granular permissions for data sharing
+- **Real-Time Updates**: Immediate score adjustments as new data is processed
+
+## Technology Stack
+
+### Blockchain & Smart Contracts
+- **Blockchain**: Ethereum, Polygon
+- **Smart Contract Language**: Solidity
+- **Development Framework**: Hardhat, Truffle
+- **Testing**: Waffle, Chai
+- **Libraries**: OpenZeppelin, Chainlink
+
+### Backend
+- **Language**: Node.js, TypeScript
+- **Framework**: Express, NestJS
+- **Database**: MongoDB, PostgreSQL
+- **API Documentation**: Swagger
+- **Authentication**: JWT, OAuth2
+
+### Frontend
+- **Framework**: React with TypeScript
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS, Styled Components
+- **Web3 Integration**: ethers.js, web3.js
+- **Data Visualization**: D3.js, Recharts
+
+### Mobile App
+- **Framework**: React Native
+- **Navigation**: React Navigation
+- **State Management**: Redux Toolkit
+- **UI Components**: React Native Paper
+
+### AI & Machine Learning
+- **Languages**: Python, R
+- **Frameworks**: TensorFlow, PyTorch, scikit-learn
+- **Data Processing**: Pandas, NumPy
+- **Feature Engineering**: Feature-engine, tsfresh
+- **Model Deployment**: MLflow, TensorFlow Serving
+
+### DevOps
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus, Grafana
+- **Infrastructure as Code**: Terraform
 
 ## Architecture
-1. **Frontend**:
-   - Built using React.js to provide a seamless user experience.
-2. **Backend**:
-   - Node.js API integrates blockchain and ML models for credit scoring.
-3. **Blockchain**:
-   - Ethereum smart contracts for storing immutable credit history.
-4. **AI Models**:
-   - Neural networks and regression models to predict credit scores.
+
+BlockScore follows a modular architecture with the following components:
+
+```
+BlockScore/
+├── Smart Contracts
+│   ├── Identity Management
+│   ├── Credit Data Storage
+│   ├── Score Calculation
+│   └── Access Control
+├── Backend Services
+│   ├── API Gateway
+│   ├── User Service
+│   ├── Blockchain Service
+│   ├── AI Service
+│   └── Analytics Service
+├── AI Models
+│   ├── Credit Scoring Model
+│   ├── Fraud Detection Model
+│   ├── Risk Assessment Model
+│   └── Behavioral Analysis Model
+├── Frontend Applications
+│   ├── Web Dashboard
+│   └── Mobile App
+└── Infrastructure
+    ├── Database Cluster
+    ├── Message Queue
+    ├── Cache Layer
+    └── Monitoring Stack
+```
+
+### Data Flow
+1. User financial data is collected (with permission) from various sources
+2. Data is processed, anonymized, and stored on the blockchain
+3. AI models analyze the data to generate credit scores and risk assessments
+4. Users can view their scores and control access to their data
+5. Lenders can request access to scores for lending decisions
+
+### AI Models Used
+- **Machine Learning Algorithms**: Random Forest, XGBoost, and neural networks for credit scoring
+- **Natural Language Processing**: Sentiment analysis of financial communications
+- **Time Series Analysis**: Prediction of future financial behavior
+- **Quantitative Finance Models**: Risk analysis (Value at Risk, Sharpe Ratio)
 
 ## Development Steps
-1. **Smart Contract Development**:
-   - Write and deploy Solidity contracts to handle credit data.
-2. **AI Model Training**:
-   - Train models on financial datasets for credit scoring.
-3. **API Integration**:
-   - Connect the blockchain and AI models via Node.js APIs.
-4. **Frontend Development**:
-   - Build a React.js app for users to check and manage credit scores.
+
+1. **Smart Contract Development**
+   - Write and deploy Solidity contracts to handle credit data
+   - Implement secure identity management and access control
+   - Create on-chain credit score calculation mechanisms
+   - Develop oracle integrations for off-chain data
+
+2. **AI Model Training**
+   - Train models on financial datasets for credit scoring
+   - Implement fraud detection algorithms
+   - Develop risk assessment models
+   - Create behavioral analysis systems
+
+3. **API Integration**
+   - Connect the blockchain and AI models via Node.js APIs
+   - Implement secure data exchange protocols
+   - Create endpoints for third-party integrations
+   - Develop webhook notifications for credit events
+
+4. **Frontend Development**
+   - Build a React.js app for users to check and manage credit scores
+   - Create interactive visualizations for credit history
+   - Implement secure authentication and authorization
+   - Develop mobile applications for on-the-go access
 
 ## Directory Structure
-- **docs/**: Documentation for the project.
-- **code/**: Source code for smart contracts, AI models, and frontend/backend.
-- **resources/**: Sample datasets, reference materials, and design files.
+
+```
+BlockScore/
+├── code/
+│   ├── ai_models/         # Machine learning models for credit scoring
+│   ├── backend/           # Node.js API server
+│   ├── blockchain/        # Smart contracts and blockchain integration
+│   ├── frontend/          # React web application
+│   └── shared/            # Shared utilities and types
+├── docs/                  # Documentation and specifications
+├── infrastructure/        # Deployment and infrastructure code
+├── mobile-frontend/       # React Native mobile application
+└── resources/             # Sample datasets and reference materials
+```
 
 ## Installation and Setup
 
@@ -110,13 +197,28 @@ The Decentralized Credit Scoring System is a blockchain-powered platform that le
 - MongoDB
 - Ethereum development environment (Truffle/Hardhat)
 
-### Clone Repository
+### Quick Start with Setup Script
+```bash
+# Clone the repository
+git clone https://github.com/abrar2030/BlockScore.git
+cd BlockScore
+
+# Run the setup script
+./setup_blockscore_env.sh
+
+# Start the application
+./run_blockscore.sh
+```
+
+### Manual Setup
+
+#### Clone Repository
 ```bash
 git clone https://github.com/abrar2030/BlockScore.git
 cd BlockScore
 ```
 
-### Backend Setup
+#### Backend Setup
 ```bash
 cd code/backend
 npm install
@@ -125,14 +227,14 @@ cp .env.example .env
 npm start
 ```
 
-### Frontend Setup
+#### Frontend Setup
 ```bash
 cd code/frontend
 npm install
 npm start
 ```
 
-### Smart Contract Deployment
+#### Smart Contract Deployment
 ```bash
 cd code/blockchain
 npm install
@@ -140,11 +242,19 @@ npx hardhat compile
 npx hardhat deploy --network <network_name>
 ```
 
-### AI Model Setup
+#### AI Model Setup
 ```bash
 cd code/ai_models
 pip install -r requirements.txt
 python train_model.py
+```
+
+#### Mobile App Setup
+```bash
+cd mobile-frontend
+npm install
+npx react-native run-android  # For Android
+npx react-native run-ios      # For iOS
 ```
 
 ## Testing
@@ -155,24 +265,27 @@ The project includes comprehensive testing to ensure reliability and accuracy:
 - Unit tests for contract functions
 - Integration tests for contract interactions
 - Security audits with tools like Slither and MythX
+- Gas optimization analysis
 
 ### AI Model Testing
 - Model validation with cross-validation
-- Performance metrics evaluation
+- Performance metrics evaluation (precision, recall, F1-score)
 - Backtesting against historical data
+- A/B testing for model improvements
 
 ### Backend Testing
 - API endpoint tests with Jest
 - Integration tests for blockchain and AI model interactions
 - Load testing with Artillery
+- Security testing for authentication and authorization
 
 ### Frontend Testing
 - Component tests with React Testing Library
 - End-to-end tests with Cypress
 - Usability testing
+- Cross-browser compatibility testing
 
 To run tests:
-
 ```bash
 # Smart contract tests
 cd code/blockchain
@@ -189,6 +302,9 @@ npm test
 # Frontend tests
 cd code/frontend
 npm test
+
+# Run all tests
+./run_all_tests.sh
 ```
 
 ## CI/CD Pipeline
@@ -208,7 +324,7 @@ BlockScore uses GitHub Actions for continuous integration and deployment:
 - Infrastructure updates via Terraform
 
 Current CI/CD Status:
-- Build: ![Build Status](https://img.shields.io/github/workflow/status/abrar2030/BlockScore/CI/main?label=build)
+- Build: ![Build Status](https://img.shields.io/github/actions/workflow/status/abrar2030/BlockScore/ci-cd.yml?branch=main&label=build)
 - Test Coverage: ![Coverage](https://img.shields.io/codecov/c/github/abrar2030/BlockScore/main?label=coverage)
 - Smart Contract Audit: ![Audit Status](https://img.shields.io/badge/audit-passing-brightgreen)
 
@@ -242,7 +358,6 @@ We welcome contributions to improve BlockScore! Here's how you can contribute:
    - Respond to review comments and make necessary adjustments
 
 ### Development Guidelines
-
 - Follow Solidity best practices for smart contracts
 - Use ESLint and Prettier for JavaScript/React code
 - Follow PEP 8 style guide for Python code
@@ -253,9 +368,13 @@ We welcome contributions to improve BlockScore! Here's how you can contribute:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Next Steps
-1. Install dependencies and set up the development environment.
-2. Define smart contract architecture.
-3. Train AI models on sample datasets.
+
+1. Install dependencies and set up the development environment
+2. Define smart contract architecture for credit data storage
+3. Train AI models on sample datasets for initial credit scoring
+4. Develop frontend dashboard for credit score visualization
+5. Implement third-party integrations for data sources
+6. Deploy to testnet for beta testing
