@@ -6,54 +6,94 @@ data "aws_ami" "amazon_linux" {
     name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 }
 
-resource "aws_launch_template" "app" {
-  name_prefix   = "${var.app_name}-${var.environment}-"
+resource "aws_launch_template" "main" {
+  name_prefix   = "${var.project_name}-${var.environment}-"
   image_id      = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
   key_name      = var.key_name
 
-  network_interfaces {
-    associate_public_ip_address = false
-    security_groups             = var.security_group_ids
+  vpc_security_group_ids = var.security_group_ids
+
+  iam_instance_profile {
+    name = var.iam_instance_profile_name
+  }
+
+  user_data = base64encode(templatefile("${path.module}/user_data.sh", {
+    project_name = var.project_name
+    environment  = var.environment
+  }))
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = var.root_volume_size
+      volume_type           = "gp3"
+      encrypted             = true
+      kms_key_id            = var.kms_key_arn
+      delete_on_termination = true
+    }
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags      = "enabled"
+  }
+
+  monitoring {
+    enabled = true
   }
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name        = "${var.app_name}-${var.environment}"
+      Name        = "${var.project_name}-${var.environment}-instance"
       Environment = var.environment
     }
   }
 
-  user_data = base64encode(<<-EOF
-    #!/bin/bash
-    echo "Hello from ${var.app_name} ${var.environment} instance!"
-    yum update -y
-    yum install -y docker
-    systemctl start docker
-    systemctl enable docker
-  EOF
-  )
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-launch-template"
+    Environment = var.environment
+  }
 }
 
-resource "aws_autoscaling_group" "app" {
-  name                = "${var.app_name}-${var.environment}-asg"
-  vpc_zone_identifier = var.private_subnet_ids
-  min_size            = 2
-  max_size            = 5
-  desired_capacity    = 2
+resource "aws_autoscaling_group" "main" {
+  name                = "${var.project_name}-${var.environment}-asg"
+  vpc_zone_identifier = var.subnet_ids
+  target_group_arns   = var.target_group_arns
+  health_check_type   = "ELB"
+  health_check_grace_period = 300
+
+  min_size         = var.min_size
+  max_size         = var.max_size
+  desired_capacity = var.desired_capacity
 
   launch_template {
-    id      = aws_launch_template.app.id
+    id      = aws_launch_template.main.id
     version = "$Latest"
   }
 
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupTotalInstances"
+  ]
+
   tag {
     key                 = "Name"
-    value               = "${var.app_name}-${var.environment}-asg"
-    propagate_at_launch = true
+    value               = "${var.project_name}-${var.environment}-asg"
+    propagate_at_launch = false
   }
 
   tag {
@@ -63,42 +103,53 @@ resource "aws_autoscaling_group" "app" {
   }
 }
 
-resource "aws_lb" "app" {
-  name               = "${var.app_name}-${var.environment}-lb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = var.security_group_ids
-  subnets            = var.private_subnet_ids
+resource "aws_autoscaling_policy" "scale_up" {
+  name                   = "${var.project_name}-${var.environment}-scale-up"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.main.name
+}
 
-  tags = {
-    Name        = "${var.app_name}-${var.environment}-lb"
-    Environment = var.environment
+resource "aws_autoscaling_policy" "scale_down" {
+  name                   = "${var.project_name}-${var.environment}-scale-down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.main.name
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  alarm_name          = "${var.project_name}-${var.environment}-cpu-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+  alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.main.name
   }
 }
 
-resource "aws_lb_target_group" "app" {
-  name     = "${var.app_name}-${var.environment}-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
+resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  alarm_name          = "${var.project_name}-${var.environment}-cpu-low"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "10"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+  alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
 
-  health_check {
-    path                = "/"
-    port                = "traffic-port"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-    timeout             = 5
-    interval            = 30
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.main.name
   }
 }
 
-resource "aws_lb_listener" "app" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
-  }
-}

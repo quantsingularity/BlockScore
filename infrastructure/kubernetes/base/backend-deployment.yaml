@@ -1,56 +1,91 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appName }}-backend
+  name: blockscore-backend
   labels:
-    app: {{ .Values.appName }}-backend
+    app: blockscore-backend
 spec:
-  replicas: {{ .Values.backend.replicas }}
+  replicas: 3
   selector:
     matchLabels:
-      app: {{ .Values.appName }}-backend
+      app: blockscore-backend
   template:
     metadata:
       labels:
-        app: {{ .Values.appName }}-backend
+        app: blockscore-backend
     spec:
+      serviceAccountName: blockscore-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
       containers:
-      - name: {{ .Values.appName }}-backend
-        image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
-        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+      - name: backend
+        image: blockscore/backend:latest
         ports:
-        - containerPort: {{ .Values.backend.containerPort }}
-        resources:
-          limits:
-            cpu: {{ .Values.backend.resources.limits.cpu }}
-            memory: {{ .Values.backend.resources.limits.memory }}
-          requests:
-            cpu: {{ .Values.backend.resources.requests.cpu }}
-            memory: {{ .Values.backend.resources.requests.memory }}
+        - containerPort: 8080
         env:
-        - name: NODE_ENV
-          value: {{ .Values.environment }}
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.appName }}-secrets
+              name: blockscore-secrets
               key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: blockscore-secrets
+              key: redis-url
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.appName }}-secrets
+              name: blockscore-secrets
               key: jwt-secret
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
         livenessProbe:
           httpGet:
             path: /health
-            port: {{ .Values.backend.containerPort }}
+            port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
-            port: {{ .Values.backend.containerPort }}
+            path: /ready
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
-      imagePullSecrets:
-      - name: {{ .Values.imagePullSecrets }}
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: var-run-volume
+          mountPath: /var/run
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: var-run-volume
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+

@@ -1,14 +1,15 @@
-output "instance_ids" {
-  description = "IDs of the EC2 instances"
-  value       = aws_autoscaling_group.app.id
+output "launch_template_id" {
+  description = "The ID of the launch template."
+  value       = aws_launch_template.main.id
 }
 
-output "instance_public_ips" {
-  description = "Public IPs of the EC2 instances"
-  value       = aws_lb.app.dns_name
+output "autoscaling_group_name" {
+  description = "The name of the Auto Scaling Group."
+  value       = aws_autoscaling_group.main.name
 }
 
-output "load_balancer_dns" {
-  description = "DNS name of the load balancer"
-  value       = aws_lb.app.dns_name
+output "autoscaling_group_arn" {
+  description = "The ARN of the Auto Scaling Group."
+  value       = aws_autoscaling_group.main.arn
 }
+

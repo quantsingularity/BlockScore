@@ -40,3 +40,41 @@ variable "security_group_ids" {
   description = "List of security group IDs"
   type        = list(string)
 }
+
+variable "kms_key_arn" {
+  description = "The ARN of the KMS key for database encryption."
+  type        = string
+}
+
+variable "db_security_group_id" {
+  description = "The ID of the security group for the database."
+  type        = string
+}
+
+variable "db_subnet_group_name" {
+  description = "The name of the DB subnet group."
+  type        = string
+}
+
+variable "project_name" {
+  description = "The name of the project."
+  type        = string
+}
+
+variable "environment" {
+  description = "The deployment environment (dev, staging, prod)."
+  type        = string
+}
+
+variable "db_username" {
+  description = "Database username."
+  type        = string
+}
+
+variable "db_password" {
+  description = "Database password."
+  type        = string
+  sensitive   = true
+}
+
+

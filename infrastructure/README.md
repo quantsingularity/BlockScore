@@ -1,108 +1,307 @@
-# BlockScore Infrastructure Directory
+# BlockScore Enhanced Infrastructure Directory
 
 ## Overview
 
-The infrastructure directory contains all the configuration, deployment, and orchestration code required to provision, manage, and maintain the BlockScore platform's infrastructure. This directory houses the Infrastructure as Code (IaC) components that enable consistent, repeatable, and automated deployment of the BlockScore system across various environments. The infrastructure code is organized into three main technology stacks: Ansible for configuration management, Kubernetes for container orchestration, and Terraform for cloud resource provisioning.
+This infrastructure directory provides a comprehensive, robust, and secure foundation for the BlockScore platform that meets stringent financial industry standards. The infrastructure has been significantly upgraded with advanced security controls, compliance features, and operational excellence practices.
 
-## Directory Structure
+## 🚀 Key Features
 
-The infrastructure directory is organized into three primary subdirectories, each representing a different layer of the infrastructure stack:
+### Security Enhancements
+- **Web Application Firewall (WAF)** with managed rule sets for OWASP Top 10 protection
+- **DDoS Protection** through cloud-native services
+- **Secrets Management** using AWS Secrets Manager with encryption
+- **Enhanced IAM** with role-based access control and least privilege principles
+- **Network Security** with comprehensive security groups and network policies
+- **Encryption** at rest and in transit for all data
+- **Pod Security Policies** for Kubernetes workloads
 
-### Ansible
+### Compliance Features
+- **Audit Logging** with AWS CloudTrail for all API calls
+- **Centralized Logging** with CloudWatch and S3 for long-term retention
+- **Data Encryption** meeting PCI DSS and financial industry standards
+- **Access Controls** with detailed RBAC and service accounts
+- **Compliance Testing** scripts for PCI DSS, SOX, GDPR, and CCPA
 
-The `ansible` subdirectory contains configuration management code that automates the provisioning and configuration of servers and services. Ansible uses a declarative approach to define system configurations, ensuring consistency across environments and reducing manual configuration errors.
+### Operational Excellence
+- **Auto Scaling** with CloudWatch metrics and alarms
+- **High Availability** across multiple availability zones
+- **Monitoring and Alerting** with comprehensive metrics collection
+- **CI/CD Pipelines** with security scanning and automated deployments
+- **Infrastructure as Code** with Terraform modules and validation
 
-The Ansible directory is structured as follows:
+## 📁 Directory Structure
 
-- **inventory**: Contains inventory files that define the hosts and groups of hosts upon which commands, modules, and tasks in a playbook operate. These files specify connection details and variables for different environments.
+```
+infrastructure/
+├── README.md                          # Original documentation
+├── ENHANCED_README.md                  # This enhanced documentation
+├── docs/                              # Architecture and design documentation
+│   └── architecture_design.md         # Detailed architecture design
+├── terraform/                         # Infrastructure as Code
+│   ├── main.tf                       # Main Terraform configuration
+│   ├── variables.tf                  # Global variables
+│   ├── outputs.tf                    # Global outputs
+│   ├── environments/                 # Environment-specific configurations
+│   │   ├── dev/terraform.tfvars     # Development environment
+│   │   ├── staging/terraform.tfvars # Staging environment
+│   │   └── prod/terraform.tfvars    # Production environment
+│   └── modules/                      # Reusable Terraform modules
+│       ├── compute/                  # Enhanced compute with auto-scaling
+│       ├── database/                 # Encrypted database with security
+│       ├── network/                  # VPC and networking components
+│       ├── security/                 # Security groups and IAM roles
+│       ├── storage/                  # Encrypted storage solutions
+│       ├── secrets/                  # NEW: Secrets management
+│       ├── logging/                  # NEW: Centralized logging
+│       ├── waf/                      # NEW: Web Application Firewall
+│       └── cdn/                      # NEW: CloudFront CDN
+├── kubernetes/                        # Container orchestration
+│   ├── base/                         # Base Kubernetes manifests
+│   │   ├── app-configmap.yaml       # Application configuration
+│   │   ├── app-secrets.yaml         # Application secrets
+│   │   ├── backend-deployment.yaml  # Enhanced backend deployment
+│   │   ├── frontend-deployment.yaml # Frontend deployment
+│   │   ├── database-statefulset.yaml# Database StatefulSet
+│   │   ├── redis-deployment.yaml    # Redis cache deployment
+│   │   ├── ingress.yaml             # Ingress configuration
+│   │   ├── network-policy.yaml      # NEW: Network policies
+│   │   ├── pod-security-policy.yaml # NEW: Pod security policies
+│   │   └── service-account.yaml     # NEW: Service accounts with RBAC
+│   └── environments/                 # Environment-specific overlays
+│       ├── dev/values.yaml          # Development values
+│       ├── staging/values.yaml      # Staging values
+│       └── prod/values.yaml         # Production values
+├── ansible/                          # Configuration management
+│   ├── inventory/hosts.yml          # Inventory configuration
+│   ├── playbooks/main.yml           # Main playbook
+│   └── roles/                       # Ansible roles
+│       ├── common/                  # Common server configuration
+│       ├── database/                # Database server setup
+│       └── webserver/               # Web server configuration
+├── ci-cd/                            # NEW: CI/CD pipeline configurations
+│   └── github-actions/              # GitHub Actions workflows
+│       ├── terraform-ci.yml         # Terraform CI/CD pipeline
+│       └── kubernetes-ci.yml        # Kubernetes CI/CD pipeline
+└── tests/                            # NEW: Infrastructure testing
+    ├── security_scan.sh             # Security scanning script
+    ├── compliance_check.sh          # Compliance validation script
+    └── infrastructure_validation.sh # Infrastructure validation script
+```
 
-- **playbooks**: Contains Ansible playbooks, which are YAML files that define a set of tasks to be executed on remote hosts. These playbooks orchestrate the configuration of various system components.
+## 🔒 Security Features
 
-- **roles**: Contains reusable Ansible roles that encapsulate specific functionality:
-  
-  - **common**: Defines basic server configurations applied to all hosts, including security settings, monitoring agents, and common utilities.
-  
-  - **database**: Manages database server installations, configurations, and optimizations for the BlockScore platform.
-  
-  - **webserver**: Handles web server installations, configurations, and optimizations for serving the BlockScore application.
+### Network Security
+- **Multi-layer Security Groups**: Web, application, and database tiers with restricted access
+- **Network Policies**: Kubernetes network segmentation and traffic control
+- **VPC Configuration**: Private subnets for sensitive workloads
+- **WAF Protection**: Application-layer security with managed rule sets
 
-Each role follows the standard Ansible role structure with tasks, handlers, templates, and variables directories as needed.
+### Data Protection
+- **Encryption at Rest**: All storage encrypted with customer-managed keys
+- **Encryption in Transit**: TLS 1.2+ for all communications
+- **Secrets Management**: Centralized secret storage with rotation capabilities
+- **Data Loss Prevention**: Monitoring and alerting for sensitive data access
 
-### Kubernetes
+### Access Control
+- **IAM Roles and Policies**: Least privilege access with detailed permissions
+- **Service Accounts**: Kubernetes workloads with minimal required permissions
+- **Multi-Factor Authentication**: Required for all administrative access
+- **Audit Logging**: Complete audit trail of all access and changes
 
-The `kubernetes` subdirectory contains Kubernetes manifests and configurations for deploying and managing the containerized components of the BlockScore platform. Kubernetes provides container orchestration, ensuring high availability, scalability, and resilience for the application services.
+## 📋 Compliance Standards
 
-The Kubernetes directory is structured as follows:
+### Supported Standards
+- **PCI DSS**: Payment Card Industry Data Security Standard
+- **SOX**: Sarbanes-Oxley Act compliance
+- **GDPR**: General Data Protection Regulation
+- **CCPA**: California Consumer Privacy Act
+- **Financial Industry Best Practices**
 
-- **base**: Contains the base Kubernetes manifests that define the core resources required by the BlockScore application, such as deployments, services, and config maps.
+### Compliance Features
+- **Audit Trails**: Immutable logging of all system activities
+- **Data Retention**: Configurable retention policies for compliance
+- **Access Monitoring**: Real-time monitoring of privileged access
+- **Incident Response**: Automated alerting and response procedures
 
-- **environments**: Contains environment-specific overlays that customize the base manifests for different deployment environments:
-  
-  - **dev**: Development environment configurations, typically with minimal resources and debugging enabled.
-  
-  - **staging**: Staging environment configurations that mirror production but with isolated resources for testing.
-  
-  - **prod**: Production environment configurations optimized for performance, reliability, and security.
+## 🚀 Deployment Guide
 
-The Kubernetes configuration follows the Kustomize pattern, allowing for base configurations to be extended and customized for different environments without duplicating code.
+### Prerequisites
+- AWS CLI configured with appropriate permissions
+- Terraform >= 1.5.0
+- kubectl >= 1.27.0
+- Docker (for container builds)
 
-### Terraform
+### Quick Start
 
-The `terraform` subdirectory contains Infrastructure as Code definitions for provisioning cloud resources using HashiCorp Terraform. Terraform enables the declarative definition of infrastructure resources across various cloud providers, ensuring consistent and reproducible infrastructure deployments.
+1. **Initialize Terraform**
+   ```bash
+   cd terraform/
+   terraform init
+   ```
 
-The Terraform directory is structured as follows:
+2. **Plan Infrastructure**
+   ```bash
+   terraform plan -var-file="environments/dev/terraform.tfvars"
+   ```
 
-- **environments**: Contains environment-specific Terraform configurations:
-  
-  - **dev**: Development environment infrastructure definitions.
-  
-  - **staging**: Staging environment infrastructure definitions.
-  
-  - **prod**: Production environment infrastructure definitions.
+3. **Deploy Infrastructure**
+   ```bash
+   terraform apply -var-file="environments/dev/terraform.tfvars"
+   ```
 
-- **modules**: Contains reusable Terraform modules that encapsulate specific infrastructure components:
-  
-  - **compute**: Defines compute resources such as virtual machines, container instances, and serverless functions.
-  
-  - **database**: Defines database resources including relational databases, NoSQL databases, and caching services.
-  
-  - **network**: Defines networking resources such as virtual networks, subnets, and security groups.
-  
-  - **security**: Defines security-related resources including IAM roles, policies, and encryption settings.
-  
-  - **storage**: Defines storage resources such as object storage, block storage, and file systems.
+4. **Deploy Kubernetes Resources**
+   ```bash
+   kubectl apply -f kubernetes/base/
+   ```
 
-Each module follows Terraform best practices with clear input variables, outputs, and resource definitions.
+### Environment-Specific Deployment
 
-## Usage Guidelines
+#### Development Environment
+```bash
+# Deploy Terraform infrastructure
+terraform apply -var-file="environments/dev/terraform.tfvars"
 
-The infrastructure code in this directory is designed to support the complete lifecycle of the BlockScore platform's infrastructure, from initial provisioning to ongoing maintenance and updates. When working with this code:
+# Deploy Kubernetes resources
+kubectl apply -f kubernetes/base/
+kubectl set env deployment/blockscore-backend ENVIRONMENT=dev
+```
 
-1. **Environment Consistency**: Use the same code base across all environments, with environment-specific variables to customize the deployment.
+#### Production Environment
+```bash
+# Deploy Terraform infrastructure (requires approval)
+terraform apply -var-file="environments/prod/terraform.tfvars"
 
-2. **Infrastructure Changes**: Make infrastructure changes through code updates rather than manual interventions, ensuring all changes are tracked, versioned, and reproducible.
+# Deploy Kubernetes resources with production settings
+kubectl apply -f kubernetes/base/
+kubectl set env deployment/blockscore-backend ENVIRONMENT=production
+```
 
-3. **Testing**: Test infrastructure changes in development and staging environments before applying them to production.
+## 🔧 Configuration
 
-4. **Documentation**: Document any significant changes to the infrastructure code, including the rationale and expected impact.
+### Environment Variables
+- `AWS_REGION`: Target AWS region for deployment
+- `ENVIRONMENT`: Deployment environment (dev/staging/prod)
+- `PROJECT_NAME`: Name of the project (default: blockscore)
 
-5. **Secrets Management**: Never store sensitive information such as passwords, API keys, or certificates in the infrastructure code. Use appropriate secrets management solutions instead.
+### Terraform Variables
+Key variables that can be customized in `terraform.tfvars`:
+- `instance_type`: EC2 instance type for compute resources
+- `db_instance_class`: RDS instance class for database
+- `enable_multi_az`: Enable multi-AZ deployment for high availability
+- `backup_retention_period`: Database backup retention in days
 
-## Deployment Workflow
+### Kubernetes Configuration
+Environment-specific values in `kubernetes/environments/*/values.yaml`:
+- Resource limits and requests
+- Replica counts
+- Environment-specific secrets and configurations
 
-The typical deployment workflow using this infrastructure code involves:
+## 📊 Monitoring and Observability
 
-1. Making changes to the appropriate infrastructure code files
-2. Validating the changes using linting and validation tools
-3. Applying the changes to the development environment
-4. Testing the application in the updated development environment
-5. Promoting the changes to staging for further testing
-6. Finally, applying the changes to production during a scheduled maintenance window
+### Metrics Collection
+- **CloudWatch Metrics**: System and application metrics
+- **Custom Metrics**: Business-specific KPIs and performance indicators
+- **Log Aggregation**: Centralized logging with structured log format
 
-This workflow ensures that infrastructure changes are thoroughly tested before reaching production, minimizing the risk of disruptions to the BlockScore service.
+### Alerting
+- **CloudWatch Alarms**: Automated alerting on threshold breaches
+- **Security Alerts**: Real-time notifications for security events
+- **Compliance Alerts**: Notifications for compliance violations
 
-## Integration with CI/CD
+### Dashboards
+- **Infrastructure Health**: Real-time infrastructure status
+- **Application Performance**: Application-specific metrics and KPIs
+- **Security Dashboard**: Security events and compliance status
 
-The infrastructure code in this directory is designed to integrate with Continuous Integration and Continuous Deployment (CI/CD) pipelines. The CI/CD system can automatically validate, test, and apply infrastructure changes as part of the overall application deployment process, ensuring that infrastructure and application code remain synchronized.
+## 🧪 Testing and Validation
 
-For detailed information about specific infrastructure components, refer to the documentation within each subdirectory or the project-wide documentation in the `docs` directory.
+### Security Testing
+```bash
+# Run comprehensive security scan
+./tests/security_scan.sh
+
+# Check compliance status
+./tests/compliance_check.sh
+
+# Validate infrastructure configuration
+./tests/infrastructure_validation.sh
+```
+
+### Automated Testing
+- **CI/CD Integration**: Automated testing in deployment pipelines
+- **Security Scanning**: Continuous security assessment
+- **Compliance Checking**: Regular compliance validation
+
+## 🔄 CI/CD Integration
+
+### GitHub Actions Workflows
+- **Terraform CI/CD**: Automated infrastructure deployment with security scanning
+- **Kubernetes CI/CD**: Container deployment with security validation
+- **Security Scanning**: Automated security and compliance checks
+
+### Pipeline Features
+- **Multi-environment Support**: Separate pipelines for dev, staging, and production
+- **Security Gates**: Mandatory security scans before deployment
+- **Approval Workflows**: Manual approval required for production deployments
+
+## 🆘 Troubleshooting
+
+### Common Issues
+1. **Terraform State Lock**: Use `terraform force-unlock` if state is locked
+2. **Kubernetes RBAC**: Ensure service accounts have proper permissions
+3. **Security Group Rules**: Verify security group configurations for connectivity
+
+### Debugging Commands
+```bash
+# Check Terraform state
+terraform show
+
+# Validate Kubernetes resources
+kubectl get pods -o wide
+kubectl describe pod <pod-name>
+
+# Check security configurations
+aws ec2 describe-security-groups
+kubectl get networkpolicies
+```
+
+## 📚 Additional Resources
+
+### Documentation
+- [Architecture Design Document](docs/architecture_design.md)
+- [Security Best Practices](docs/security_best_practices.md)
+- [Compliance Guidelines](docs/compliance_guidelines.md)
+
+### External References
+- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
+- [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/)
+- [Terraform Best Practices](https://www.terraform.io/docs/cloud/guides/recommended-practices/)
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Create feature branch from `develop`
+2. Make infrastructure changes
+3. Run security and compliance tests
+4. Submit pull request with detailed description
+5. Undergo security review and approval
+
+### Code Standards
+- Follow Terraform naming conventions
+- Use consistent tagging across all resources
+- Document all security configurations
+- Include compliance justifications for changes
+
+## 📞 Support
+
+For questions or issues related to this infrastructure:
+- **Security Issues**: Contact security team immediately
+- **Infrastructure Issues**: Create ticket with infrastructure team
+- **Compliance Questions**: Consult with compliance team
+
+---
+
+**Last Updated**: $(date)
+**Version**: 2.0.0 (Enhanced)
+**Maintainer**: DevOps Team
+
