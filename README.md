@@ -27,7 +27,6 @@ BlockScore is an innovative credit scoring platform that leverages blockchain te
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Contributing](#contributing)
 - [License](#license)
-- [Next Steps](#next-steps)
 
 ## Overview
 
