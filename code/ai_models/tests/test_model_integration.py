@@ -1,16 +1,18 @@
-import unittest
 import json
-import sys
 import os
-from unittest.mock import patch, MagicMock
+import sys
+import unittest
+from unittest.mock import MagicMock, patch
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from model_integration import transform_blockchain_data, predict_score, calculate_score_factors, batch_score
+from model_integration import (batch_score, calculate_score_factors,
+                               predict_score, transform_blockchain_data)
+
 
 class TestModelIntegration(unittest.TestCase):
     """Test cases for the model integration module"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         # Sample credit history for testing
@@ -22,7 +24,7 @@ class TestModelIntegration(unittest.TestCase):
                 "repaymentTimestamp": 1623500000,
                 "provider": "0x123...",
                 "recordType": "loan",
-                "scoreImpact": 5
+                "scoreImpact": 5,
             },
             {
                 "timestamp": 1625500000,
@@ -31,13 +33,13 @@ class TestModelIntegration(unittest.TestCase):
                 "repaymentTimestamp": 1630500000,
                 "provider": "0x456...",
                 "recordType": "loan",
-                "scoreImpact": 3
-            }
+                "scoreImpact": 3,
+            },
         ]
-        
+
         # Empty credit history
         self.empty_history = []
-        
+
         # Credit history with no repayments
         self.no_repayment_history = [
             {
@@ -47,137 +49,146 @@ class TestModelIntegration(unittest.TestCase):
                 "repaymentTimestamp": 0,
                 "provider": "0x123...",
                 "recordType": "loan",
-                "scoreImpact": 5
+                "scoreImpact": 5,
             }
         ]
-    
+
     def test_transform_blockchain_data(self):
         """Test transformation of blockchain data to features"""
         features = transform_blockchain_data(self.sample_history)
-        
+
         # Check that all expected features are present
         self.assertIsNotNone(features)
-        self.assertIn('income', features)
-        self.assertIn('debt_ratio', features)
-        self.assertIn('payment_history', features)
-        self.assertIn('loan_count', features)
-        self.assertIn('loan_amount', features)
-        self.assertIn('credit_utilization', features)
-        
+        self.assertIn("income", features)
+        self.assertIn("debt_ratio", features)
+        self.assertIn("payment_history", features)
+        self.assertIn("loan_count", features)
+        self.assertIn("loan_amount", features)
+        self.assertIn("credit_utilization", features)
+
         # Check specific feature values
-        self.assertEqual(features['loan_count'], 2)
-        self.assertEqual(features['payment_history'], 1.0)  # All loans repaid
-        
+        self.assertEqual(features["loan_count"], 2)
+        self.assertEqual(features["payment_history"], 1.0)  # All loans repaid
+
         # Test with empty history
         empty_features = transform_blockchain_data(self.empty_history)
         self.assertIsNone(empty_features)
-        
+
         # Test with no repayment history
         no_repay_features = transform_blockchain_data(self.no_repayment_history)
-        self.assertEqual(no_repay_features['payment_history'], 0.0)
-    
-    @patch('model_integration.model')
+        self.assertEqual(no_repay_features["payment_history"], 0.0)
+
+    @patch("model_integration.model")
     def test_predict_score(self, mock_model):
         """Test credit score prediction"""
         # Mock the model prediction
         mock_model.predict.return_value = [720]
-        
+
         features = transform_blockchain_data(self.sample_history)
         score = predict_score(features)
-        
+
         # Check that prediction is within valid range
         self.assertGreaterEqual(score, 300)
         self.assertLessEqual(score, 850)
         self.assertEqual(score, 720)
-        
+
         # Test with extreme values
         mock_model.predict.return_value = [200]  # Below minimum
         score = predict_score(features)
         self.assertEqual(score, 300)  # Should be clamped to minimum
-        
+
         mock_model.predict.return_value = [900]  # Above maximum
         score = predict_score(features)
         self.assertEqual(score, 850)  # Should be clamped to maximum
-    
+
     def test_calculate_score_factors(self):
         """Test calculation of score factors"""
         features = {
-            'payment_history': 0.95,
-            'debt_ratio': 0.2,
-            'credit_utilization': 0.25,
-            'loan_count': 6,
-            'income': 50000,
-            'loan_amount': 5000,
-            'age': 30
+            "payment_history": 0.95,
+            "debt_ratio": 0.2,
+            "credit_utilization": 0.25,
+            "loan_count": 6,
+            "income": 50000,
+            "loan_amount": 5000,
+            "age": 30,
         }
-        
+
         factors = calculate_score_factors(features, 750)
-        
+
         # Check that factors are returned
         self.assertIsInstance(factors, list)
         self.assertGreater(len(factors), 0)
-        
+
         # Check specific factors
-        payment_factor = next((f for f in factors if f['factor'] == 'Excellent payment history'), None)
+        payment_factor = next(
+            (f for f in factors if f["factor"] == "Excellent payment history"), None
+        )
         self.assertIsNotNone(payment_factor)
-        self.assertEqual(payment_factor['impact'], 'positive')
-        
-        debt_factor = next((f for f in factors if f['factor'] == 'Low debt ratio'), None)
+        self.assertEqual(payment_factor["impact"], "positive")
+
+        debt_factor = next(
+            (f for f in factors if f["factor"] == "Low debt ratio"), None
+        )
         self.assertIsNotNone(debt_factor)
-        self.assertEqual(debt_factor['impact'], 'positive')
-        
+        self.assertEqual(debt_factor["impact"], "positive")
+
         # Test with different values
-        features['payment_history'] = 0.4
-        features['debt_ratio'] = 0.7
+        features["payment_history"] = 0.4
+        features["debt_ratio"] = 0.7
         factors = calculate_score_factors(features, 600)
-        
-        payment_factor = next((f for f in factors if f['factor'] == 'Poor payment history'), None)
+
+        payment_factor = next(
+            (f for f in factors if f["factor"] == "Poor payment history"), None
+        )
         self.assertIsNotNone(payment_factor)
-        self.assertEqual(payment_factor['impact'], 'negative')
-        
-        debt_factor = next((f for f in factors if f['factor'] == 'High debt ratio'), None)
+        self.assertEqual(payment_factor["impact"], "negative")
+
+        debt_factor = next(
+            (f for f in factors if f["factor"] == "High debt ratio"), None
+        )
         self.assertIsNotNone(debt_factor)
-        self.assertEqual(debt_factor['impact'], 'negative')
-    
-    @patch('model_integration.transform_blockchain_data')
-    @patch('model_integration.predict_score')
-    @patch('model_integration.calculate_score_factors')
+        self.assertEqual(debt_factor["impact"], "negative")
+
+    @patch("model_integration.transform_blockchain_data")
+    @patch("model_integration.predict_score")
+    @patch("model_integration.calculate_score_factors")
     def test_batch_score(self, mock_factors, mock_predict, mock_transform):
         """Test batch scoring functionality"""
         # Set up mocks
         mock_transform.return_value = {
-            'payment_history': 0.9,
-            'debt_ratio': 0.3,
-            'credit_utilization': 0.4,
-            'loan_count': 3,
-            'income': 40000,
-            'loan_amount': 5000,
-            'age': 30
+            "payment_history": 0.9,
+            "debt_ratio": 0.3,
+            "credit_utilization": 0.4,
+            "loan_count": 3,
+            "income": 40000,
+            "loan_amount": 5000,
+            "age": 30,
         }
         mock_predict.return_value = 720
         mock_factors.return_value = [
             {
-                'factor': 'Good payment history',
-                'impact': 'positive',
-                'description': 'Generally repaying debts on time'
+                "factor": "Good payment history",
+                "impact": "positive",
+                "description": "Generally repaying debts on time",
             }
         ]
-        
+
         # Test batch scoring with multiple histories
         batch_histories = [self.sample_history, self.no_repayment_history]
         results = batch_score(batch_histories)
-        
+
         # Check results
         self.assertEqual(len(results), 2)
-        self.assertIn('score', results[0])
-        self.assertIn('confidence', results[0])
-        self.assertIn('factors', results[0])
-        
+        self.assertIn("score", results[0])
+        self.assertIn("confidence", results[0])
+        self.assertIn("factors", results[0])
+
         # Test with empty history
         mock_transform.return_value = None
         results = batch_score([self.empty_history])
-        self.assertEqual(results[0]['score'], 500)  # Default score
-        self.assertEqual(results[0]['confidence'], 0)
+        self.assertEqual(results[0]["score"], 500)  # Default score
+        self.assertEqual(results[0]["confidence"], 0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

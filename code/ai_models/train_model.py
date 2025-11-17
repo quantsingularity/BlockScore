@@ -1,9 +1,11 @@
-import pandas as pd
-import numpy as np
-from xgboost import XGBRegressor
-from sklearn.model_selection import train_test_split
-import joblib
 import os
+
+import joblib
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from xgboost import XGBRegressor
+
 
 def generate_synthetic_data(n_samples=1000):
     """
@@ -13,8 +15,12 @@ def generate_synthetic_data(n_samples=1000):
 
     # Generate features
     income = np.random.normal(50000, 20000, n_samples)  # Income with mean 50k
-    debt_ratio = np.random.beta(2, 5, n_samples)  # Debt ratio between 0-1, skewed towards lower values
-    payment_history = np.random.binomial(10, 0.8, n_samples) / 10  # Payment history score (0-1)
+    debt_ratio = np.random.beta(
+        2, 5, n_samples
+    )  # Debt ratio between 0-1, skewed towards lower values
+    payment_history = (
+        np.random.binomial(10, 0.8, n_samples) / 10
+    )  # Payment history score (0-1)
     loan_count = np.random.poisson(3, n_samples)  # Number of previous loans
     loan_amount = np.random.lognormal(8, 1, n_samples)  # Loan amounts
 
@@ -25,7 +31,14 @@ def generate_synthetic_data(n_samples=1000):
 
     # Generate target variable (credit score) based on features
     # Credit scores typically range from 300-850
-    base_score = 300 + (payment_history * 300) + (income / 100000 * 150) - (debt_ratio * 200) + (np.log1p(loan_count) * 50) - (credit_utilization * 100)
+    base_score = (
+        300
+        + (payment_history * 300)
+        + (income / 100000 * 150)
+        - (debt_ratio * 200)
+        + (np.log1p(loan_count) * 50)
+        - (credit_utilization * 100)
+    )
 
     # Add some noise
     noise = np.random.normal(0, 30, n_samples)
@@ -35,31 +48,37 @@ def generate_synthetic_data(n_samples=1000):
     credit_score = np.clip(credit_score, 300, 850).astype(int)
 
     # Create DataFrame
-    data = pd.DataFrame({
-        'income': income,
-        'debt_ratio': debt_ratio,
-        'payment_history': payment_history,
-        'loan_count': loan_count,
-        'loan_amount': loan_amount,
-        'age': age,
-        'credit_utilization': credit_utilization,
-        'credit_score': credit_score
-    })
+    data = pd.DataFrame(
+        {
+            "income": income,
+            "debt_ratio": debt_ratio,
+            "payment_history": payment_history,
+            "loan_count": loan_count,
+            "loan_amount": loan_amount,
+            "age": age,
+            "credit_utilization": credit_utilization,
+            "credit_score": credit_score,
+        }
+    )
 
     return data
+
 
 def preprocess_data(df):
     """
     Preprocess data for model training
     """
     # Create features and target
-    X = df.drop('credit_score', axis=1)
-    y = df['credit_score']
+    X = df.drop("credit_score", axis=1)
+    y = df["credit_score"]
 
     # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
     return X_train, X_test, y_train, y_test
+
 
 def train_model(X_train, y_train):
     """
@@ -69,12 +88,13 @@ def train_model(X_train, y_train):
         n_estimators=100,
         learning_rate=0.1,
         max_depth=5,
-        objective='reg:squarederror',
-        random_state=42
+        objective="reg:squarederror",
+        random_state=42,
     )
 
     model.fit(X_train, y_train)
     return model
+
 
 def evaluate_model(model, X_test, y_test):
     """
@@ -92,6 +112,7 @@ def evaluate_model(model, X_test, y_test):
 
     return mse, rmse, mae
 
+
 def save_model(model, output_path):
     """
     Save trained model to disk
@@ -100,16 +121,17 @@ def save_model(model, output_path):
     joblib.dump(model, output_path)
     print(f"Model saved to {output_path}")
 
+
 def main():
     # Create directory for datasets if it doesn't exist
-    os.makedirs('../ai_models', exist_ok=True)
+    os.makedirs("../ai_models", exist_ok=True)
 
     # Generate synthetic data
     print("Generating synthetic financial data...")
     data = generate_synthetic_data(n_samples=5000)
 
     # Save data to CSV
-    data_path = '../ai_models/financial_data.csv'
+    data_path = "../ai_models/financial_data.csv"
     data.to_csv(data_path, index=False)
     print(f"Data saved to {data_path}")
 
@@ -126,10 +148,11 @@ def main():
     evaluate_model(model, X_test, y_test)
 
     # Save model
-    model_path = '../ai_models/credit_scoring_model.pkl'
+    model_path = "../ai_models/credit_scoring_model.pkl"
     save_model(model, model_path)
 
     print("Model training complete!")
+
 
 if __name__ == "__main__":
     main()
