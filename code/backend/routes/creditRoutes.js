@@ -17,7 +17,7 @@ router.get('/score/:address', async (req, res) => {
   try {
     const { address } = req.params;
     const result = await contractService.getCreditScore(address);
-    
+
     res.json({
       success: true,
       data: result
@@ -40,7 +40,7 @@ router.get('/history/:address', async (req, res) => {
   try {
     const { address } = req.params;
     const history = await contractService.getCreditHistory(address);
-    
+
     res.json({
       success: true,
       data: history
@@ -62,14 +62,14 @@ router.get('/history/:address', async (req, res) => {
 router.post('/record', verifyToken, isCreditProvider, async (req, res) => {
   try {
     const { userAddress, amount, recordType, scoreImpact, privateKey } = req.body;
-    
+
     if (!userAddress || !amount || !recordType || scoreImpact === undefined || !privateKey) {
       return res.status(400).json({
         success: false,
         message: 'Missing required fields'
       });
     }
-    
+
     const receipt = await contractService.addCreditRecord(
       userAddress,
       amount,
@@ -77,7 +77,7 @@ router.post('/record', verifyToken, isCreditProvider, async (req, res) => {
       scoreImpact,
       privateKey
     );
-    
+
     res.json({
       success: true,
       data: {
@@ -101,20 +101,20 @@ router.post('/record', verifyToken, isCreditProvider, async (req, res) => {
 router.post('/record/repaid', verifyToken, isCreditProvider, async (req, res) => {
   try {
     const { userAddress, recordIndex, privateKey } = req.body;
-    
+
     if (!userAddress || recordIndex === undefined || !privateKey) {
       return res.status(400).json({
         success: false,
         message: 'Missing required fields'
       });
     }
-    
+
     const receipt = await contractService.markRecordRepaid(
       userAddress,
       recordIndex,
       privateKey
     );
-    
+
     res.json({
       success: true,
       data: {
@@ -138,23 +138,23 @@ router.post('/record/repaid', verifyToken, isCreditProvider, async (req, res) =>
 router.post('/calculate-score', async (req, res) => {
   try {
     const { walletAddress } = req.body;
-    
+
     if (!walletAddress) {
       return res.status(400).json({
         success: false,
         message: 'Wallet address is required'
       });
     }
-    
+
     // Get blockchain data
     const creditHistory = await contractService.getCreditHistory(walletAddress);
-    
+
     // Call Python API for prediction
     const modelResponse = await axios.post(
       `${config.modelIntegration.pythonApiUrl}${config.modelIntegration.modelEndpoint}`,
       { creditHistory }
     );
-    
+
     res.json({
       success: true,
       data: {

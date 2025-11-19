@@ -62,7 +62,7 @@ interface IDataRegistry {
 ```solidity
 contract CreditScore is Ownable, AccessControl {
     bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
-    
+
     modifier onlyUpdater() {
         require(hasRole(UPDATER_ROLE, msg.sender), "Caller is not an updater");
         _;
@@ -81,7 +81,7 @@ contract CreditScore is Pausable {
     function pause() external onlyOwner {
         _pause();
     }
-    
+
     function unpause() external onlyOwner {
         _unpause();
     }
@@ -157,7 +157,7 @@ contract CreditScore {
         uint128 value;
         uint128 timestamp;
     }
-    
+
     mapping(address => Score) private scores;
 }
 ```
@@ -211,10 +211,10 @@ describe("CreditScore", function() {
         const [owner, user] = await ethers.getSigners();
         const CreditScore = await ethers.getContractFactory("CreditScore");
         const creditScore = await CreditScore.deploy();
-        
+
         await creditScore.updateScore(user.address, 750);
         const score = await creditScore.getScore(user.address);
-        
+
         expect(score).to.equal(750);
     });
 });
@@ -233,4 +233,4 @@ describe("CreditScore", function() {
 ## Future Improvements
 1. Layer 2 integration
 2. Cross-chain compatibility
-3. Enhanced privacy features 
+3. Enhanced privacy features

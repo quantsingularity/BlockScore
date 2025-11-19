@@ -13,20 +13,25 @@ from typing import Any, Dict, List, Optional, Tuple
 import joblib
 import lime
 import lime.lime_tabular
+
 # Visualization
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+
 # Statistical libraries
 import scipy.stats as stats
 import seaborn as sns
+
 # Model interpretation
 import shap
+
 # ML Libraries
 import xgboost as xgb
 from aif360.algorithms.preprocessing import Reweighing
+
 # Fairness and bias detection
 from aif360.datasets import BinaryLabelDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
@@ -38,13 +43,23 @@ from sklearn.feature_selection import RFE, SelectKBest, f_regression
 from sklearn.impute import KNNImputer, SimpleImputer
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import ElasticNet, LogisticRegression
-from sklearn.metrics import (classification_report, confusion_matrix,
-                             mean_absolute_error, mean_squared_error,
-                             precision_recall_curve, r2_score, roc_auc_score,
-                             roc_curve)
-from sklearn.model_selection import (GridSearchCV, StratifiedKFold,
-                                     TimeSeriesSplit, cross_val_score,
-                                     train_test_split)
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    mean_absolute_error,
+    mean_squared_error,
+    precision_recall_curve,
+    r2_score,
+    roc_auc_score,
+    roc_curve,
+)
+from sklearn.model_selection import (
+    GridSearchCV,
+    StratifiedKFold,
+    TimeSeriesSplit,
+    cross_val_score,
+    train_test_split,
+)
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, RobustScaler, StandardScaler
 

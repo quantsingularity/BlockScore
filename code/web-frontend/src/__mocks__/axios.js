@@ -4,4 +4,3 @@ export default {
   create: jest.fn(function () { return this; }),
   // Add other methods as needed by your application
 };
-

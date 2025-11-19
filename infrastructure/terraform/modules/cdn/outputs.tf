@@ -17,4 +17,3 @@ output "cloudfront_hosted_zone_id" {
   description = "The hosted zone ID of the CloudFront distribution."
   value       = aws_cloudfront_distribution.main.hosted_zone_id
 }
-

@@ -21,7 +21,7 @@ describe('API Routes', function() {
           username: 'newuser',
           password: 'password123'
         });
-      
+
       expect(res.statusCode).to.equal(201);
       expect(res.body.success).to.be.true;
       expect(res.body.data.username).to.equal('newuser');
@@ -34,7 +34,7 @@ describe('API Routes', function() {
           username: 'testuser',
           password: 'password123'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.token).to.exist;
@@ -47,7 +47,7 @@ describe('API Routes', function() {
           username: 'testuser',
           password: 'wrongpassword'
         });
-      
+
       expect(res.statusCode).to.equal(401);
       expect(res.body.success).to.be.false;
     });
@@ -56,26 +56,26 @@ describe('API Routes', function() {
   // Credit routes tests
   describe('Credit Routes', function() {
     let authToken;
-    
+
     beforeEach(async function() {
       // Register and login as admin
       authService.registerUser('admin', 'admin123', 'admin');
-      
+
       const loginRes = await request(app)
         .post('/api/auth/login')
         .send({
           username: 'admin',
           password: 'admin123'
         });
-      
+
       authToken = loginRes.body.token;
-      
+
       // Stub contract service methods
       sinon.stub(contractService, 'getCreditScore').resolves({
         score: 750,
         lastUpdated: Date.now()
       });
-      
+
       sinon.stub(contractService, 'getCreditHistory').resolves([
         {
           timestamp: Date.now() - 1000000,
@@ -87,15 +87,15 @@ describe('API Routes', function() {
           scoreImpact: 5
         }
       ]);
-      
+
       sinon.stub(contractService, 'addCreditRecord').resolves({
         transactionHash: '0xabc123...'
       });
-      
+
       sinon.stub(contractService, 'markRecordRepaid').resolves({
         transactionHash: '0xdef456...'
       });
-      
+
       // Stub axios for model API calls
       sinon.stub(axios, 'post').resolves({
         data: {
@@ -111,7 +111,7 @@ describe('API Routes', function() {
         }
       });
     });
-    
+
     afterEach(function() {
       contractService.getCreditScore.restore();
       contractService.getCreditHistory.restore();
@@ -123,7 +123,7 @@ describe('API Routes', function() {
     it('should get credit score for an address', async function() {
       const res = await request(app)
         .get('/api/credit/score/0x123456789...');
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.score).to.equal(750);
@@ -132,7 +132,7 @@ describe('API Routes', function() {
     it('should get credit history for an address', async function() {
       const res = await request(app)
         .get('/api/credit/history/0x123456789...');
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data).to.be.an('array');
@@ -150,7 +150,7 @@ describe('API Routes', function() {
           scoreImpact: 5,
           privateKey: 'abcdef123456'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.transactionHash).to.exist;
@@ -166,7 +166,7 @@ describe('API Routes', function() {
           scoreImpact: 5,
           privateKey: 'abcdef123456'
         });
-      
+
       expect(res.statusCode).to.equal(403);
       expect(res.body.success).to.be.false;
     });
@@ -177,7 +177,7 @@ describe('API Routes', function() {
         .send({
           walletAddress: '0x123456789...'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.calculatedScore).to.equal(720);
@@ -189,20 +189,20 @@ describe('API Routes', function() {
   // Loan routes tests
   describe('Loan Routes', function() {
     let authToken;
-    
+
     beforeEach(async function() {
       // Register and login as admin
       authService.registerUser('admin', 'admin123', 'admin');
-      
+
       const loginRes = await request(app)
         .post('/api/auth/login')
         .send({
           username: 'admin',
           password: 'admin123'
         });
-      
+
       authToken = loginRes.body.token;
-      
+
       // Stub contract service methods
       sinon.stub(contractService, 'getLoanDetails').resolves({
         borrower: '0x123456789...',
@@ -214,23 +214,23 @@ describe('API Routes', function() {
         repaid: false,
         repaymentTimestamp: 0
       });
-      
+
       sinon.stub(contractService, 'getBorrowerLoans').resolves([1, 2, 3]);
-      
+
       sinon.stub(contractService, 'createLoan').resolves({
         receipt: { transactionHash: '0xabc123...' },
         loanId: 4
       });
-      
+
       sinon.stub(contractService, 'approveLoan').resolves({
         transactionHash: '0xdef456...'
       });
-      
+
       sinon.stub(contractService, 'repayLoan').resolves({
         transactionHash: '0xghi789...'
       });
     });
-    
+
     afterEach(function() {
       contractService.getLoanDetails.restore();
       contractService.getBorrowerLoans.restore();
@@ -242,7 +242,7 @@ describe('API Routes', function() {
     it('should get loan details by ID', async function() {
       const res = await request(app)
         .get('/api/loans/1');
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.amount).to.equal(10000);
@@ -251,7 +251,7 @@ describe('API Routes', function() {
     it('should get all loans for a borrower', async function() {
       const res = await request(app)
         .get('/api/loans/borrower/0x123456789...');
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.loanIds).to.be.an('array');
@@ -268,7 +268,7 @@ describe('API Routes', function() {
           durationDays: 30,
           privateKey: 'abcdef123456'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.loanId).to.equal(4);
@@ -281,7 +281,7 @@ describe('API Routes', function() {
         .send({
           privateKey: 'abcdef123456'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.transactionHash).to.exist;
@@ -294,7 +294,7 @@ describe('API Routes', function() {
         .send({
           privateKey: 'abcdef123456'
         });
-      
+
       expect(res.statusCode).to.equal(200);
       expect(res.body.success).to.be.true;
       expect(res.body.data.transactionHash).to.exist;

@@ -156,4 +156,3 @@ jobs:
         kubectl rollout status deployment/blockscore-frontend
         kubectl get pods -l app=blockscore-backend
         kubectl get pods -l app=blockscore-frontend
-

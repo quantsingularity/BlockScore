@@ -25,7 +25,7 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
     // Token economics
     uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18; // 1 billion tokens
     uint256 public constant INITIAL_SUPPLY = 100_000_000 * 10**18; // 100 million tokens
-    
+
     // Vesting and distribution
     struct VestingSchedule {
         uint256 totalAmount;
@@ -36,10 +36,10 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         bool revocable;
         bool revoked;
     }
-    
+
     mapping(address => VestingSchedule) public vestingSchedules;
     mapping(address => bool) public isVestingBeneficiary;
-    
+
     // Staking for governance participation
     struct StakeInfo {
         uint256 amount;
@@ -47,23 +47,23 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         uint256 lockPeriod;
         uint256 rewardDebt;
     }
-    
+
     mapping(address => StakeInfo) public stakes;
     uint256 public totalStaked;
     uint256 public stakingRewardRate = 500; // 5% APY in basis points
     uint256 public minStakingPeriod = 30 days;
-    
+
     // Governance parameters
     uint256 public proposalThreshold = 1000000 * 10**18; // 1M tokens to create proposal
     uint256 public votingDelay = 1 days;
     uint256 public votingPeriod = 7 days;
     uint256 public quorumPercentage = 400; // 4% of total supply
-    
+
     // Treasury and rewards
     address public treasury;
     uint256 public treasuryReserve;
     uint256 public communityRewards;
-    
+
     // Events
     event TokensVested(address indexed beneficiary, uint256 amount);
     event VestingRevoked(address indexed beneficiary, uint256 unvestedAmount);
@@ -85,19 +85,19 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         address _treasury
     ) ERC20("BlockScore Governance Token", "BSGT") ERC20Permit("BlockScore Governance Token") {
         treasury = _treasury;
-        
+
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(TREASURY_ROLE, _treasury);
-        
+
         // Mint initial supply
         _mint(msg.sender, INITIAL_SUPPLY);
-        
+
         // Allocate initial distribution
         treasuryReserve = INITIAL_SUPPLY.mul(30).div(100); // 30% to treasury
         communityRewards = INITIAL_SUPPLY.mul(20).div(100); // 20% for community rewards
-        
+
         _transfer(msg.sender, treasury, treasuryReserve);
     }
 
@@ -116,10 +116,10 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         require(totalAmount > 0, "Amount must be positive");
         require(vestingDuration > 0, "Vesting duration must be positive");
         require(!isVestingBeneficiary[beneficiary], "Beneficiary already has vesting schedule");
-        
+
         // Ensure we have enough tokens to vest
         require(balanceOf(address(this)) >= totalAmount, "Insufficient tokens for vesting");
-        
+
         vestingSchedules[beneficiary] = VestingSchedule({
             totalAmount: totalAmount,
             releasedAmount: 0,
@@ -129,9 +129,9 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
             revocable: revocable,
             revoked: false
         });
-        
+
         isVestingBeneficiary[beneficiary] = true;
-        
+
         // Transfer tokens to contract for vesting
         _transfer(msg.sender, address(this), totalAmount);
     }
@@ -141,18 +141,18 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
      */
     function releaseVestedTokens() external {
         require(isVestingBeneficiary[msg.sender], "No vesting schedule found");
-        
+
         VestingSchedule storage schedule = vestingSchedules[msg.sender];
         require(!schedule.revoked, "Vesting schedule revoked");
-        
+
         uint256 vestedAmount = _calculateVestedAmount(msg.sender);
         uint256 releasableAmount = vestedAmount.sub(schedule.releasedAmount);
-        
+
         require(releasableAmount > 0, "No tokens to release");
-        
+
         schedule.releasedAmount = schedule.releasedAmount.add(releasableAmount);
         _transfer(address(this), msg.sender, releasableAmount);
-        
+
         emit TokensVested(msg.sender, releasableAmount);
     }
 
@@ -161,28 +161,28 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
      */
     function revokeVesting(address beneficiary) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(isVestingBeneficiary[beneficiary], "No vesting schedule found");
-        
+
         VestingSchedule storage schedule = vestingSchedules[beneficiary];
         require(schedule.revocable, "Vesting schedule not revocable");
         require(!schedule.revoked, "Vesting already revoked");
-        
+
         uint256 vestedAmount = _calculateVestedAmount(beneficiary);
         uint256 releasableAmount = vestedAmount.sub(schedule.releasedAmount);
         uint256 unvestedAmount = schedule.totalAmount.sub(vestedAmount);
-        
+
         schedule.revoked = true;
-        
+
         // Release any vested tokens
         if (releasableAmount > 0) {
             schedule.releasedAmount = schedule.releasedAmount.add(releasableAmount);
             _transfer(address(this), beneficiary, releasableAmount);
         }
-        
+
         // Return unvested tokens to admin
         if (unvestedAmount > 0) {
             _transfer(address(this), msg.sender, unvestedAmount);
         }
-        
+
         emit VestingRevoked(beneficiary, unvestedAmount);
     }
 
@@ -193,15 +193,15 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         require(amount > 0, "Amount must be positive");
         require(lockPeriod >= minStakingPeriod, "Lock period too short");
         require(balanceOf(msg.sender) >= amount, "Insufficient balance");
-        
+
         // If user already has stake, claim rewards first
         if (stakes[msg.sender].amount > 0) {
             _claimStakingRewards(msg.sender);
         }
-        
+
         // Transfer tokens to contract
         _transfer(msg.sender, address(this), amount);
-        
+
         // Update stake info
         stakes[msg.sender] = StakeInfo({
             amount: stakes[msg.sender].amount.add(amount),
@@ -209,9 +209,9 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
             lockPeriod: lockPeriod,
             rewardDebt: 0
         });
-        
+
         totalStaked = totalStaked.add(amount);
-        
+
         emit TokensStaked(msg.sender, amount, lockPeriod);
     }
 
@@ -222,17 +222,17 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         StakeInfo storage stake = stakes[msg.sender];
         require(stake.amount >= amount, "Insufficient staked amount");
         require(block.timestamp >= stake.stakingTime.add(stake.lockPeriod), "Tokens still locked");
-        
+
         // Calculate and claim rewards
         uint256 rewards = _claimStakingRewards(msg.sender);
-        
+
         // Update stake
         stake.amount = stake.amount.sub(amount);
         totalStaked = totalStaked.sub(amount);
-        
+
         // Transfer tokens back to user
         _transfer(address(this), msg.sender, amount);
-        
+
         emit TokensUnstaked(msg.sender, amount, rewards);
     }
 
@@ -265,7 +265,7 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
     function burnFrom(address account, uint256 amount) external onlyRole(BURNER_ROLE) {
         uint256 currentAllowance = allowance(account, msg.sender);
         require(currentAllowance >= amount, "Burn amount exceeds allowance");
-        
+
         _approve(account, msg.sender, currentAllowance.sub(amount));
         _burn(account, amount);
     }
@@ -297,7 +297,7 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         votingDelay = _votingDelay;
         votingPeriod = _votingPeriod;
         quorumPercentage = _quorumPercentage;
-        
+
         emit GovernanceParametersUpdated(_proposalThreshold, _votingDelay, _votingPeriod, _quorumPercentage);
     }
 
@@ -308,29 +308,29 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         require(balanceOf(msg.sender) >= amount, "Insufficient balance");
         _transfer(msg.sender, treasury, amount);
         treasuryReserve = treasuryReserve.add(amount);
-        
+
         emit TreasuryFunded(amount);
     }
 
     /**
      * @dev Distribute community rewards (admin only)
      */
-    function distributeCommunityRewards(address[] calldata recipients, uint256[] calldata amounts) 
+    function distributeCommunityRewards(address[] calldata recipients, uint256[] calldata amounts)
         external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(recipients.length == amounts.length, "Array length mismatch");
-        
+
         uint256 totalAmount = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
             totalAmount = totalAmount.add(amounts[i]);
         }
-        
+
         require(communityRewards >= totalAmount, "Insufficient community rewards");
-        
+
         for (uint256 i = 0; i < recipients.length; i++) {
             _transfer(address(this), recipients[i], amounts[i]);
             emit RewardsDistributed(recipients[i], amounts[i]);
         }
-        
+
         communityRewards = communityRewards.sub(totalAmount);
     }
 
@@ -360,15 +360,15 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
      */
     function _calculateVestedAmount(address beneficiary) internal view returns (uint256) {
         VestingSchedule storage schedule = vestingSchedules[beneficiary];
-        
+
         if (schedule.revoked || block.timestamp < schedule.startTime.add(schedule.cliffDuration)) {
             return 0;
         }
-        
+
         if (block.timestamp >= schedule.startTime.add(schedule.vestingDuration)) {
             return schedule.totalAmount;
         }
-        
+
         uint256 timeVested = block.timestamp.sub(schedule.startTime);
         return schedule.totalAmount.mul(timeVested).div(schedule.vestingDuration);
     }
@@ -378,15 +378,15 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
      */
     function _calculateStakingRewards(address account) internal view returns (uint256) {
         StakeInfo storage stake = stakes[account];
-        
+
         if (stake.amount == 0) {
             return 0;
         }
-        
+
         uint256 stakingDuration = block.timestamp.sub(stake.stakingTime);
         uint256 annualReward = stake.amount.mul(stakingRewardRate).div(10000);
         uint256 reward = annualReward.mul(stakingDuration).div(365 days);
-        
+
         return reward.sub(stake.rewardDebt);
     }
 
@@ -395,10 +395,10 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
      */
     function _claimStakingRewards(address account) internal returns (uint256) {
         uint256 rewards = _calculateStakingRewards(account);
-        
+
         if (rewards > 0) {
             stakes[account].rewardDebt = stakes[account].rewardDebt.add(rewards);
-            
+
             // Mint rewards from community pool
             if (communityRewards >= rewards) {
                 _transfer(address(this), account, rewards);
@@ -409,10 +409,10 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
                     _mint(account, rewards);
                 }
             }
-            
+
             emit RewardsDistributed(account, rewards);
         }
-        
+
         return rewards;
     }
 
@@ -457,4 +457,3 @@ contract GovernanceToken is ERC20, ERC20Votes, ERC20Permit, AccessControl, Pausa
         super._burn(account, amount);
     }
 }
-

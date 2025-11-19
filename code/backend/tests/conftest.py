@@ -3,6 +3,7 @@ Pytest configuration and shared fixtures for BlockScore Backend tests
 """
 
 import os
+
 # Import application components
 import sys
 import tempfile

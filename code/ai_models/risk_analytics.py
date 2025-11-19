@@ -17,8 +17,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import pymc3 as pm
+
 # Financial libraries
 import quantlib as ql
+
 # Statistical and ML libraries
 import scipy.stats as stats
 import seaborn as sns
@@ -27,6 +29,7 @@ import yfinance as yf
 from arch import arch_model
 from plotly.subplots import make_subplots
 from scipy.optimize import minimize
+
 # Risk modeling
 from scipy.stats import genextreme, norm, t
 from sklearn.cluster import KMeans

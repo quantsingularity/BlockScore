@@ -24,16 +24,16 @@ contract CreditScore {
 
     // Mapping from user address to their credit records
     mapping(address => CreditRecord[]) private creditHistory;
-    
+
     // Mapping from user address to their credit profile
     mapping(address => CreditProfile) private creditProfiles;
-    
+
     // Mapping for authorized credit providers
     mapping(address => bool) private authorizedProviders;
-    
+
     // Contract owner
     address private owner;
-    
+
     // Events
     event NewCreditRecord(address indexed user, address indexed provider, uint256 amount, string recordType);
     event RecordRepaid(address indexed user, uint256 recordIndex, uint256 timestamp);
@@ -92,13 +92,13 @@ contract CreditScore {
      * @param scoreImpact Impact on credit score (-10 to 10)
      */
     function addCreditRecord(
-        address user, 
-        uint256 amount, 
+        address user,
+        uint256 amount,
         string calldata recordType,
         int8 scoreImpact
     ) external onlyAuthorizedProvider {
         require(scoreImpact >= -10 && scoreImpact <= 10, "Score impact must be between -10 and 10");
-        
+
         creditHistory[user].push(CreditRecord(
             block.timestamp,
             amount,
@@ -108,15 +108,15 @@ contract CreditScore {
             recordType,
             scoreImpact
         ));
-        
+
         // Initialize credit profile if it doesn't exist
         if (!creditProfiles[user].exists) {
             creditProfiles[user] = CreditProfile(500, true, block.timestamp); // Default score of 500
         }
-        
+
         // Update credit score based on the impact
         updateCreditScore(user, scoreImpact);
-        
+
         emit NewCreditRecord(user, msg.sender, amount, recordType);
     }
 
@@ -128,13 +128,13 @@ contract CreditScore {
     function markRepaid(address user, uint256 recordIndex) external onlyAuthorizedProvider {
         require(recordIndex < creditHistory[user].length, "Record index out of bounds");
         require(!creditHistory[user][recordIndex].repaid, "Record already marked as repaid");
-        
+
         creditHistory[user][recordIndex].repaid = true;
         creditHistory[user][recordIndex].repaymentTimestamp = block.timestamp;
-        
+
         // Positive impact on credit score when repaid
         updateCreditScore(user, 5);
-        
+
         emit RecordRepaid(user, recordIndex, block.timestamp);
     }
 
@@ -145,14 +145,14 @@ contract CreditScore {
      */
     function updateCreditScore(address user, int8 impact) private {
         int256 newScore = int256(creditProfiles[user].score) + impact;
-        
+
         // Ensure score stays within bounds (300-850)
         if (newScore < 300) newScore = 300;
         if (newScore > 850) newScore = 850;
-        
+
         creditProfiles[user].score = uint256(newScore);
         creditProfiles[user].lastUpdated = block.timestamp;
-        
+
         emit ScoreUpdated(user, uint256(newScore));
     }
 

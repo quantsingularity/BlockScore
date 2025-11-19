@@ -9,4 +9,3 @@ module.exports = {
     'axios': 'axios/dist/node/axios.cjs' // Force Jest to use the CJS version of axios
   }
 };
-

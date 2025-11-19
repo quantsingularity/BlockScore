@@ -13,5 +13,3 @@ variable "aws_region" {
   description = "The AWS region where resources are deployed."
   type        = string
 }
-
-

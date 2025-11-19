@@ -15,7 +15,7 @@ router.get('/:loanId', async (req, res) => {
   try {
     const { loanId } = req.params;
     const loan = await contractService.getLoanDetails(parseInt(loanId));
-    
+
     res.json({
       success: true,
       data: loan
@@ -38,11 +38,11 @@ router.get('/borrower/:address', async (req, res) => {
   try {
     const { address } = req.params;
     const loanIds = await contractService.getBorrowerLoans(address);
-    
+
     // Get details for each loan
     const loanPromises = loanIds.map(id => contractService.getLoanDetails(id));
     const loans = await Promise.all(loanPromises);
-    
+
     res.json({
       success: true,
       data: {
@@ -67,21 +67,21 @@ router.get('/borrower/:address', async (req, res) => {
 router.post('/create', verifyToken, async (req, res) => {
   try {
     const { amount, interestRate, durationDays, privateKey } = req.body;
-    
+
     if (!amount || !interestRate || !durationDays || !privateKey) {
       return res.status(400).json({
         success: false,
         message: 'Missing required fields'
       });
     }
-    
+
     const result = await contractService.createLoan(
       amount,
       interestRate,
       durationDays,
       privateKey
     );
-    
+
     res.json({
       success: true,
       data: {
@@ -107,19 +107,19 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
   try {
     const { loanId } = req.params;
     const { privateKey } = req.body;
-    
+
     if (!privateKey) {
       return res.status(400).json({
         success: false,
         message: 'Private key is required'
       });
     }
-    
+
     const receipt = await contractService.approveLoan(
       parseInt(loanId),
       privateKey
     );
-    
+
     res.json({
       success: true,
       data: {
@@ -144,19 +144,19 @@ router.post('/repay/:loanId', verifyToken, async (req, res) => {
   try {
     const { loanId } = req.params;
     const { privateKey } = req.body;
-    
+
     if (!privateKey) {
       return res.status(400).json({
         success: false,
         message: 'Private key is required'
       });
     }
-    
+
     const receipt = await contractService.repayLoan(
       parseInt(loanId),
       privateKey
     );
-    
+
     res.json({
       success: true,
       data: {

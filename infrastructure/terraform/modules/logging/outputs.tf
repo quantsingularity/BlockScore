@@ -13,5 +13,3 @@ output "cloudtrail_arn" {
   description = "The ARN of the CloudTrail trail."
   value       = aws_cloudtrail.main.arn
 }
-
-

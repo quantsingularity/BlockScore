@@ -1,10 +1,10 @@
 #!/bin/bash
 # ========================================================================
 # BlockScore Component Restart Automation Script
-# 
+#
 # This script automates the process of selectively restarting only the
 # components that have been modified during development.
-# 
+#
 # Features:
 # - Selective component restarting
 # - Change detection
@@ -94,7 +94,7 @@ fi
 # Function to check if a component exists
 component_exists() {
   local component=$1
-  
+
   case $component in
     blockchain)
       [ -d "${PROJECT_DIR}/code/blockchain" ]
@@ -115,21 +115,21 @@ component_exists() {
       return 1
       ;;
   esac
-  
+
   return $?
 }
 
 # Function to check if a component has been modified
 component_modified() {
   local component=$1
-  
+
   if [ "$FORCE_RESTART" = true ]; then
     return 0
   fi
-  
+
   local component_dir=""
   local last_check_file="${CONFIG_DIR}/last_check_${component}.txt"
-  
+
   case $component in
     blockchain)
       component_dir="${PROJECT_DIR}/code/blockchain"
@@ -150,25 +150,25 @@ component_modified() {
       return 1
       ;;
   esac
-  
+
   # Create config directory if it doesn't exist
   mkdir -p "${CONFIG_DIR}"
-  
+
   # Get the latest modification time
   local latest_mod_time=$(find "$component_dir" -type f -not -path "*/node_modules/*" -not -path "*/venv/*" -not -path "*/.git/*" -printf "%T@\n" | sort -nr | head -1)
-  
+
   # If last check file doesn't exist, create it and return modified
   if [ ! -f "$last_check_file" ]; then
     echo "$latest_mod_time" > "$last_check_file"
     return 0
   fi
-  
+
   # Get the last check time
   local last_check_time=$(cat "$last_check_file")
-  
+
   # Update the last check time
   echo "$latest_mod_time" > "$last_check_file"
-  
+
   # Compare times
   if (( $(echo "$latest_mod_time > $last_check_time" | bc -l) )); then
     return 0
@@ -180,22 +180,22 @@ component_modified() {
 # Function to get process ID from process file
 get_process_id() {
   local component=$1
-  
+
   if [ ! -f "$PROCESS_FILE" ]; then
     return 1
   fi
-  
+
   local pid=$(jq -r ".$component // \"\"" "$PROCESS_FILE")
-  
+
   if [ -z "$pid" ] || [ "$pid" = "null" ]; then
     return 1
   fi
-  
+
   # Check if process is still running
   if ! ps -p "$pid" > /dev/null; then
     return 1
   fi
-  
+
   echo "$pid"
   return 0
 }
@@ -204,13 +204,13 @@ get_process_id() {
 save_process_id() {
   local component=$1
   local pid=$2
-  
+
   mkdir -p "${CONFIG_DIR}"
-  
+
   if [ ! -f "$PROCESS_FILE" ]; then
     echo "{}" > "$PROCESS_FILE"
   fi
-  
+
   local json=$(cat "$PROCESS_FILE")
   json=$(echo "$json" | jq ".$component = \"$pid\"")
   echo "$json" > "$PROCESS_FILE"
@@ -219,15 +219,15 @@ save_process_id() {
 # Function to stop a component
 stop_component() {
   local component=$1
-  
+
   echo -e "${BLUE}Stopping $component...${NC}"
-  
+
   local pid=$(get_process_id "$component")
-  
+
   if [ -n "$pid" ]; then
     echo -e "${YELLOW}Stopping process $pid...${NC}"
     kill -15 "$pid" 2>/dev/null || true
-    
+
     # Wait for process to stop
     for i in {1..10}; do
       if ! ps -p "$pid" > /dev/null; then
@@ -235,18 +235,18 @@ stop_component() {
       fi
       sleep 1
     done
-    
+
     # Force kill if still running
     if ps -p "$pid" > /dev/null; then
       echo -e "${RED}Process $pid still running, force killing...${NC}"
       kill -9 "$pid" 2>/dev/null || true
     fi
-    
+
     # Update process file
     local json=$(cat "$PROCESS_FILE")
     json=$(echo "$json" | jq "del(.$component)")
     echo "$json" > "$PROCESS_FILE"
-    
+
     echo -e "${GREEN}$component stopped${NC}"
   else
     echo -e "${YELLOW}No running process found for $component${NC}"
@@ -256,9 +256,9 @@ stop_component() {
 # Function to start a component
 start_component() {
   local component=$1
-  
+
   echo -e "${BLUE}Starting $component...${NC}"
-  
+
   case $component in
     blockchain)
       if [ -d "${PROJECT_DIR}/code/blockchain" ]; then
@@ -359,7 +359,7 @@ start_component() {
       fi
       ;;
   esac
-  
+
   cd "${PROJECT_DIR}"
   return 0
 }
@@ -367,12 +367,12 @@ start_component() {
 # Function to restart a component
 restart_component() {
   local component=$1
-  
+
   if ! component_exists "$component"; then
     echo -e "${RED}Component $component does not exist${NC}"
     return 1
   fi
-  
+
   if component_modified "$component" || [ "$FORCE_RESTART" = true ]; then
     echo -e "${BLUE}Changes detected in $component, restarting...${NC}"
     stop_component "$component"
@@ -386,7 +386,7 @@ restart_component() {
 watch_for_changes() {
   echo -e "${BLUE}Watching for changes in: ${COMPONENTS[*]}${NC}"
   echo -e "${BLUE}Press Ctrl+C to stop watching${NC}"
-  
+
   while true; do
     for component in "${COMPONENTS[@]}"; do
       if component_exists "$component" && component_modified "$component"; then
@@ -395,7 +395,7 @@ watch_for_changes() {
         start_component "$component"
       fi
     done
-    
+
     sleep 2
   done
 }
@@ -403,27 +403,27 @@ watch_for_changes() {
 # Function to create a status report
 create_status_report() {
   local report="${CONFIG_DIR}/component_status.json"
-  
+
   mkdir -p "${CONFIG_DIR}"
-  
+
   echo "{" > "$report"
-  
+
   local first=true
-  
+
   for component in blockchain backend frontend mobile ai; do
     local pid=$(get_process_id "$component")
     local status="stopped"
-    
+
     if [ -n "$pid" ]; then
       status="running"
     fi
-    
+
     if [ "$first" = true ]; then
       first=false
     else
       echo "," >> "$report"
     fi
-    
+
     echo "  \"$component\": {" >> "$report"
     echo "    \"status\": \"$status\"," >> "$report"
     if [ -n "$pid" ]; then
@@ -431,20 +431,20 @@ create_status_report() {
     else
       echo "    \"pid\": null," >> "$report"
     fi
-    
+
     local log_file="${CONFIG_DIR}/${component}.log"
     if [ -f "$log_file" ]; then
       echo "    \"log\": \"$log_file\"" >> "$report"
     else
       echo "    \"log\": null" >> "$report"
     fi
-    
+
     echo -n "  }" >> "$report"
   done
-  
+
   echo "" >> "$report"
   echo "}" >> "$report"
-  
+
   echo -e "${GREEN}Status report created: $report${NC}"
 }
 
@@ -452,18 +452,18 @@ create_status_report() {
 main() {
   # Create config directory if it doesn't exist
   mkdir -p "${CONFIG_DIR}"
-  
+
   # Create process file if it doesn't exist
   if [ ! -f "$PROCESS_FILE" ]; then
     echo "{}" > "$PROCESS_FILE"
   fi
-  
+
   if [ "$WATCH_MODE" = true ]; then
     # Initial restart of all components
     for component in "${COMPONENTS[@]}"; do
       restart_component "$component"
     done
-    
+
     # Watch for changes
     watch_for_changes
   else
@@ -471,10 +471,10 @@ main() {
     for component in "${COMPONENTS[@]}"; do
       restart_component "$component"
     done
-    
+
     # Create status report
     create_status_report
-    
+
     echo -e "${GREEN}All components processed successfully${NC}"
     echo -e "${BLUE}================================================================${NC}"
     echo -e "${BLUE}Component logs are available in ${CONFIG_DIR}/${NC}"

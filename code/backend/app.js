@@ -51,10 +51,10 @@ const initServices = async () => {
   try {
     // Initialize authentication service
     authService.init();
-    
+
     // Initialize contract service
     await contractService.init();
-    
+
     console.log('Services initialized successfully');
   } catch (error) {
     console.error('Failed to initialize services:', error);

@@ -102,7 +102,7 @@ class DatabaseOptimizer:
                 # Get table size
                 size_query = text(
                     """
-                    SELECT 
+                    SELECT
                         pg_size_pretty(pg_total_relation_size(:table_name)) as total_size,
                         pg_size_pretty(pg_relation_size(:table_name)) as table_size,
                         pg_size_pretty(pg_total_relation_size(:table_name) - pg_relation_size(:table_name)) as index_size
@@ -120,7 +120,7 @@ class DatabaseOptimizer:
                 # Get column statistics
                 stats_query = text(
                     """
-                    SELECT 
+                    SELECT
                         schemaname,
                         tablename,
                         attname,
@@ -128,7 +128,7 @@ class DatabaseOptimizer:
                         most_common_vals,
                         most_common_freqs,
                         histogram_bounds
-                    FROM pg_stats 
+                    FROM pg_stats
                     WHERE tablename = :table_name
                 """
                 )
@@ -158,20 +158,20 @@ class DatabaseOptimizer:
                 # Get index usage statistics
                 index_query = text(
                     """
-                    SELECT 
+                    SELECT
                         schemaname,
                         tablename,
                         indexname,
                         idx_tup_read,
                         idx_tup_fetch,
                         idx_scan,
-                        CASE 
+                        CASE
                             WHEN idx_scan = 0 THEN 'Never used'
                             WHEN idx_scan < 100 THEN 'Rarely used'
                             WHEN idx_scan < 1000 THEN 'Moderately used'
                             ELSE 'Frequently used'
                         END as usage_level
-                    FROM pg_stat_user_indexes 
+                    FROM pg_stat_user_indexes
                     WHERE tablename = :table_name
                     ORDER BY idx_scan DESC
                 """
@@ -184,12 +184,12 @@ class DatabaseOptimizer:
                 # Get unused indexes
                 unused_query = text(
                     """
-                    SELECT 
+                    SELECT
                         schemaname,
                         tablename,
                         indexname,
                         pg_size_pretty(pg_relation_size(indexrelid)) as index_size
-                    FROM pg_stat_user_indexes 
+                    FROM pg_stat_user_indexes
                     WHERE tablename = :table_name AND idx_scan = 0
                 """
                 )
@@ -339,16 +339,16 @@ class DatabaseOptimizer:
                 # Check for bloat and suggest VACUUM if needed
                 bloat_query = text(
                     """
-                    SELECT 
+                    SELECT
                         schemaname,
                         tablename,
                         n_dead_tup,
                         n_live_tup,
-                        CASE 
+                        CASE
                             WHEN n_live_tup > 0 THEN (n_dead_tup::float / n_live_tup::float) * 100
                             ELSE 0
                         END as dead_tuple_percent
-                    FROM pg_stat_user_tables 
+                    FROM pg_stat_user_tables
                     WHERE tablename = :table_name
                 """
                 )
@@ -408,7 +408,7 @@ class DatabaseOptimizer:
                 # Get cache hit ratio
                 cache_query = text(
                     """
-                    SELECT 
+                    SELECT
                         round(
                             (sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read))) * 100, 2
                         ) as cache_hit_ratio
@@ -425,8 +425,8 @@ class DatabaseOptimizer:
                 # Get lock information
                 lock_query = text(
                     """
-                    SELECT count(*) 
-                    FROM pg_locks 
+                    SELECT count(*)
+                    FROM pg_locks
                     WHERE NOT granted
                 """
                 )
@@ -445,11 +445,11 @@ class DatabaseOptimizer:
                 # Get connection statistics
                 conn_query = text(
                     """
-                    SELECT 
+                    SELECT
                         state,
                         count(*) as count,
                         avg(extract(epoch from (now() - query_start))) as avg_duration
-                    FROM pg_stat_activity 
+                    FROM pg_stat_activity
                     WHERE datname = current_database()
                     GROUP BY state
                 """
@@ -460,7 +460,7 @@ class DatabaseOptimizer:
                 # Get long-running queries
                 long_query = text(
                     """
-                    SELECT 
+                    SELECT
                         pid,
                         usename,
                         application_name,
@@ -468,7 +468,7 @@ class DatabaseOptimizer:
                         query_start,
                         extract(epoch from (now() - query_start)) as duration,
                         left(query, 100) as query_preview
-                    FROM pg_stat_activity 
+                    FROM pg_stat_activity
                     WHERE datname = current_database()
                         AND state = 'active'
                         AND query_start < now() - interval '30 seconds'

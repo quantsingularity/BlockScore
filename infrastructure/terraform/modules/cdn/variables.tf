@@ -45,4 +45,3 @@ variable "web_acl_arn" {
   description = "The ARN of the WAF Web ACL to associate with the CloudFront distribution."
   type        = string
 }
-

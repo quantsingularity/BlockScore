@@ -14,8 +14,14 @@ import joblib
 import numpy as np
 import pandas as pd
 from models.blockchain import BlockchainTransaction, TransactionType
-from models.credit import (CreditEventType, CreditFactor, CreditFactorType,
-                           CreditHistory, CreditScore, CreditScoreStatus)
+from models.credit import (
+    CreditEventType,
+    CreditFactor,
+    CreditFactorType,
+    CreditHistory,
+    CreditScore,
+    CreditScoreStatus,
+)
 from models.user import User, UserProfile
 
 

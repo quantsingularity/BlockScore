@@ -115,4 +115,4 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 2. **Potential Upgrades**:
    - Layer 2 scaling solutions
    - Cross-chain interoperability
-   - Advanced privacy features 
+   - Advanced privacy features

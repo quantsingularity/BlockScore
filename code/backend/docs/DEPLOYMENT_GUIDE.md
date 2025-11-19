@@ -351,14 +351,14 @@ server {
     # API Endpoints
     location /api/ {
         limit_req zone=api burst=20 nodelay;
-        
+
         proxy_pass http://blockscore_backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_redirect off;
-        
+
         # Timeouts
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
@@ -368,7 +368,7 @@ server {
     # Authentication Endpoints (stricter rate limiting)
     location /api/auth/ {
         limit_req zone=auth burst=10 nodelay;
-        
+
         proxy_pass http://blockscore_backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -999,4 +999,3 @@ curl -f https://api.blockscore.com/api/health
 ```
 
 This deployment guide provides a comprehensive foundation for running BlockScore in production. Adjust configurations based on your specific infrastructure requirements and security policies.
-

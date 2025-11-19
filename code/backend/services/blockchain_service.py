@@ -12,9 +12,14 @@ from decimal import Decimal
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-from models.blockchain import (BlockchainTransaction, ContractStatus,
-                               ContractType, SmartContract, TransactionStatus,
-                               TransactionType)
+from models.blockchain import (
+    BlockchainTransaction,
+    ContractStatus,
+    ContractType,
+    SmartContract,
+    TransactionStatus,
+    TransactionType,
+)
 from models.credit import CreditScore
 from models.user import User
 from web3 import Web3

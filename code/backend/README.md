@@ -512,15 +512,15 @@ compress.init_app(app)
 def get_loan_applications():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)
-    
+
     applications = LoanApplication.query.filter_by(
         user_id=current_user.id
     ).paginate(
-        page=page, 
-        per_page=per_page, 
+        page=page,
+        per_page=per_page,
         error_out=False
     )
-    
+
     return jsonify({
         'applications': [app.to_dict() for app in applications.items],
         'pagination': {
@@ -582,13 +582,13 @@ class EncryptionService:
         if key is None:
             key = os.getenv('ENCRYPTION_KEY')
         self.cipher_suite = Fernet(key.encode() if isinstance(key, str) else key)
-    
+
     def encrypt(self, data):
         if isinstance(data, str):
             data = data.encode()
         encrypted_data = self.cipher_suite.encrypt(data)
         return base64.urlsafe_b64encode(encrypted_data).decode()
-    
+
     def decrypt(self, encrypted_data):
         encrypted_data = base64.urlsafe_b64decode(encrypted_data.encode())
         decrypted_data = self.cipher_suite.decrypt(encrypted_data)
@@ -635,7 +635,7 @@ def detailed_health_check():
         'version': app.config.get('VERSION', '1.0.0'),
         'checks': {}
     }
-    
+
     # Database check
     try:
         db.session.execute('SELECT 1')
@@ -643,7 +643,7 @@ def detailed_health_check():
     except Exception as e:
         health_status['checks']['database'] = {'status': 'unhealthy', 'error': str(e)}
         health_status['status'] = 'unhealthy'
-    
+
     # Redis check
     try:
         cache.get('health_check')
@@ -651,7 +651,7 @@ def detailed_health_check():
     except Exception as e:
         health_status['checks']['redis'] = {'status': 'unhealthy', 'error': str(e)}
         health_status['status'] = 'unhealthy'
-    
+
     # Celery check
     try:
         from celery import current_app
@@ -665,7 +665,7 @@ def detailed_health_check():
     except Exception as e:
         health_status['checks']['celery'] = {'status': 'unhealthy', 'error': str(e)}
         health_status['status'] = 'unhealthy'
-    
+
     return jsonify(health_status)
 ```
 
@@ -690,10 +690,10 @@ def calculate_credit_score(self, user_id):
             user = User.query.get(user_id)
             if not user:
                 raise ValueError(f"User {user_id} not found")
-            
+
             # Perform calculation
             score = perform_credit_calculation(user)
-            
+
             # Save to database
             credit_score = CreditScore(
                 user_id=user_id,
@@ -702,9 +702,9 @@ def calculate_credit_score(self, user_id):
             )
             db.session.add(credit_score)
             db.session.commit()
-            
+
             return {'user_id': user_id, 'score': score}
-    
+
     except Exception as exc:
         self.retry(countdown=60, exc=exc)
 
@@ -774,7 +774,7 @@ def auth_headers(app):
         user.set_password('password123')
         db.session.add(user)
         db.session.commit()
-        
+
         token = user.generate_auth_token()
         return {'Authorization': f'Bearer {token}'}
 
@@ -794,25 +794,25 @@ def test_complete_loan_application_flow(client, auth_headers):
         'purpose': 'home_improvement',
         'term_months': 60
     }
-    
+
     response = client.post('/api/loans/apply',
                           json=loan_data,
                           headers=auth_headers)
     assert response.status_code == 201
     application_id = response.json['application_id']
-    
+
     # Step 2: Check application status
     response = client.get(f'/api/loans/applications/{application_id}',
                          headers=auth_headers)
     assert response.status_code == 200
     assert response.json['status'] == 'submitted'
-    
+
     # Step 3: Simulate approval process
     # This would typically be done by an admin or automated process
     response = client.put(f'/api/admin/loans/{application_id}/approve',
                          headers=auth_headers)
     assert response.status_code == 200
-    
+
     # Step 4: Verify final status
     response = client.get(f'/api/loans/applications/{application_id}',
                          headers=auth_headers)
@@ -830,18 +830,18 @@ def test_api_response_time(client, auth_headers):
     start_time = time.time()
     response = client.get('/api/user/profile', headers=auth_headers)
     end_time = time.time()
-    
+
     assert response.status_code == 200
     assert (end_time - start_time) < 0.5  # Should respond within 500ms
 
 def test_concurrent_requests(client, auth_headers):
     def make_request():
         return client.get('/api/user/profile', headers=auth_headers)
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(make_request) for _ in range(50)]
         results = [future.result() for future in concurrent.futures.as_completed(futures)]
-    
+
     # All requests should succeed
     assert all(result.status_code == 200 for result in results)
 ```
@@ -864,16 +864,16 @@ class AuditService:
         )
         db.session.add(audit_log)
         db.session.commit()
-    
+
     @staticmethod
     def get_user_audit_trail(user_id, start_date=None, end_date=None):
         query = AuditLog.query.filter_by(user_id=user_id)
-        
+
         if start_date:
             query = query.filter(AuditLog.timestamp >= start_date)
         if end_date:
             query = query.filter(AuditLog.timestamp <= end_date)
-        
+
         return query.order_by(AuditLog.timestamp.desc()).all()
 ```
 
@@ -885,7 +885,7 @@ class ComplianceReporter:
         kyc_verifications = KYCVerification.query.filter(
             KYCVerification.created_at.between(start_date, end_date)
         ).all()
-        
+
         report = {
             'period': {'start': start_date, 'end': end_date},
             'total_verifications': len(kyc_verifications),
@@ -894,19 +894,19 @@ class ComplianceReporter:
             'pending': len([v for v in kyc_verifications if v.status == 'pending']),
             'approval_rate': 0
         }
-        
+
         if report['total_verifications'] > 0:
             report['approval_rate'] = report['approved'] / report['total_verifications']
-        
+
         return report
-    
+
     def generate_transaction_monitoring_report(self, start_date, end_date):
         transactions = Transaction.query.filter(
             Transaction.created_at.between(start_date, end_date)
         ).all()
-        
+
         suspicious_transactions = [t for t in transactions if t.risk_score > 0.7]
-        
+
         return {
             'period': {'start': start_date, 'end': end_date},
             'total_transactions': len(transactions),
@@ -1085,4 +1085,3 @@ spec:
 ```
 
 This comprehensive documentation provides everything needed to understand, deploy, and maintain the BlockScore backend system in a production environment.
-

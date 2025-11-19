@@ -27,5 +27,3 @@ output "ec2_instance_profile_arn" {
   description = "The ARN of the EC2 instance profile."
   value       = aws_iam_instance_profile.ec2_instance_profile.arn
 }
-
-

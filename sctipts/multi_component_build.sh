@@ -1,10 +1,10 @@
 #!/bin/bash
 # ========================================================================
 # BlockScore Multi-Component Build Orchestration Script
-# 
+#
 # This script automates the build process for all BlockScore components
 # in the correct order with proper dependency management.
-# 
+#
 # Features:
 # - Parallel or sequential build options
 # - Selective component building
@@ -101,9 +101,9 @@ log_message() {
   local level=$1
   local message=$2
   local timestamp=$(date "+%Y-%m-%d %H:%M:%S")
-  
+
   echo "[$timestamp] [$level] $message" >> "$BUILD_LOG"
-  
+
   case $level in
     INFO)
       echo -e "${BLUE}[$level] $message${NC}"
@@ -126,7 +126,7 @@ log_message() {
 # Function to check if a component exists
 component_exists() {
   local component=$1
-  
+
   case $component in
     shared)
       [ -d "${PROJECT_DIR}/code/shared" ]
@@ -150,16 +150,16 @@ component_exists() {
       return 1
       ;;
   esac
-  
+
   return $?
 }
 
 # Function to clean a component
 clean_component() {
   local component=$1
-  
+
   log_message "INFO" "Cleaning component: $component"
-  
+
   case $component in
     shared)
       if [ -d "${PROJECT_DIR}/code/shared" ]; then
@@ -204,7 +204,7 @@ clean_component() {
       fi
       ;;
   esac
-  
+
   cd "${PROJECT_DIR}"
   log_message "SUCCESS" "Component cleaned: $component"
 }
@@ -213,14 +213,14 @@ clean_component() {
 build_component() {
   local component=$1
   local build_status=0
-  
+
   log_message "INFO" "Building component: $component"
-  
+
   # Clean component if requested
   if [ "$CLEAN_BUILD" = true ]; then
     clean_component "$component"
   fi
-  
+
   case $component in
     shared)
       if [ -d "${PROJECT_DIR}/code/shared" ]; then
@@ -287,25 +287,25 @@ build_component() {
       fi
       ;;
   esac
-  
+
   cd "${PROJECT_DIR}"
-  
+
   if [ $build_status -eq 0 ]; then
     log_message "SUCCESS" "Component built successfully: $component"
   else
     log_message "ERROR" "Failed to build component: $component"
   fi
-  
+
   return $build_status
 }
 
 # Function to build components in parallel
 build_parallel() {
   log_message "INFO" "Building components in parallel: ${COMPONENTS[*]}"
-  
+
   local pids=()
   local results=()
-  
+
   for component in "${COMPONENTS[@]}"; do
     if component_exists "$component"; then
       # Start build in background
@@ -316,28 +316,28 @@ build_parallel() {
       log_message "WARNING" "Component does not exist: $component"
     fi
   done
-  
+
   # Wait for all builds to complete
   local failed_components=()
-  
+
   for result in "${results[@]}"; do
     local component=${result%%:*}
     local pid=${result#*:}
-    
+
     wait $pid
     local status=$?
-    
+
     if [ $status -ne 0 ]; then
       failed_components+=("$component")
     fi
-    
+
     # Append component build log to main log
     if [ -f "${PROJECT_DIR}/.build_${component}.log" ]; then
       cat "${PROJECT_DIR}/.build_${component}.log" >> "$BUILD_LOG"
       rm "${PROJECT_DIR}/.build_${component}.log"
     fi
   done
-  
+
   if [ ${#failed_components[@]} -eq 0 ]; then
     log_message "SUCCESS" "All components built successfully"
     return 0
@@ -350,14 +350,14 @@ build_parallel() {
 # Function to build components sequentially
 build_sequential() {
   log_message "INFO" "Building components sequentially: ${COMPONENTS[*]}"
-  
+
   local failed_components=()
-  
+
   for component in "${COMPONENTS[@]}"; do
     if component_exists "$component"; then
       build_component "$component"
       local status=$?
-      
+
       if [ $status -ne 0 ]; then
         failed_components+=("$component")
       fi
@@ -365,7 +365,7 @@ build_sequential() {
       log_message "WARNING" "Component does not exist: $component"
     fi
   done
-  
+
   if [ ${#failed_components[@]} -eq 0 ]; then
     log_message "SUCCESS" "All components built successfully"
     return 0
@@ -379,35 +379,35 @@ build_sequential() {
 create_build_marker() {
   local status=$1
   local build_date=$(date "+%Y-%m-%d %H:%M:%S")
-  
+
   mkdir -p "${CONFIG_DIR}"
-  
+
   echo "{
   \"build_completed\": true,
   \"build_status\": \"$status\",
   \"build_date\": \"$build_date\",
   \"components\": [$(printf "\"%s\"," "${COMPONENTS[@]}" | sed 's/,$//')]
 }" > "${CONFIG_DIR}/build_complete.json"
-  
+
   log_message "INFO" "Build completion marker created"
 }
 
 # Main execution
 main() {
   log_message "INFO" "Starting build process"
-  
+
   # Create build directory if it doesn't exist
   mkdir -p "${CONFIG_DIR}"
-  
+
   # Build components
   if [ "$PARALLEL_BUILD" = true ]; then
     build_parallel
   else
     build_sequential
   fi
-  
+
   local build_status=$?
-  
+
   if [ $build_status -eq 0 ]; then
     create_build_marker "success"
     log_message "SUCCESS" "Build completed successfully"
@@ -417,11 +417,11 @@ main() {
     log_message "ERROR" "Build failed"
     echo -e "${RED}Build failed. See $BUILD_LOG for details.${NC}"
   fi
-  
+
   echo -e "${BLUE}================================================================${NC}"
   echo -e "${BLUE}Build Log: $BUILD_LOG${NC}"
   echo -e "${BLUE}================================================================${NC}"
-  
+
   return $build_status
 }
 

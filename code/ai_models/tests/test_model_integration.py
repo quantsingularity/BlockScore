@@ -6,8 +6,12 @@ from unittest.mock import MagicMock, patch
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from model_integration import (batch_score, calculate_score_factors,
-                               predict_score, transform_blockchain_data)
+from model_integration import (
+    batch_score,
+    calculate_score_factors,
+    predict_score,
+    transform_blockchain_data,
+)
 
 
 class TestModelIntegration(unittest.TestCase):

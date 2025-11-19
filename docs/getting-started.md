@@ -72,4 +72,4 @@ See the [troubleshooting guide](./troubleshooting.md) for common issues and solu
 ## Next Steps
 - Review the [Architecture Documentation](./architecture.md)
 - Check out the [API Documentation](./api-docs.md)
-- Learn about [Smart Contract Integration](./smart-contracts.md) 
+- Learn about [Smart Contract Integration](./smart-contracts.md)

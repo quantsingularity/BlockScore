@@ -74,7 +74,7 @@ class ContractService {
         ...tx,
         gas: config.blockchain.gasLimit,
       });
-      
+
       const receipt = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       return receipt;
     } catch (error) {
@@ -117,7 +117,7 @@ class ContractService {
 
     try {
       const records = await this.creditScoreContract.methods.getCreditHistory(userAddress).call();
-      
+
       // Format records for easier consumption
       return records.map(record => ({
         timestamp: parseInt(record.timestamp),
@@ -150,14 +150,14 @@ class ContractService {
 
     try {
       const providerAddress = this.getAccountFromPrivateKey(privateKey);
-      
+
       const tx = this.creditScoreContract.methods.addCreditRecord(
         userAddress,
         amount,
         recordType,
         scoreImpact
       );
-      
+
       const data = tx.encodeABI();
       const txObject = {
         from: providerAddress,
@@ -165,7 +165,7 @@ class ContractService {
         data,
         gas: config.blockchain.gasLimit
       };
-      
+
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
       console.error('Failed to add credit record:', error);
@@ -187,17 +187,17 @@ class ContractService {
 
     try {
       const providerAddress = this.getAccountFromPrivateKey(privateKey);
-      
+
       const tx = this.creditScoreContract.methods.markRepaid(userAddress, recordIndex);
       const data = tx.encodeABI();
-      
+
       const txObject = {
         from: providerAddress,
         to: this.creditScoreContract.options.address,
         data,
         gas: config.blockchain.gasLimit
       };
-      
+
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
       console.error('Failed to mark record as repaid:', error);
@@ -220,26 +220,26 @@ class ContractService {
 
     try {
       const borrowerAddress = this.getAccountFromPrivateKey(privateKey);
-      
+
       const tx = this.loanContract.methods.createLoan(amount, interestRate, durationDays);
       const data = tx.encodeABI();
-      
+
       const txObject = {
         from: borrowerAddress,
         to: this.loanContract.options.address,
         data,
         gas: config.blockchain.gasLimit
       };
-      
+
       const receipt = await this.signAndSendTransaction(txObject, privateKey);
-      
+
       // Extract loan ID from event logs
-      const loanCreatedEvent = receipt.logs.find(log => 
+      const loanCreatedEvent = receipt.logs.find(log =>
         log.topics[0] === this.web3.utils.sha3('LoanCreated(uint256,address,uint256)')
       );
-      
+
       const loanId = parseInt(loanCreatedEvent.topics[1], 16);
-      
+
       return {
         receipt,
         loanId
@@ -263,17 +263,17 @@ class ContractService {
 
     try {
       const ownerAddress = this.getAccountFromPrivateKey(privateKey);
-      
+
       const tx = this.loanContract.methods.approveLoan(loanId);
       const data = tx.encodeABI();
-      
+
       const txObject = {
         from: ownerAddress,
         to: this.loanContract.options.address,
         data,
         gas: config.blockchain.gasLimit
       };
-      
+
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
       console.error('Failed to approve loan:', error);
@@ -294,17 +294,17 @@ class ContractService {
 
     try {
       const borrowerAddress = this.getAccountFromPrivateKey(privateKey);
-      
+
       const tx = this.loanContract.methods.repayLoan(loanId);
       const data = tx.encodeABI();
-      
+
       const txObject = {
         from: borrowerAddress,
         to: this.loanContract.options.address,
         data,
         gas: config.blockchain.gasLimit
       };
-      
+
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
       console.error('Failed to repay loan:', error);
@@ -343,7 +343,7 @@ class ContractService {
 
     try {
       const loan = await this.loanContract.methods.getLoanDetails(loanId).call();
-      
+
       return {
         borrower: loan.borrower,
         amount: parseInt(loan.amount),

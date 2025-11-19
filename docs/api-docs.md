@@ -229,4 +229,4 @@ api = BlockScoreAPI(
 
 # Get user's credit score
 score = api.credit_score.get('user_123')
-``` 
+```

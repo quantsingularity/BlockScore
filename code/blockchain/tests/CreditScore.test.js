@@ -33,7 +33,7 @@ describe('CreditScore Contract', function () {
     it('should allow owner to revoke providers', async function () {
       await creditScore.authorizeProvider(provider1.address);
       expect(await creditScore.isAuthorizedProvider(provider1.address)).to.equal(true);
-      
+
       await creditScore.revokeProvider(provider1.address);
       expect(await creditScore.isAuthorizedProvider(provider1.address)).to.equal(false);
     });
@@ -179,7 +179,7 @@ describe('CreditScore Contract', function () {
       );
 
       const [updatedScore, updatedTimestamp] = await creditScore.getCreditScore(user1.address);
-      
+
       expect(updatedScore).to.be.lt(initialScore);
       expect(updatedTimestamp).to.be.gt(initialTimestamp);
     });

@@ -76,5 +76,3 @@ resource "aws_cloudtrail" "main" {
 }
 
 data "aws_caller_identity" "current" {}
-
-

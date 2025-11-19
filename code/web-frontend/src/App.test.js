@@ -14,4 +14,3 @@ test('renders learn react link', () => {
   // expect(linkElement).toBeInTheDocument();
   expect(true).toBe(true); // Placeholder assertion
 });
-

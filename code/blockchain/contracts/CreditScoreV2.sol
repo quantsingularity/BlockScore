@@ -75,14 +75,14 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     mapping(address => bool) private authorizedProviders;
     mapping(uint256 => DisputeRecord) private disputes;
     mapping(address => uint256) private userNonces;
-    
+
     // Compliance and audit tracking
     mapping(address => string[]) private complianceViolations;
     mapping(bytes32 => bool) private processedTransactions;
-    
+
     uint256 private recordCounter;
     uint256 private disputeCounter;
-    
+
     // Contract configuration
     bool public emergencyMode;
     uint256 public maxDailyRecords = 100;
@@ -99,7 +99,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         int16 scoreImpact,
         bytes32 dataHash
     );
-    
+
     event CreditScoreUpdated(
         address indexed user,
         uint256 oldScore,
@@ -107,37 +107,37 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string reason,
         uint256 timestamp
     );
-    
+
     event RecordRepaid(
         address indexed user,
         uint256 indexed recordId,
         uint256 timestamp,
         int16 scoreBonus
     );
-    
+
     event DisputeRaised(
         uint256 indexed disputeId,
         address indexed user,
         uint256 indexed recordId,
         string reason
     );
-    
+
     event DisputeResolved(
         uint256 indexed disputeId,
         address indexed resolver,
         bool upheld,
         string resolution
     );
-    
+
     event ComplianceViolation(
         address indexed user,
         string violationType,
         string description,
         uint256 timestamp
     );
-    
+
     event EmergencyModeToggled(bool enabled, address indexed admin);
-    
+
     event ProfileFrozen(address indexed user, string reason, address indexed officer);
     event ProfileUnfrozen(address indexed user, address indexed officer);
 
@@ -159,7 +159,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(EMERGENCY_ROLE, msg.sender);
         _grantRole(COMPLIANCE_OFFICER_ROLE, msg.sender);
-        
+
         recordCounter = 1;
         disputeCounter = 1;
     }
@@ -204,7 +204,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         bytes32 dataHash,
         string calldata complianceFlags,
         bytes calldata signature
-    ) external 
+    ) external
         onlyRole(CREDIT_PROVIDER_ROLE)
         nonReentrant
         whenNotPaused
@@ -227,7 +227,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             dataHash,
             userNonces[user]
         ));
-        
+
         bytes32 hash = _hashTypedDataV4(structHash);
         if (hash.recover(signature) != msg.sender) revert InvalidSignature();
 
@@ -249,7 +249,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         // Create new record
         uint256 recordId = recordCounter++;
         uint256 expiryDate = block.timestamp + RECORD_RETENTION_PERIOD;
-        
+
         creditHistory[user].push(CreditRecord({
             id: recordId,
             timestamp: block.timestamp,
@@ -286,14 +286,14 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         address user,
         uint256 recordIndex,
         bytes calldata signature
-    ) external 
+    ) external
         onlyRole(CREDIT_PROVIDER_ROLE)
         nonReentrant
         whenNotPaused
         notFrozen(user)
     {
         if (recordIndex >= creditHistory[user].length) revert RecordNotFound();
-        
+
         CreditRecord storage record = creditHistory[user][recordIndex];
         require(!record.repaid, "Record already repaid");
         require(record.provider == msg.sender, "Only original provider can mark repaid");
@@ -305,7 +305,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             recordIndex,
             userNonces[user]
         ));
-        
+
         bytes32 hash = _hashTypedDataV4(structHash);
         if (hash.recover(signature) != msg.sender) revert InvalidSignature();
 
@@ -315,7 +315,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
 
         // Calculate repayment bonus based on timing
         int16 repaymentBonus = _calculateRepaymentBonus(record);
-        
+
         // Update credit score
         _updateCreditScoreWithDecay(user, repaymentBonus, "repayment");
 
@@ -330,15 +330,15 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string calldata reason
     ) external nonReentrant whenNotPaused {
         if (recordIndex >= creditHistory[msg.sender].length) revert RecordNotFound();
-        
+
         CreditRecord storage record = creditHistory[msg.sender][recordIndex];
         require(!record.disputed, "Record already disputed");
-        
+
         // Check if dispute period is still valid (90 days from record creation)
         if (block.timestamp > record.timestamp + 90 days) revert DisputePeriodExpired();
 
         record.disputed = true;
-        
+
         uint256 disputeId = disputeCounter++;
         disputes[disputeId] = DisputeRecord({
             recordId: record.id,
@@ -385,7 +385,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     ) external onlyRole(COMPLIANCE_OFFICER_ROLE) {
         creditProfiles[user].frozen = true;
         complianceViolations[user].push(reason);
-        
+
         emit ProfileFrozen(user, reason, msg.sender);
         emit ComplianceViolation(user, "PROFILE_FROZEN", reason, block.timestamp);
     }
@@ -460,8 +460,8 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Gets compliance violations for a user (compliance officers only)
      */
-    function getComplianceViolations(address user) external view 
-        onlyRole(COMPLIANCE_OFFICER_ROLE) 
+    function getComplianceViolations(address user) external view
+        onlyRole(COMPLIANCE_OFFICER_ROLE)
         returns (string[] memory) {
         return complianceViolations[user];
     }
@@ -495,11 +495,11 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
 
         // Apply the new impact
         int256 newScore = int256(profile.score) + int256(impact);
-        
+
         // Ensure score stays within bounds
         if (newScore < int256(MIN_CREDIT_SCORE)) newScore = int256(MIN_CREDIT_SCORE);
         if (newScore > int256(MAX_CREDIT_SCORE)) newScore = int256(MAX_CREDIT_SCORE);
-        
+
         profile.score = uint256(newScore);
         profile.lastUpdated = block.timestamp;
 
@@ -514,13 +514,13 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
      */
     function _applyScoreDecay(address user) internal {
         CreditProfile storage profile = creditProfiles[user];
-        
+
         // Gradual improvement over time for users with low scores
         if (profile.score < DEFAULT_CREDIT_SCORE) {
             uint256 improvement = (DEFAULT_CREDIT_SCORE - profile.score) / 10;
             profile.score += improvement;
         }
-        
+
         profile.lastScoreDecay = block.timestamp;
     }
 
@@ -529,7 +529,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
      */
     function _updateRiskLevel(address user) internal {
         CreditProfile storage profile = creditProfiles[user];
-        
+
         if (profile.score >= 750) {
             profile.riskLevel = 1; // Low risk
         } else if (profile.score >= 650) {
@@ -564,13 +564,13 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         // Check frequency of records
         uint256 recentRecords = 0;
         uint256 cutoffTime = block.timestamp - 1 days;
-        
+
         for (uint256 i = 0; i < creditHistory[user].length; i++) {
             if (creditHistory[user][i].timestamp > cutoffTime) {
                 recentRecords++;
             }
         }
-        
+
         if (recentRecords > 10) {
             complianceViolations[user].push("HIGH_FREQUENCY");
             emit ComplianceViolation(user, "HIGH_FREQUENCY", "High frequency of credit records", block.timestamp);
@@ -609,7 +609,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string calldata reason
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(users.length == impacts.length, "Array length mismatch");
-        
+
         for (uint256 i = 0; i < users.length; i++) {
             if (creditProfiles[users[i]].exists && !creditProfiles[users[i]].frozen) {
                 _updateCreditScoreWithDecay(users[i], impacts[i], reason);
@@ -640,4 +640,3 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         return (recordCounter - 1, disputeCounter - 1, 0, paused(), emergencyMode);
     }
 }
-

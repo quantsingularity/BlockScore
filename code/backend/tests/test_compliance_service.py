@@ -5,6 +5,7 @@ Tests for KYC/AML, audit trails, and regulatory compliance features
 
 import json
 import os
+
 # Import the modules to test
 import sys
 from datetime import datetime, timedelta, timezone
@@ -19,8 +20,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.audit import AuditEventType, AuditLog, AuditSeverity
 from models.user import User, UserProfile
-from services.compliance_service import (ComplianceService, ComplianceStatus,
-                                         RiskLevel)
+from services.compliance_service import ComplianceService, ComplianceStatus, RiskLevel
 
 
 class TestComplianceService:

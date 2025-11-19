@@ -99,4 +99,3 @@ systemctl enable fail2ban
 systemctl start fail2ban
 
 echo "User data script completed successfully" >> /var/log/user-data.log
-

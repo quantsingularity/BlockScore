@@ -121,16 +121,16 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     // State variables
     CreditScoreV2 public creditScoreContract;
     IERC20 public lendingToken;
-    
+
     mapping(uint256 => Loan) public loans;
     mapping(uint256 => LoanApplication) public applications;
     mapping(uint256 => ComplianceCheck) public complianceChecks;
     mapping(address => uint256[]) public borrowerLoans;
     mapping(address => uint256) public borrowerNonces;
-    
+
     uint256 public loanCounter;
     uint256 public applicationCounter;
-    
+
     // Contract configuration
     uint256 public maxLoanAmount = 1000000 * 10**18; // 1M tokens
     uint256 public minLoanAmount = 1000 * 10**18;    // 1K tokens
@@ -139,7 +139,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     uint256 public maxDebtToIncomeRatio = 4300;      // 43%
     uint256 public defaultGracePeriod = 30 days;
     uint256 public liquidationThreshold = 90 days;
-    
+
     // Treasury and reserves
     address public treasury;
     uint256 public totalLent;
@@ -154,7 +154,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         uint256 requestedAmount,
         uint256 requestedTerm
     );
-    
+
     event LoanApproved(
         uint256 indexed loanId,
         address indexed borrower,
@@ -162,14 +162,14 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         uint256 interestRate,
         address indexed underwriter
     );
-    
+
     event LoanFunded(
         uint256 indexed loanId,
         address indexed borrower,
         uint256 amount,
         uint256 timestamp
     );
-    
+
     event PaymentMade(
         uint256 indexed loanId,
         address indexed payer,
@@ -178,35 +178,35 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         uint256 interestPortion,
         uint256 timestamp
     );
-    
+
     event LoanDefaulted(
         uint256 indexed loanId,
         address indexed borrower,
         uint256 outstandingAmount,
         uint256 timestamp
     );
-    
+
     event LoanLiquidated(
         uint256 indexed loanId,
         address indexed borrower,
         uint256 recoveredAmount,
         uint256 lossAmount
     );
-    
+
     event ComplianceCheckCompleted(
         uint256 indexed applicationId,
         address indexed officer,
         bool approved,
         string notes
     );
-    
+
     event CollateralDeposited(
         uint256 indexed loanId,
         address indexed borrower,
         uint256 amount,
         address token
     );
-    
+
     event CollateralReleased(
         uint256 indexed loanId,
         address indexed borrower,
@@ -236,11 +236,11 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         creditScoreContract = CreditScoreV2(_creditScoreContract);
         lendingToken = IERC20(_lendingToken);
         treasury = _treasury;
-        
+
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(EMERGENCY_ROLE, msg.sender);
         _grantRole(COMPLIANCE_OFFICER_ROLE, msg.sender);
-        
+
         loanCounter = 1;
         applicationCounter = 1;
     }
@@ -262,7 +262,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         if (requestedAmount < minLoanAmount || requestedAmount > maxLoanAmount) {
             revert LoanAmountOutOfRange();
         }
-        
+
         if (debtToIncomeRatio > maxDebtToIncomeRatio) {
             revert ExcessiveDebtToIncome();
         }
@@ -276,7 +276,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             annualIncome,
             borrowerNonces[msg.sender]
         ));
-        
+
         bytes32 hash = _hashTypedDataV4(structHash);
         if (hash.recover(signature) != msg.sender) revert InvalidSignature();
 
@@ -286,7 +286,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         if (creditScore < minCreditScore) revert InsufficientCreditScore();
 
         applicationId = applicationCounter++;
-        
+
         applications[applicationId] = LoanApplication({
             applicant: msg.sender,
             requestedAmount: requestedAmount,
@@ -321,7 +321,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string calldata notes
     ) external onlyRole(COMPLIANCE_OFFICER_ROLE) {
         require(applicationId < applicationCounter, "Invalid application ID");
-        
+
         LoanApplication storage app = applications[applicationId];
         require(app.applicant != address(0), "Application not found");
 
@@ -336,9 +336,9 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             notes: notes
         });
 
-        bool approved = kycVerified && amlCleared && creditCheckCompleted && 
+        bool approved = kycVerified && amlCleared && creditCheckCompleted &&
                        incomeVerified && sanctionsCleared;
-        
+
         if (approved) {
             app.kycCompleted = true;
         }
@@ -360,11 +360,11 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string calldata riskAssessment
     ) external onlyRole(UNDERWRITER_ROLE) returns (uint256 loanId) {
         require(applicationId < applicationCounter, "Invalid application ID");
-        
+
         LoanApplication storage app = applications[applicationId];
         require(app.applicant != address(0), "Application not found");
         require(app.kycCompleted, "KYC not completed");
-        
+
         ComplianceCheck storage compliance = complianceChecks[applicationId];
         require(compliance.kycVerified && compliance.amlCleared, "Compliance checks failed");
 
@@ -374,7 +374,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         RiskLevel riskLevel = _calculateRiskLevel(app.creditScore, app.debtToIncomeRatio);
 
         loanId = loanCounter++;
-        
+
         Loan storage loan = loans[loanId];
         loan.id = loanId;
         loan.borrower = app.applicant;
@@ -409,7 +409,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     function fundLoan(uint256 loanId) external onlyRole(LOAN_OFFICER_ROLE) nonReentrant {
         Loan storage loan = loans[loanId];
         require(loan.status == LoanStatus.APPROVED, "Loan not approved");
-        
+
         // Check collateral if required
         if (loan.hasCollateral) {
             require(loan.collateralAmount > 0, "Collateral not deposited");
@@ -417,7 +417,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
 
         // Check reserve requirements
         uint256 requiredReserve = (loan.terms.principalAmount * reserveRatio) / 10000;
-        require(lendingToken.balanceOf(address(this)) >= loan.terms.principalAmount + requiredReserve, 
+        require(lendingToken.balanceOf(address(this)) >= loan.terms.principalAmount + requiredReserve,
                 "Insufficient reserves");
 
         // Calculate origination fee
@@ -426,7 +426,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
 
         // Transfer funds to borrower
         lendingToken.safeTransfer(loan.borrower, netAmount);
-        
+
         // Transfer origination fee to treasury
         if (originationFeeAmount > 0) {
             lendingToken.safeTransfer(treasury, originationFeeAmount);
@@ -468,7 +468,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         require(paymentAmount > 0, "Payment amount must be positive");
 
         // Calculate payment breakdown
-        (uint256 interestPortion, uint256 principalPortion, uint256 feesPortion) = 
+        (uint256 interestPortion, uint256 principalPortion, uint256 feesPortion) =
             _calculatePaymentBreakdown(loanId, paymentAmount);
 
         // Transfer payment from borrower
@@ -497,7 +497,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         if (loan.amountRepaid >= loan.terms.principalAmount) {
             loan.status = LoanStatus.REPAID;
             _releaseLoanCollateral(loanId);
-            
+
             // Positive credit impact for full repayment
             creditScoreContract.addCreditRecord(
                 loan.borrower,
@@ -552,14 +552,14 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Mark loan as defaulted (compliance officer only)
      */
-    function markLoanAsDefaulted(uint256 loanId, string calldata reason) 
+    function markLoanAsDefaulted(uint256 loanId, string calldata reason)
         external onlyRole(COMPLIANCE_OFFICER_ROLE) {
         Loan storage loan = loans[loanId];
         require(loan.status == LoanStatus.ACTIVE, "Loan not active");
         require(block.timestamp > loan.nextPaymentDue + defaultGracePeriod, "Grace period not expired");
 
         loan.status = LoanStatus.DEFAULTED;
-        
+
         uint256 outstandingAmount = loan.terms.principalAmount - loan.amountRepaid;
         totalDefaulted += outstandingAmount;
 
@@ -586,7 +586,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         require(block.timestamp > loan.nextPaymentDue + liquidationThreshold, "Liquidation threshold not met");
 
         uint256 recoveredAmount = 0;
-        
+
         // Liquidate collateral if available
         if (loan.hasCollateral && loan.collateralAmount > 0) {
             IERC20 collateralToken = IERC20(loan.collateralToken);
@@ -614,7 +614,7 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         RiskLevel riskLevel
     ) {
         Loan storage loan = loans[loanId];
-        
+
         // Privacy controls - only borrower, loan officers, or compliance can view
         require(
             msg.sender == loan.borrower ||
@@ -645,14 +645,14 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             hasRole(COMPLIANCE_OFFICER_ROLE, msg.sender),
             "Unauthorized access"
         );
-        
+
         return borrowerLoans[borrower];
     }
 
     /**
      * @dev Internal function to calculate risk level
      */
-    function _calculateRiskLevel(uint256 creditScore, uint256 debtToIncomeRatio) 
+    function _calculateRiskLevel(uint256 creditScore, uint256 debtToIncomeRatio)
         internal pure returns (RiskLevel) {
         if (creditScore >= 750 && debtToIncomeRatio <= 2800) {
             return RiskLevel.LOW;
@@ -668,23 +668,23 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Internal function to calculate payment breakdown
      */
-    function _calculatePaymentBreakdown(uint256 loanId, uint256 paymentAmount) 
+    function _calculatePaymentBreakdown(uint256 loanId, uint256 paymentAmount)
         internal view returns (uint256 interestPortion, uint256 principalPortion, uint256 feesPortion) {
         Loan storage loan = loans[loanId];
-        
+
         // Simplified calculation - in production, use more sophisticated amortization
         uint256 outstandingPrincipal = loan.terms.principalAmount - loan.amountRepaid;
         uint256 dailyInterestRate = loan.terms.interestRate / 365 / 10000;
         uint256 daysSinceLastPayment = (block.timestamp - loan.lastPaymentTimestamp) / 1 days;
-        
+
         interestPortion = (outstandingPrincipal * dailyInterestRate * daysSinceLastPayment) / 10000;
-        
+
         // Apply any late fees
         feesPortion = 0;
         if (block.timestamp > loan.nextPaymentDue) {
             feesPortion = loan.terms.latePaymentFee;
         }
-        
+
         // Remaining goes to principal
         if (paymentAmount > interestPortion + feesPortion) {
             principalPortion = paymentAmount - interestPortion - feesPortion;
@@ -705,13 +705,13 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
      */
     function _releaseLoanCollateral(uint256 loanId) internal {
         Loan storage loan = loans[loanId];
-        
+
         if (loan.hasCollateral && loan.collateralAmount > 0) {
             IERC20 collateralToken = IERC20(loan.collateralToken);
             collateralToken.safeTransfer(loan.borrower, loan.collateralAmount);
-            
+
             emit CollateralReleased(loanId, loan.borrower, loan.collateralAmount);
-            
+
             loan.collateralAmount = 0;
         }
     }
@@ -776,4 +776,3 @@ contract LoanContractV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         );
     }
 }
-

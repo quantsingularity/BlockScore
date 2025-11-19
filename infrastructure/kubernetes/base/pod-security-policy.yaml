@@ -59,4 +59,3 @@ subjects:
 - kind: ServiceAccount
   name: blockscore-service-account
   namespace: default
-

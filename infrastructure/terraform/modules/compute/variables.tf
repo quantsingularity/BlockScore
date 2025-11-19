@@ -68,4 +68,3 @@ variable "kms_key_arn" {
   description = "The ARN of the KMS key for EBS encryption."
   type        = string
 }
-

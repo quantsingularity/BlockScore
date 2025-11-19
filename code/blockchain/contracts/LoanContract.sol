@@ -21,16 +21,16 @@ contract LoanContract {
 
     // Credit Score contract reference
     CreditScore private creditScoreContract;
-    
+
     // Mapping from loan ID to loan details
     mapping(uint256 => Loan) public loans;
-    
+
     // Mapping from borrower to their loan IDs
     mapping(address => uint256[]) private borrowerLoans;
-    
+
     // Loan counter for generating unique IDs
     uint256 private loanCounter;
-    
+
     // Contract owner
     address private owner;
 
@@ -67,9 +67,9 @@ contract LoanContract {
     function createLoan(uint256 amount, uint256 interestRate, uint256 durationDays) external returns (uint256 loanId) {
         require(amount > 0, "Loan amount must be greater than zero");
         require(durationDays > 0, "Loan duration must be greater than zero");
-        
+
         loanId = loanCounter++;
-        
+
         loans[loanId] = Loan({
             borrower: msg.sender,
             amount: amount,
@@ -80,9 +80,9 @@ contract LoanContract {
             repaid: false,
             repaymentTimestamp: 0
         });
-        
+
         borrowerLoans[msg.sender].push(loanId);
-        
+
         emit LoanCreated(loanId, msg.sender, amount);
         return loanId;
     }
@@ -94,9 +94,9 @@ contract LoanContract {
     function approveLoan(uint256 loanId) external onlyOwner {
         require(loanId < loanCounter, "Invalid loan ID");
         require(!loans[loanId].approved, "Loan already approved");
-        
+
         loans[loanId].approved = true;
-        
+
         // Add credit record for the borrower
         creditScoreContract.addCreditRecord(
             loans[loanId].borrower,
@@ -104,7 +104,7 @@ contract LoanContract {
             "loan",
             2 // Positive impact for getting approved for a loan
         );
-        
+
         emit LoanApproved(loanId, loans[loanId].borrower);
     }
 
@@ -117,10 +117,10 @@ contract LoanContract {
         require(loans[loanId].borrower == msg.sender || msg.sender == owner, "Only borrower or owner can repay");
         require(loans[loanId].approved, "Loan not approved");
         require(!loans[loanId].repaid, "Loan already repaid");
-        
+
         loans[loanId].repaid = true;
         loans[loanId].repaymentTimestamp = block.timestamp;
-        
+
         // Calculate score impact based on repayment timing
         int8 scoreImpact;
         if (block.timestamp <= loans[loanId].dueDate) {
@@ -130,7 +130,7 @@ contract LoanContract {
             // Late repayment: negative impact
             scoreImpact = -3;
         }
-        
+
         // Add repayment record
         creditScoreContract.addCreditRecord(
             loans[loanId].borrower,
@@ -138,7 +138,7 @@ contract LoanContract {
             "repayment",
             scoreImpact
         );
-        
+
         emit LoanRepaid(loanId, loans[loanId].borrower, block.timestamp);
     }
 

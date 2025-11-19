@@ -95,4 +95,3 @@ resource "aws_cloudfront_distribution" "main" {
     Environment = var.environment
   }
 }
-

@@ -4,4 +4,3 @@ module.exports = {
     'node_modules/(?!(jest-)?react-native|@react-native|@react-navigation|react-native-vector-icons)/'
   ]
 };
-

@@ -61,8 +61,8 @@ class AuthService {
     }
 
     const token = jwt.sign(
-      { 
-        username: user.username, 
+      {
+        username: user.username,
         role: user.role,
         walletAddress: user.walletAddress
       },

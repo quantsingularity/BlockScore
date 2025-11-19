@@ -9,17 +9,17 @@ const config = require('../config');
  */
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'] || req.headers['authorization'];
-  
+
   if (!token) {
-    return res.status(403).json({ 
-      success: false, 
-      message: 'No token provided' 
+    return res.status(403).json({
+      success: false,
+      message: 'No token provided'
     });
   }
-  
+
   // Remove Bearer prefix if present
   const tokenString = token.startsWith('Bearer ') ? token.slice(7) : token;
-  
+
   try {
     const decoded = jwt.verify(tokenString, config.api.jwtSecret);
     req.user = decoded;
@@ -49,7 +49,7 @@ const isAdmin = (req, res, next) => {
  * Middleware to check if user is a credit provider
  */
 const isCreditProvider = (req, res, next) => {
-  if (!req.user || !req.user.role || 
+  if (!req.user || !req.user.role ||
       (req.user.role !== 'admin' && req.user.role !== 'provider')) {
     return res.status(403).json({
       success: false,

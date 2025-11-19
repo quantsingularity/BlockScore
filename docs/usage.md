@@ -47,8 +47,8 @@ function isAuthorizedProvider(address provider) external view returns (bool)
 ```solidity
 // Add a credit record for a user
 function addCreditRecord(
-    address user, 
-    uint256 amount, 
+    address user,
+    uint256 amount,
     string calldata recordType,
     int8 scoreImpact
 ) external onlyAuthorizedProvider

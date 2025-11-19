@@ -14,5 +14,3 @@ resource "aws_secretsmanager_secret_version" "example" {
 output "secret_arn" {
   value = aws_secretsmanager_secret.example.arn
 }
-
-
