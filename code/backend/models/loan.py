@@ -5,7 +5,7 @@ Loan management models for BlockScore Backend
 import enum
 import json
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate

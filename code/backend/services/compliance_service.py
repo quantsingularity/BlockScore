@@ -3,17 +3,16 @@ Compliance Service for BlockScore Backend
 KYC/AML and regulatory compliance management
 """
 
-import json
 import logging
 import re
 import uuid
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 
 from models.audit import ComplianceRecord, ComplianceStatus, ComplianceType
 from models.credit import CreditHistory
-from models.loan import Loan, LoanApplication
+from models.loan import LoanApplication
 from models.user import KYCStatus, User, UserProfile
 
 

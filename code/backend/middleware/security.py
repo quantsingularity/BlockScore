@@ -6,22 +6,19 @@ Implements comprehensive security controls for financial applications
 import base64
 import hashlib
 import hmac
-import ipaddress
 import json
 import os
 import re
 import time
-from datetime import datetime, timedelta, timezone
 from functools import wraps
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
-import redis
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from flask import current_app, g, jsonify, request
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
-from models.audit import AuditEventType, AuditLog, AuditSeverity
+from models.audit import AuditEventType, AuditSeverity
 from services.audit_service import AuditService
 
 

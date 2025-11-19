@@ -5,11 +5,8 @@ Unit tests for Authentication Service
 from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 
-import jwt
-import pytest
 from models.audit import AuditLog
-from models.user import User, UserProfile, UserSession
-from services.auth_service import AuthenticationService
+from models.user import User, UserSession
 
 
 class TestAuthenticationService:

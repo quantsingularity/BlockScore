@@ -2,10 +2,7 @@ import json
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
-
-from flask import Flask
-from flask.testing import FlaskClient
+from unittest.mock import patch
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

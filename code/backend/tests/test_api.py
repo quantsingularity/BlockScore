@@ -5,22 +5,17 @@ Tests for all API endpoints, authentication, and error handling
 
 import json
 import os
-
 # Import the modules to test
 import sys
-from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock, Mock, patch
+from datetime import datetime, timedelta
+from unittest.mock import Mock, patch
 
 import jwt
 import pytest
-from flask import Flask
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import create_app
-from models.user import User, UserProfile
-from services.compliance_service import ComplianceService
-from services.mfa_service import MFAService
 
 
 class TestAPIEndpoints:
@@ -599,7 +594,6 @@ class TestAPIEndpoints:
         """Test API rate limiting"""
         # This would test rate limiting functionality
         # Implementation depends on the rate limiting strategy used
-        pass
 
     def test_input_validation_sql_injection(self, client, auth_headers):
         """Test protection against SQL injection"""
@@ -712,7 +706,6 @@ class TestAPIPerformance:
     def test_concurrent_requests(self, client, auth_headers):
         """Test handling of concurrent requests"""
         import threading
-        import time
 
         results = []
 

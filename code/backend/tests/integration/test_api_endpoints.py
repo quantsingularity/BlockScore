@@ -2,14 +2,10 @@
 Integration tests for API endpoints
 """
 
-import json
-from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
-import pytest
-from models.credit import CreditScore
 from models.loan import LoanApplication
-from models.user import User, UserProfile
+from models.user import User
 
 
 class TestAuthenticationEndpoints:

@@ -5,25 +5,16 @@ Smart contract integration and blockchain transaction management
 
 import json
 import logging
-import time
 import uuid
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 
-import requests
-from models.blockchain import (
-    BlockchainTransaction,
-    ContractStatus,
-    ContractType,
-    SmartContract,
-    TransactionStatus,
-    TransactionType,
-)
-from models.credit import CreditScore
-from models.user import User
+from models.blockchain import (BlockchainTransaction, ContractStatus,
+                               ContractType, SmartContract, TransactionStatus,
+                               TransactionType)
 from web3 import Web3
-from web3.exceptions import BlockNotFound, TransactionNotFound, Web3Exception
+from web3.exceptions import TransactionNotFound
 
 
 class BlockchainService:

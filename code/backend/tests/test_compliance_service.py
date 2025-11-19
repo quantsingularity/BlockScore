@@ -3,13 +3,11 @@ Comprehensive Test Suite for Compliance Service
 Tests for KYC/AML, audit trails, and regulatory compliance features
 """
 
-import json
 import os
-
 # Import the modules to test
 import sys
 from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 from flask import Flask
@@ -18,9 +16,9 @@ from sqlalchemy.orm import sessionmaker
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.audit import AuditEventType, AuditLog, AuditSeverity
-from models.user import User, UserProfile
-from services.compliance_service import ComplianceService, ComplianceStatus, RiskLevel
+from models.audit import AuditEventType, AuditSeverity
+from services.compliance_service import (ComplianceService, ComplianceStatus,
+                                         RiskLevel)
 
 
 class TestComplianceService:
@@ -492,7 +490,6 @@ class TestComplianceService:
     def test_concurrent_compliance_checks(self, compliance_service, sample_user_data):
         """Test handling of concurrent compliance checks"""
         import threading
-        import time
 
         results = []
 
@@ -544,19 +541,16 @@ class TestComplianceIntegration:
         """Test complete user onboarding with compliance checks"""
         # This would test the full flow from user registration
         # through KYC, AML screening, and risk assessment
-        pass
 
     def test_transaction_lifecycle_monitoring(self):
         """Test transaction monitoring throughout its lifecycle"""
         # This would test monitoring from transaction initiation
         # through completion and post-transaction analysis
-        pass
 
     def test_regulatory_reporting_workflow(self):
         """Test end-to-end regulatory reporting workflow"""
         # This would test the complete process from suspicious
         # activity detection through regulatory filing
-        pass
 
 
 if __name__ == "__main__":

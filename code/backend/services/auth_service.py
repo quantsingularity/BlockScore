@@ -199,7 +199,7 @@ class AuthService:
 
             return True
 
-        except Exception as e:
+        except Exception:
             self.db.session.rollback()
             return False
 
@@ -261,7 +261,7 @@ class AuthService:
 
             return False
 
-        except Exception as e:
+        except Exception:
             self.db.session.rollback()
             return False
 
@@ -291,7 +291,7 @@ class AuthService:
             self.db.session.commit()
             return True
 
-        except Exception as e:
+        except Exception:
             self.db.session.rollback()
             return False
 

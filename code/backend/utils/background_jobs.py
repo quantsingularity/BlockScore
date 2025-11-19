@@ -3,14 +3,12 @@ Background Job Manager for BlockScore Backend
 Celery-based background job processing for scalability
 """
 
-import json
 import logging
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List
 
 from celery import Celery, Task
-from celery.exceptions import Retry
 from celery.result import AsyncResult
 
 
@@ -421,7 +419,6 @@ def batch_calculate_credit_scores(self, user_ids: List[str]):
 def update_pending_transactions(self):
     """Update pending blockchain transactions"""
     try:
-        from models import db
         from services.blockchain_service import BlockchainService
 
         blockchain_service = BlockchainService({})  # Would need proper config

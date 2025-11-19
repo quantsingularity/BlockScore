@@ -13,7 +13,6 @@ from .audit import AuditLog, ComplianceRecord
 from .blockchain import BlockchainTransaction, SmartContract
 from .credit import CreditFactor, CreditHistory, CreditScore
 from .loan import Loan, LoanApplication, LoanPayment
-
 # Import all models to ensure they are registered
 from .user import User, UserProfile, UserSession
 

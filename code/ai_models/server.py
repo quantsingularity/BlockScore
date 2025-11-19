@@ -14,11 +14,8 @@ from flask import Flask, jsonify, request
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from model_integration import (
-    calculate_score_factors,
-    predict_score,
-    transform_blockchain_data,
-)
+from model_integration import (calculate_score_factors, predict_score,
+                               transform_blockchain_data)
 
 # Configure logging
 logging.basicConfig(

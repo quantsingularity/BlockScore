@@ -6,12 +6,11 @@ Database performance optimization and monitoring utilities
 import logging
 import time
 from contextlib import contextmanager
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 
-from sqlalchemy import func, inspect, text
+from sqlalchemy import inspect, text
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
 
 
 class DatabaseOptimizer:

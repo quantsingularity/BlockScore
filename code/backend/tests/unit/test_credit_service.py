@@ -4,12 +4,10 @@ Unit tests for Credit Scoring Service
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
-import pytest
 from models.credit import CreditEventType, CreditHistory, CreditScore
 from models.user import User, UserProfile
-from services.credit_service import CreditScoringService
 
 
 class TestCreditScoringService:
@@ -34,7 +32,7 @@ class TestCreditScoringService:
         self, credit_service, db, sample_user, sample_credit_score
     ):
         """Test credit score calculation for user with existing score"""
-        original_score = sample_credit_score.score
+        sample_credit_score.score
 
         # Add some credit history to change the score
         credit_history = CreditHistory(
@@ -338,7 +336,7 @@ class TestCreditScoringService:
     ):
         """Test credit score caching functionality"""
         # First call should hit database
-        result1 = credit_service.get_credit_score(sample_user.id)
+        credit_service.get_credit_score(sample_user.id)
 
         # Second call should hit cache
         with patch.object(credit_service.cache, "get") as mock_cache_get:

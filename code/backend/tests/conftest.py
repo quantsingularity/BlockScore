@@ -3,27 +3,23 @@ Pytest configuration and shared fixtures for BlockScore Backend tests
 """
 
 import os
-
 # Import application components
 import sys
 import tempfile
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 
 import pytest
 import redis
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import create_app
 from models import db as _db
-from models.audit import AuditLog, ComplianceRecord
-from models.blockchain import BlockchainTransaction, SmartContract
-from models.credit import CreditHistory, CreditScore
-from models.loan import Loan, LoanApplication
-from models.user import User, UserProfile, UserSession
+from models.audit import AuditLog
+from models.credit import CreditScore
+from models.loan import LoanApplication
+from models.user import User, UserProfile
 from services.auth_service import AuthenticationService
 from services.blockchain_service import BlockchainService
 from services.compliance_service import ComplianceService

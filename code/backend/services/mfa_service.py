@@ -9,20 +9,16 @@ import hmac
 import io
 import os
 import secrets
-import time
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import pyotp
 import qrcode
 import requests
 from flask import current_app
-from models import db
-from models.audit import AuditEventType, AuditLog, AuditSeverity
+from models.audit import AuditEventType, AuditSeverity
 from models.user import User, UserProfile
-from PIL import Image
 from services.audit_service import AuditService
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 
@@ -706,12 +702,10 @@ class MFAService:
     def _increment_mfa_failed_attempts(self, user_id: int):
         """Increment failed MFA attempts counter"""
         # Implement based on your caching/storage strategy
-        pass
 
     def _reset_mfa_failed_attempts(self, user_id: int):
         """Reset failed MFA attempts counter"""
         # Implement based on your caching/storage strategy
-        pass
 
     def _is_sms_rate_limited(self, user_id: int) -> bool:
         """Check if SMS sending is rate limited for user"""
@@ -721,4 +715,3 @@ class MFAService:
     def _update_sms_rate_limit(self, user_id: int):
         """Update SMS rate limiting counter"""
         # Implement rate limiting logic
-        pass

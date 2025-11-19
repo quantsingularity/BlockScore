@@ -4,18 +4,14 @@ Tests for TOTP, SMS, backup codes, and security features
 """
 
 import base64
-import io
 import os
-
 # Import the modules to test
 import sys
-import time
 from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pyotp
 import pytest
-import qrcode
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -595,7 +591,6 @@ class TestMFAService:
     def test_concurrent_mfa_operations(self, mfa_service, mock_user):
         """Test concurrent MFA operations"""
         import threading
-        import time
 
         results = []
 
@@ -633,19 +628,16 @@ class TestMFAServiceIntegration:
         """Test complete TOTP setup and verification flow"""
         # This would test the full flow from TOTP setup
         # through verification and usage
-        pass
 
     def test_complete_sms_flow(self):
         """Test complete SMS MFA setup and verification flow"""
         # This would test the full flow from SMS setup
         # through verification and usage
-        pass
 
     def test_mfa_recovery_flow(self):
         """Test MFA recovery using backup codes"""
         # This would test the recovery process when
         # primary MFA methods are unavailable
-        pass
 
 
 if __name__ == "__main__":

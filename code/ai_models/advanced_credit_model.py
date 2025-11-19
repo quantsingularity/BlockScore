@@ -6,62 +6,28 @@ Implements state-of-the-art machine learning techniques with regulatory complian
 import logging
 import warnings
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, Tuple
 
 import joblib
-import lime
-import lime.lime_tabular
-
 # Visualization
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-
-# Statistical libraries
-import scipy.stats as stats
-import seaborn as sns
-
 # Model interpretation
 import shap
-
 # ML Libraries
 import xgboost as xgb
-from aif360.algorithms.preprocessing import Reweighing
-
 # Fairness and bias detection
-from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
-from plotly.subplots import make_subplots
-from scipy.stats import chi2_contingency, ks_2samp
-from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
-from sklearn.feature_selection import RFE, SelectKBest, f_regression
-from sklearn.impute import KNNImputer, SimpleImputer
+from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.inspection import permutation_importance
-from sklearn.linear_model import ElasticNet, LogisticRegression
-from sklearn.metrics import (
-    classification_report,
-    confusion_matrix,
-    mean_absolute_error,
-    mean_squared_error,
-    precision_recall_curve,
-    r2_score,
-    roc_auc_score,
-    roc_curve,
-)
-from sklearn.model_selection import (
-    GridSearchCV,
-    StratifiedKFold,
-    TimeSeriesSplit,
-    cross_val_score,
-    train_test_split,
-)
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import LabelEncoder, RobustScaler, StandardScaler
+from sklearn.linear_model import ElasticNet
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.preprocessing import LabelEncoder, RobustScaler
+
+# Statistical libraries
+
 
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO)
@@ -734,7 +700,7 @@ class AdvancedCreditScoringModel:
             # Calculate SHAP values for a sample
             sample_size = min(100, len(X_train))
             sample_indices = np.random.choice(len(X_train), sample_size, replace=False)
-            shap_values = self.explainer.shap_values(X_train[sample_indices])
+            self.explainer.shap_values(X_train[sample_indices])
 
             logger.info("SHAP explainer setup complete")
 

@@ -7,10 +7,10 @@ import logging
 import threading
 import time
 from collections import defaultdict, deque
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 import psutil
 
@@ -663,7 +663,7 @@ def monitor_database_query(monitor: PerformanceMonitor):
 
                 return result
 
-            except Exception as e:
+            except Exception:
                 execution_time = (time.time() - start_time) * 1000
                 monitor.record_database_query("error", "unknown", execution_time)
                 raise

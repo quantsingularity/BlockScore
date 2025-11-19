@@ -6,36 +6,20 @@ Comprehensive risk assessment, portfolio analysis, and regulatory reporting
 import logging
 import warnings
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List
 
 # Visualization
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-import pymc3 as pm
-
-# Financial libraries
-import quantlib as ql
-
 # Statistical and ML libraries
 import scipy.stats as stats
-import seaborn as sns
-import theano.tensor as tt
-import yfinance as yf
-from arch import arch_model
-from plotly.subplots import make_subplots
-from scipy.optimize import minimize
-
 # Risk modeling
-from scipy.stats import genextreme, norm, t
-from sklearn.cluster import KMeans
-from sklearn.covariance import EllipticEnvelope
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+from scipy.stats import norm
+
+# Financial libraries
+
 
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO)
@@ -930,7 +914,7 @@ def main():
         "credit_crisis": {"pd_multiplier": 3.0, "market_shock": -0.2},
     }
 
-    stress_results = risk_analyzer.perform_stress_testing(stress_scenarios)
+    risk_analyzer.perform_stress_testing(stress_scenarios)
     logger.info("Stress testing completed")
 
     # Generate dashboard data

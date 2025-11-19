@@ -5,15 +5,12 @@ This module provides utilities for integrating the Python scoring model with the
 It includes functions for data transformation, model inference, and API communication.
 """
 
-import json
 import os
 from datetime import datetime
 
 import joblib
 import numpy as np
 import pandas as pd
-import requests
-from flask import Flask, jsonify, request
 
 # Load the trained model
 model_path = os.path.join(
@@ -40,14 +37,13 @@ def transform_blockchain_data(credit_history):
         return None
 
     # Extract features from credit history
-    current_time = datetime.now().timestamp()
+    datetime.now().timestamp()
 
     # Initialize feature values
     income_proxy = 0
     debt_ratio = 0
     payment_history = 0
     loan_count = 0
-    loan_amount = 0
     credit_utilization = 0
 
     # Count of repaid and total records

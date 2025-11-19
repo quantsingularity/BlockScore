@@ -3,26 +3,17 @@ Credit Scoring Service for BlockScore Backend
 Advanced AI-powered credit scoring with blockchain integration
 """
 
-import json
 import logging
 import uuid
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import joblib
-import numpy as np
 import pandas as pd
-from models.blockchain import BlockchainTransaction, TransactionType
-from models.credit import (
-    CreditEventType,
-    CreditFactor,
-    CreditFactorType,
-    CreditHistory,
-    CreditScore,
-    CreditScoreStatus,
-)
-from models.user import User, UserProfile
+from models.blockchain import BlockchainTransaction
+from models.credit import (CreditEventType, CreditFactor, CreditFactorType,
+                           CreditHistory, CreditScore, CreditScoreStatus)
+from models.user import User
 
 
 class CreditScoringService:
