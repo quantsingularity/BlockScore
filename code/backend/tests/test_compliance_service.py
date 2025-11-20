@@ -4,6 +4,7 @@ Tests for KYC/AML, audit trails, and regulatory compliance features
 """
 
 import os
+
 # Import the modules to test
 import sys
 from datetime import datetime, timedelta, timezone
@@ -17,8 +18,7 @@ from sqlalchemy.orm import sessionmaker
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.audit import AuditEventType, AuditSeverity
-from services.compliance_service import (ComplianceService, ComplianceStatus,
-                                         RiskLevel)
+from services.compliance_service import ComplianceService, ComplianceStatus, RiskLevel
 
 
 class TestComplianceService:

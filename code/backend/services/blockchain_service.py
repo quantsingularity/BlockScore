@@ -10,9 +10,14 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Dict, List
 
-from models.blockchain import (BlockchainTransaction, ContractStatus,
-                               ContractType, SmartContract, TransactionStatus,
-                               TransactionType)
+from models.blockchain import (
+    BlockchainTransaction,
+    ContractStatus,
+    ContractType,
+    SmartContract,
+    TransactionStatus,
+    TransactionType,
+)
 from web3 import Web3
 from web3.exceptions import TransactionNotFound
 

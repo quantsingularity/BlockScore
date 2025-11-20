@@ -8,14 +8,20 @@ import traceback
 from datetime import datetime, timezone
 
 import redis
+
 # Import configuration and models
 from config import get_config
 from flask import Flask, g, jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_jwt_extended import (JWTManager, create_access_token,
-                                create_refresh_token, get_jwt,
-                                get_jwt_identity, jwt_required)
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from models import db, ma
@@ -24,6 +30,7 @@ from models.credit import CreditHistory, CreditScore
 from models.loan import LoanApplication, LoanApplicationSchema
 from models.user import User, UserLoginSchema, UserRegistrationSchema
 from services.audit_service import AuditService
+
 # Import services
 from services.auth_service import AuthService
 from services.blockchain_service import BlockchainService

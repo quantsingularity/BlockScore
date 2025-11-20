@@ -11,8 +11,14 @@ from typing import Any, Dict, List, Optional
 import joblib
 import pandas as pd
 from models.blockchain import BlockchainTransaction
-from models.credit import (CreditEventType, CreditFactor, CreditFactorType,
-                           CreditHistory, CreditScore, CreditScoreStatus)
+from models.credit import (
+    CreditEventType,
+    CreditFactor,
+    CreditFactorType,
+    CreditHistory,
+    CreditScore,
+    CreditScoreStatus,
+)
 from models.user import User
 
 
