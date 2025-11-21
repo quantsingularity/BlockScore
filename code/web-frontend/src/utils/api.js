@@ -3,12 +3,13 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === 'production'
-    ? '/api'
-    : 'http://localhost:5000/api',
+  baseURL:
+    process.env.NODE_ENV === 'production'
+      ? '/api'
+      : 'http://localhost:5000/api',
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 // Credit score API calls
@@ -28,7 +29,7 @@ export const calculateLoan = async (walletAddress, amount, rate) => {
     const response = await api.post('/calculate-loan', {
       walletAddress,
       amount,
-      rate
+      rate,
     });
     return response.data;
   } catch (error) {

@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
   if (!token) {
     return res.status(403).json({
       success: false,
-      message: 'No token provided'
+      message: 'No token provided',
     });
   }
 
@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: 'Invalid or expired token'
+      message: 'Invalid or expired token',
     });
   }
 };
@@ -39,7 +39,7 @@ const isAdmin = (req, res, next) => {
   if (!req.user || !req.user.role || req.user.role !== 'admin') {
     return res.status(403).json({
       success: false,
-      message: 'Admin access required'
+      message: 'Admin access required',
     });
   }
   next();
@@ -49,11 +49,14 @@ const isAdmin = (req, res, next) => {
  * Middleware to check if user is a credit provider
  */
 const isCreditProvider = (req, res, next) => {
-  if (!req.user || !req.user.role ||
-      (req.user.role !== 'admin' && req.user.role !== 'provider')) {
+  if (
+    !req.user ||
+    !req.user.role ||
+    (req.user.role !== 'admin' && req.user.role !== 'provider')
+  ) {
     return res.status(403).json({
       success: false,
-      message: 'Credit provider access required'
+      message: 'Credit provider access required',
     });
   }
   next();
@@ -62,5 +65,5 @@ const isCreditProvider = (req, res, next) => {
 module.exports = {
   verifyToken,
   isAdmin,
-  isCreditProvider
+  isCreditProvider,
 };

@@ -18,13 +18,13 @@ router.get('/:loanId', async (req, res) => {
 
     res.json({
       success: true,
-      data: loan
+      data: loan,
     });
   } catch (error) {
     console.error('Error getting loan details:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to get loan details'
+      message: error.message || 'Failed to get loan details',
     });
   }
 });
@@ -40,21 +40,23 @@ router.get('/borrower/:address', async (req, res) => {
     const loanIds = await contractService.getBorrowerLoans(address);
 
     // Get details for each loan
-    const loanPromises = loanIds.map(id => contractService.getLoanDetails(id));
+    const loanPromises = loanIds.map((id) =>
+      contractService.getLoanDetails(id)
+    );
     const loans = await Promise.all(loanPromises);
 
     res.json({
       success: true,
       data: {
         loanIds,
-        loans
-      }
+        loans,
+      },
     });
   } catch (error) {
     console.error('Error getting borrower loans:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to get borrower loans'
+      message: error.message || 'Failed to get borrower loans',
     });
   }
 });
@@ -71,7 +73,7 @@ router.post('/create', verifyToken, async (req, res) => {
     if (!amount || !interestRate || !durationDays || !privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields'
+        message: 'Missing required fields',
       });
     }
 
@@ -86,14 +88,14 @@ router.post('/create', verifyToken, async (req, res) => {
       success: true,
       data: {
         loanId: result.loanId,
-        transactionHash: result.receipt.transactionHash
-      }
+        transactionHash: result.receipt.transactionHash,
+      },
     });
   } catch (error) {
     console.error('Error creating loan:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to create loan'
+      message: error.message || 'Failed to create loan',
     });
   }
 });
@@ -111,7 +113,7 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
     if (!privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Private key is required'
+        message: 'Private key is required',
       });
     }
 
@@ -123,14 +125,14 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
     res.json({
       success: true,
       data: {
-        transactionHash: receipt.transactionHash
-      }
+        transactionHash: receipt.transactionHash,
+      },
     });
   } catch (error) {
     console.error('Error approving loan:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to approve loan'
+      message: error.message || 'Failed to approve loan',
     });
   }
 });
@@ -148,7 +150,7 @@ router.post('/repay/:loanId', verifyToken, async (req, res) => {
     if (!privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Private key is required'
+        message: 'Private key is required',
       });
     }
 
@@ -160,14 +162,14 @@ router.post('/repay/:loanId', verifyToken, async (req, res) => {
     res.json({
       success: true,
       data: {
-        transactionHash: receipt.transactionHash
-      }
+        transactionHash: receipt.transactionHash,
+      },
     });
   } catch (error) {
     console.error('Error repaying loan:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to repay loan'
+      message: error.message || 'Failed to repay loan',
     });
   }
 });

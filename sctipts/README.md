@@ -30,6 +30,7 @@ This script automates the complete setup of the BlockScore development environme
 ```
 
 Features:
+
 - Automatic OS detection and package installation
 - Python, Node.js, and MongoDB setup
 - Blockchain development environment configuration
@@ -45,15 +46,18 @@ This script orchestrates the build process for all BlockScore components.
 ```
 
 Options:
+
 - `-h, --help`: Show help message
 - `-p, --parallel`: Build components in parallel
 - `-c, --clean`: Perform clean build
 
 Components:
+
 - `all`: Build all components (default)
 - `shared`, `blockchain`, `backend`, `frontend`, `mobile`, `ai`: Build specific components
 
 Examples:
+
 ```bash
 ./scripts/multi_component_build.sh                         # Build all components sequentially
 ./scripts/multi_component_build.sh -p frontend backend     # Build frontend and backend in parallel
@@ -69,6 +73,7 @@ This script automates the deployment of smart contracts to different blockchain 
 ```
 
 Options:
+
 - `-h, --help`: Show help message
 - `-n, --network <network>`: Specify network (development, test, mainnet)
 - `-v, --verify`: Verify contracts on block explorer
@@ -76,6 +81,7 @@ Options:
 - `--no-security-check`: Disable security checks
 
 Examples:
+
 ```bash
 ./scripts/smart_contract_deploy.sh                         # Deploy to development network
 ./scripts/smart_contract_deploy.sh -n test -v              # Deploy to test network and verify contracts
@@ -91,12 +97,14 @@ This script performs comprehensive code quality checks across all components.
 ```
 
 Options:
+
 - `-h, --help`: Show help message
 - `-f, --fix`: Automatically fix issues when possible
 - `-v, --verbose`: Show detailed output
 - `--js`, `--ts`, `--py`, `--sol`: Check specific file types
 
 Examples:
+
 ```bash
 ./scripts/code_quality_check.sh                         # Check all file types
 ./scripts/code_quality_check.sh -f                      # Check all file types and fix issues
@@ -112,15 +120,18 @@ This script automates the process of selectively restarting only the components 
 ```
 
 Options:
+
 - `-h, --help`: Show help message
 - `-f, --force`: Force restart even if no changes detected
 - `-w, --watch`: Watch for changes and restart automatically
 
 Components:
+
 - `all`: Restart all components (default)
 - `blockchain`, `backend`, `frontend`, `mobile`, `ai`: Restart specific components
 
 Examples:
+
 ```bash
 ./scripts/component_restart.sh                         # Restart all modified components
 ./scripts/component_restart.sh -f backend              # Force restart backend services

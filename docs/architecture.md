@@ -21,6 +21,7 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Component Details
 
 ### 1. Frontend Layer
+
 - **Technology**: React.js
 - **Key Components**:
   - User authentication interface
@@ -30,6 +31,7 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
   - Wallet integration (MetaMask)
 
 ### 2. Backend Layer
+
 - **Technology**: Node.js with Express
 - **Responsibilities**:
   - API endpoint management
@@ -39,6 +41,7 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
   - Authentication and authorization
 
 ### 3. Blockchain Layer
+
 - **Technology**: Ethereum/Polygon
 - **Smart Contracts**:
   - CreditScore.sol: Manages credit score data
@@ -46,6 +49,7 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
   - DataRegistry.sol: Stores transaction history
 
 ### 4. AI/ML Layer
+
 - **Technology**: Python (TensorFlow/PyTorch)
 - **Models**:
   - Credit risk assessment
@@ -55,11 +59,13 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Data Flow
 
 1. **User Interaction**:
+
    ```
    User → Frontend → Backend → Blockchain
    ```
 
 2. **Credit Score Calculation**:
+
    ```
    Transaction Data → AI Models → Credit Score → Blockchain
    ```
@@ -72,11 +78,13 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Security Architecture
 
 ### Authentication
+
 - JWT-based authentication
 - Web3 wallet integration
 - Multi-factor authentication for sensitive operations
 
 ### Data Protection
+
 - End-to-end encryption for sensitive data
 - Off-chain storage for private information
 - On-chain hashed references
@@ -84,11 +92,13 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Scalability Considerations
 
 ### Current Limitations
+
 - Transaction throughput
 - AI model processing time
 - Blockchain gas costs
 
 ### Scaling Solutions
+
 - Layer 2 solutions for blockchain
 - Distributed AI processing
 - Caching strategies
@@ -96,11 +106,13 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Monitoring and Maintenance
 
 ### System Health Monitoring
+
 - Smart contract events
 - API endpoint metrics
 - Model performance metrics
 
 ### Backup and Recovery
+
 - Database backup procedures
 - Smart contract upgrade strategy
 - Model versioning

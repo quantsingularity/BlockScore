@@ -1,8 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../utils/responsive';
-import { Icon } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from '../utils/responsive';
+import {Icon} from '@rneui/themed';
+import {useNavigation} from '@react-navigation/native'; // Import useNavigation
 
 // Define modern color palette
 const colors = {
@@ -45,11 +55,41 @@ const DashboardScreen = () => {
 
   // Sample Score Factors Data
   const scoreFactors = [
-    { name: 'Payment History', impact: 'High', status: 'Excellent', icon: 'check-circle', color: colors.success },
-    { name: 'Credit Utilization', impact: 'High', status: 'Good', icon: 'trending-up', color: colors.success },
-    { name: 'Length of Credit History', impact: 'Medium', status: 'Good', icon: 'history', color: colors.success },
-    { name: 'Credit Mix', impact: 'Low', status: 'Fair', icon: 'mix', color: colors.warning }, // Custom icon name, might need adjustment
-    { name: 'New Credit', impact: 'Low', status: 'Good', icon: 'fiber-new', color: colors.success },
+    {
+      name: 'Payment History',
+      impact: 'High',
+      status: 'Excellent',
+      icon: 'check-circle',
+      color: colors.success,
+    },
+    {
+      name: 'Credit Utilization',
+      impact: 'High',
+      status: 'Good',
+      icon: 'trending-up',
+      color: colors.success,
+    },
+    {
+      name: 'Length of Credit History',
+      impact: 'Medium',
+      status: 'Good',
+      icon: 'history',
+      color: colors.success,
+    },
+    {
+      name: 'Credit Mix',
+      impact: 'Low',
+      status: 'Fair',
+      icon: 'mix',
+      color: colors.warning,
+    }, // Custom icon name, might need adjustment
+    {
+      name: 'New Credit',
+      impact: 'Low',
+      status: 'Good',
+      icon: 'fiber-new',
+      color: colors.success,
+    },
   ];
 
   return (
@@ -61,27 +101,51 @@ const DashboardScreen = () => {
       {/* Score Display */}
       <View style={styles.scoreContainer}>
         <Text style={styles.scoreLabel}>Your BlockScore</Text>
-        <Text style={[styles.scoreValue, { color: scoreColor }]}>{userScore}</Text>
+        <Text style={[styles.scoreValue, {color: scoreColor}]}>
+          {userScore}
+        </Text>
         <View style={styles.scoreBar}>
-          <View style={[styles.scoreProgress, { width: `${scorePercentage}%`, backgroundColor: scoreColor }]} />
+          <View
+            style={[
+              styles.scoreProgress,
+              {width: `${scorePercentage}%`, backgroundColor: scoreColor},
+            ]}
+          />
         </View>
-        <Text style={[styles.scoreDescription, { color: scoreColor }]}>{scoreDescription}</Text>
+        <Text style={[styles.scoreDescription, {color: scoreColor}]}>
+          {scoreDescription}
+        </Text>
       </View>
 
       {/* Key Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
-          <Icon name="trending-up" type="material" color={colors.success} size={responsiveFontSize(3.5)} />
+          <Icon
+            name="trending-up"
+            type="material"
+            color={colors.success}
+            size={responsiveFontSize(3.5)}
+          />
           <Text style={styles.statTitle}>Credit Growth</Text>
           <Text style={styles.statValue}>+15%</Text>
         </View>
         <View style={styles.statCard}>
-          <Icon name="history" type="material" color={colors.info} size={responsiveFontSize(3.5)} />
+          <Icon
+            name="history"
+            type="material"
+            color={colors.info}
+            size={responsiveFontSize(3.5)}
+          />
           <Text style={styles.statTitle}>History Length</Text>
           <Text style={styles.statValue}>5 years</Text>
         </View>
         <View style={styles.statCard}>
-          <Icon name="account-balance" type="material" color={colors.warning} size={responsiveFontSize(3.5)} />
+          <Icon
+            name="account-balance"
+            type="material"
+            color={colors.warning}
+            size={responsiveFontSize(3.5)}
+          />
           <Text style={styles.statTitle}>Active Loans</Text>
           <Text style={styles.statValue}>2</Text>
         </View>
@@ -92,12 +156,20 @@ const DashboardScreen = () => {
         <Text style={styles.sectionTitle}>Score Factors</Text>
         {scoreFactors.map((factor, index) => (
           <View key={index} style={styles.factorItem}>
-            <Icon name={factor.icon} type="material" color={factor.color} size={responsiveFontSize(3)} style={styles.factorIcon} />
+            <Icon
+              name={factor.icon}
+              type="material"
+              color={factor.color}
+              size={responsiveFontSize(3)}
+              style={styles.factorIcon}
+            />
             <View style={styles.factorTextContainer}>
               <Text style={styles.factorName}>{factor.name}</Text>
               <Text style={styles.factorImpact}>Impact: {factor.impact}</Text>
             </View>
-            <Text style={[styles.factorStatus, { color: factor.color }]}>{factor.status}</Text>
+            <Text style={[styles.factorStatus, {color: factor.color}]}>
+              {factor.status}
+            </Text>
           </View>
         ))}
       </View>
@@ -108,14 +180,26 @@ const DashboardScreen = () => {
           style={styles.actionButton}
           onPress={() => navigation.navigate('LoanCalculator')} // Navigate to Loan Calculator
         >
-          <Icon name="calculate" type="material" color={colors.cardBackground} size={responsiveFontSize(2.5)} style={styles.buttonIcon} />
+          <Icon
+            name="calculate"
+            type="material"
+            color={colors.cardBackground}
+            size={responsiveFontSize(2.5)}
+            style={styles.buttonIcon}
+          />
           <Text style={styles.actionButtonText}>Calculate Loan</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => navigation.navigate('CreditHistory')} // Navigate to Credit History
         >
-          <Icon name="timeline" type="material" color={colors.cardBackground} size={responsiveFontSize(2.5)} style={styles.buttonIcon} />
+          <Icon
+            name="timeline"
+            type="material"
+            color={colors.cardBackground}
+            size={responsiveFontSize(2.5)}
+            style={styles.buttonIcon}
+          />
           <Text style={styles.actionButtonText}>View History</Text>
         </TouchableOpacity>
       </View>
@@ -151,7 +235,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -197,7 +281,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(28),
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.08,
     shadowRadius: 3,
   },
@@ -223,7 +307,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -278,7 +362,7 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(1.5),
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },

@@ -28,5 +28,5 @@ module.exports = {
   contracts: {
     creditScoreAddress: process.env.CREDIT_SCORE_ADDRESS || '',
     loanContractAddress: process.env.LOAN_CONTRACT_ADDRESS || '',
-  }
+  },
 };

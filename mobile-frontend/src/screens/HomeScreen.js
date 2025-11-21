@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { responsiveFontSize } from '../utils/responsive';
+import {View, Text, StyleSheet} from 'react-native';
+import {responsiveFontSize} from '../utils/responsive';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>BlockScore Home</Text>

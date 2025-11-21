@@ -79,16 +79,19 @@ python server.py
 ### 5. Verify Deployment
 
 1. Check that the Node.js API is running:
+
 ```bash
 curl http://localhost:3000/health
 ```
 
 2. Check that the Python Model API is running:
+
 ```bash
 curl http://localhost:5000/health
 ```
 
 3. Try a sample request:
+
 ```bash
 # Register a user
 curl -X POST http://localhost:3000/api/auth/register \
@@ -104,12 +107,14 @@ curl -X POST http://localhost:3000/api/auth/register \
 For production deployment, consider the following:
 
 1. Use a process manager like PM2 for the Node.js API:
+
 ```bash
 npm install -g pm2
 pm2 start app.js --name blockscore-api
 ```
 
 2. Use Gunicorn for the Python API:
+
 ```bash
 pip install gunicorn
 gunicorn -w 4 -b 0.0.0.0:5000 server:app

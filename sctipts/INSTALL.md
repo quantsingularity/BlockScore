@@ -29,21 +29,25 @@ This package contains automation scripts for the BlockScore project, designed to
 After installation, you can:
 
 1. Set up your development environment:
+
    ```bash
    ./unified_env_setup.sh
    ```
 
 2. Build all components:
+
    ```bash
    ./multi_component_build.sh
    ```
 
 3. Check code quality:
+
    ```bash
    ./code_quality_check.sh
    ```
 
 4. Deploy smart contracts:
+
    ```bash
    ./smart_contract_deploy.sh
    ```

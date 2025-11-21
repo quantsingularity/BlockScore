@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import DashboardScreen from '../screens/DashboardScreen';
 import CreditHistoryScreen from '../screens/CreditHistoryScreen';
@@ -17,17 +17,17 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Dashboard"
           component={DashboardScreen}
-          options={{ headerShown: false }} // Hide header for custom header in screen
+          options={{headerShown: false}} // Hide header for custom header in screen
         />
         <Stack.Screen
           name="CreditHistory"
           component={CreditHistoryScreen}
-          options={{ headerShown: false }} // Hide header for custom header in screen
+          options={{headerShown: false}} // Hide header for custom header in screen
         />
         <Stack.Screen
           name="LoanCalculator"
           component={LoanCalculatorScreen}
-          options={{ headerShown: false }} // Hide header for custom header in screen
+          options={{headerShown: false}} // Hide header for custom header in screen
         />
       </Stack.Navigator>
     </NavigationContainer>

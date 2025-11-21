@@ -51,3 +51,4 @@ Decentralized_Credit_Scoring_System/
 │   ├── designs/
 │   │   ├── wireframes.pdf
 │   │   └── architecture_diagram.png
+```

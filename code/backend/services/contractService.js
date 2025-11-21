@@ -6,8 +6,10 @@ const { Web3 } = require('web3');
 const config = require('./config');
 
 // Contract ABIs
-const CreditScoreABI = require('../blockchain/build/contracts/CreditScore.json').abi;
-const LoanContractABI = require('../blockchain/build/contracts/LoanContract.json').abi;
+const CreditScoreABI =
+  require('../blockchain/build/contracts/CreditScore.json').abi;
+const LoanContractABI =
+  require('../blockchain/build/contracts/LoanContract.json').abi;
 
 class ContractService {
   constructor() {
@@ -53,7 +55,9 @@ class ContractService {
    */
   getAccountFromPrivateKey(privateKey) {
     try {
-      const account = this.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
+      const account = this.web3.eth.accounts.privateKeyToAccount(
+        `0x${privateKey}`
+      );
       return account.address;
     } catch (error) {
       console.error('Invalid private key:', error);
@@ -69,13 +73,17 @@ class ContractService {
    */
   async signAndSendTransaction(tx, privateKey) {
     try {
-      const account = this.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
+      const account = this.web3.eth.accounts.privateKeyToAccount(
+        `0x${privateKey}`
+      );
       const signedTx = await account.signTransaction({
         ...tx,
         gas: config.blockchain.gasLimit,
       });
 
-      const receipt = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+      const receipt = await this.web3.eth.sendSignedTransaction(
+        signedTx.rawTransaction
+      );
       return receipt;
     } catch (error) {
       console.error('Transaction failed:', error);
@@ -94,10 +102,12 @@ class ContractService {
     }
 
     try {
-      const result = await this.creditScoreContract.methods.getCreditScore(userAddress).call();
+      const result = await this.creditScoreContract.methods
+        .getCreditScore(userAddress)
+        .call();
       return {
         score: parseInt(result.score),
-        lastUpdated: parseInt(result.lastUpdated)
+        lastUpdated: parseInt(result.lastUpdated),
       };
     } catch (error) {
       console.error('Failed to get credit score:', error);
@@ -116,17 +126,19 @@ class ContractService {
     }
 
     try {
-      const records = await this.creditScoreContract.methods.getCreditHistory(userAddress).call();
+      const records = await this.creditScoreContract.methods
+        .getCreditHistory(userAddress)
+        .call();
 
       // Format records for easier consumption
-      return records.map(record => ({
+      return records.map((record) => ({
         timestamp: parseInt(record.timestamp),
         amount: parseInt(record.amount),
         repaid: record.repaid,
         repaymentTimestamp: parseInt(record.repaymentTimestamp),
         provider: record.provider,
         recordType: record.recordType,
-        scoreImpact: parseInt(record.scoreImpact)
+        scoreImpact: parseInt(record.scoreImpact),
       }));
     } catch (error) {
       console.error('Failed to get credit history:', error);
@@ -143,7 +155,13 @@ class ContractService {
    * @param {string} privateKey - Provider's private key for signing
    * @returns {Promise<Object>} - Transaction receipt
    */
-  async addCreditRecord(userAddress, amount, recordType, scoreImpact, privateKey) {
+  async addCreditRecord(
+    userAddress,
+    amount,
+    recordType,
+    scoreImpact,
+    privateKey
+  ) {
     if (!this.initialized || !this.creditScoreContract) {
       throw new Error('Contract service not initialized');
     }
@@ -163,7 +181,7 @@ class ContractService {
         from: providerAddress,
         to: this.creditScoreContract.options.address,
         data,
-        gas: config.blockchain.gasLimit
+        gas: config.blockchain.gasLimit,
       };
 
       return await this.signAndSendTransaction(txObject, privateKey);
@@ -188,14 +206,17 @@ class ContractService {
     try {
       const providerAddress = this.getAccountFromPrivateKey(privateKey);
 
-      const tx = this.creditScoreContract.methods.markRepaid(userAddress, recordIndex);
+      const tx = this.creditScoreContract.methods.markRepaid(
+        userAddress,
+        recordIndex
+      );
       const data = tx.encodeABI();
 
       const txObject = {
         from: providerAddress,
         to: this.creditScoreContract.options.address,
         data,
-        gas: config.blockchain.gasLimit
+        gas: config.blockchain.gasLimit,
       };
 
       return await this.signAndSendTransaction(txObject, privateKey);
@@ -221,28 +242,34 @@ class ContractService {
     try {
       const borrowerAddress = this.getAccountFromPrivateKey(privateKey);
 
-      const tx = this.loanContract.methods.createLoan(amount, interestRate, durationDays);
+      const tx = this.loanContract.methods.createLoan(
+        amount,
+        interestRate,
+        durationDays
+      );
       const data = tx.encodeABI();
 
       const txObject = {
         from: borrowerAddress,
         to: this.loanContract.options.address,
         data,
-        gas: config.blockchain.gasLimit
+        gas: config.blockchain.gasLimit,
       };
 
       const receipt = await this.signAndSendTransaction(txObject, privateKey);
 
       // Extract loan ID from event logs
-      const loanCreatedEvent = receipt.logs.find(log =>
-        log.topics[0] === this.web3.utils.sha3('LoanCreated(uint256,address,uint256)')
+      const loanCreatedEvent = receipt.logs.find(
+        (log) =>
+          log.topics[0] ===
+          this.web3.utils.sha3('LoanCreated(uint256,address,uint256)')
       );
 
       const loanId = parseInt(loanCreatedEvent.topics[1], 16);
 
       return {
         receipt,
-        loanId
+        loanId,
       };
     } catch (error) {
       console.error('Failed to create loan:', error);
@@ -271,7 +298,7 @@ class ContractService {
         from: ownerAddress,
         to: this.loanContract.options.address,
         data,
-        gas: config.blockchain.gasLimit
+        gas: config.blockchain.gasLimit,
       };
 
       return await this.signAndSendTransaction(txObject, privateKey);
@@ -302,7 +329,7 @@ class ContractService {
         from: borrowerAddress,
         to: this.loanContract.options.address,
         data,
-        gas: config.blockchain.gasLimit
+        gas: config.blockchain.gasLimit,
       };
 
       return await this.signAndSendTransaction(txObject, privateKey);
@@ -323,8 +350,10 @@ class ContractService {
     }
 
     try {
-      const loanIds = await this.loanContract.methods.getBorrowerLoans(borrowerAddress).call();
-      return loanIds.map(id => parseInt(id));
+      const loanIds = await this.loanContract.methods
+        .getBorrowerLoans(borrowerAddress)
+        .call();
+      return loanIds.map((id) => parseInt(id));
     } catch (error) {
       console.error('Failed to get borrower loans:', error);
       throw new Error(`Failed to get borrower loans: ${error.message}`);
@@ -342,7 +371,9 @@ class ContractService {
     }
 
     try {
-      const loan = await this.loanContract.methods.getLoanDetails(loanId).call();
+      const loan = await this.loanContract.methods
+        .getLoanDetails(loanId)
+        .call();
 
       return {
         borrower: loan.borrower,
@@ -352,7 +383,7 @@ class ContractService {
         dueDate: parseInt(loan.dueDate),
         approved: loan.approved,
         repaid: loan.repaid,
-        repaymentTimestamp: parseInt(loan.repaymentTimestamp)
+        repaymentTimestamp: parseInt(loan.repaymentTimestamp),
       };
     } catch (error) {
       console.error('Failed to get loan details:', error);

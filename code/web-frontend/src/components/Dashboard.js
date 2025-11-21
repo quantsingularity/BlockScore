@@ -8,7 +8,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchScore = async () => {
       const response = await axios.post('/calculate-score', {
-        walletAddress: '0x123...'
+        walletAddress: '0x123...',
       });
       setScore(response.data.score);
     };

@@ -5,6 +5,7 @@
 BlockScore is a decentralized credit scoring system built on blockchain technology. It combines smart contracts for on-chain credit record management with machine learning models for credit score prediction.
 
 This documentation covers the usage of the system's components:
+
 1. Solidity Smart Contracts
 2. Node.js API
 3. Python Scoring Model
@@ -24,6 +25,7 @@ The BlockScore system consists of three main components:
 The CreditScore contract manages credit records and scoring for users on the blockchain.
 
 #### Key Features:
+
 - Store credit records with detailed information
 - Track repayment status
 - Calculate and update credit scores
@@ -32,6 +34,7 @@ The CreditScore contract manages credit records and scoring for users on the blo
 #### Contract Functions:
 
 **Authorization Management:**
+
 ```solidity
 // Authorize a new credit provider
 function authorizeProvider(address provider) external onlyOwner
@@ -44,6 +47,7 @@ function isAuthorizedProvider(address provider) external view returns (bool)
 ```
 
 **Credit Record Management:**
+
 ```solidity
 // Add a credit record for a user
 function addCreditRecord(
@@ -68,6 +72,7 @@ function getCreditHistory(address user) external view returns (CreditRecord[] me
 The LoanContract manages loan creation, approval, and repayment with credit score integration.
 
 #### Key Features:
+
 - Create loan requests
 - Approve loans
 - Track repayment status
@@ -76,6 +81,7 @@ The LoanContract manages loan creation, approval, and repayment with credit scor
 #### Contract Functions:
 
 **Loan Management:**
+
 ```solidity
 // Create a new loan request
 function createLoan(uint256 amount, uint256 interestRate, uint256 durationDays) external returns (uint256 loanId)
@@ -103,12 +109,14 @@ The Node.js API provides RESTful endpoints for interacting with the blockchain c
 ### Setup and Configuration
 
 1. Install dependencies:
+
 ```bash
 cd code/backend
 npm install
 ```
 
 2. Configure environment variables in `.env` file:
+
 ```
 BLOCKCHAIN_PROVIDER=http://localhost:8545
 CREDIT_SCORE_ADDRESS=0x...
@@ -119,6 +127,7 @@ PYTHON_API_URL=http://localhost:5000
 ```
 
 3. Start the API server:
+
 ```bash
 node app.js
 ```
@@ -128,6 +137,7 @@ node app.js
 #### Authentication
 
 **Register a new user:**
+
 ```
 POST /api/auth/register
 Content-Type: application/json
@@ -139,6 +149,7 @@ Content-Type: application/json
 ```
 
 **Login:**
+
 ```
 POST /api/auth/login
 Content-Type: application/json
@@ -150,6 +161,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -164,6 +176,7 @@ Response:
 ```
 
 **Update wallet address:**
+
 ```
 POST /api/auth/wallet
 Authorization: Bearer <token>
@@ -177,11 +190,13 @@ Content-Type: application/json
 #### Credit Operations
 
 **Get credit score:**
+
 ```
 GET /api/credit/score/0x123456789abcdef...
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -193,11 +208,13 @@ Response:
 ```
 
 **Get credit history:**
+
 ```
 GET /api/credit/history/0x123456789abcdef...
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -216,6 +233,7 @@ Response:
 ```
 
 **Add credit record (requires provider authorization):**
+
 ```
 POST /api/credit/record
 Authorization: Bearer <token>
@@ -231,6 +249,7 @@ Content-Type: application/json
 ```
 
 **Mark record as repaid (requires provider authorization):**
+
 ```
 POST /api/credit/record/repaid
 Authorization: Bearer <token>
@@ -244,6 +263,7 @@ Content-Type: application/json
 ```
 
 **Calculate credit score using AI model:**
+
 ```
 POST /api/credit/calculate-score
 Content-Type: application/json
@@ -254,6 +274,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -275,11 +296,13 @@ Response:
 #### Loan Operations
 
 **Get loan details:**
+
 ```
 GET /api/loans/1
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -297,11 +320,13 @@ Response:
 ```
 
 **Get borrower loans:**
+
 ```
 GET /api/loans/borrower/0x123456789abcdef...
 ```
 
 **Create loan:**
+
 ```
 POST /api/loans/create
 Authorization: Bearer <token>
@@ -316,6 +341,7 @@ Content-Type: application/json
 ```
 
 **Approve loan (requires admin):**
+
 ```
 POST /api/loans/approve/1
 Authorization: Bearer <token>
@@ -327,6 +353,7 @@ Content-Type: application/json
 ```
 
 **Repay loan:**
+
 ```
 POST /api/loans/repay/1
 Authorization: Bearer <token>
@@ -344,12 +371,14 @@ The Python scoring model analyzes blockchain credit history to predict credit sc
 ### Setup and Configuration
 
 1. Install dependencies:
+
 ```bash
 cd code/ai_models
 pip install -r training_scripts/requirements.txt
 ```
 
 2. Start the model API server:
+
 ```bash
 python server.py
 ```
@@ -357,11 +386,13 @@ python server.py
 ### API Endpoints
 
 **Health check:**
+
 ```
 GET /health
 ```
 
 **Predict credit score:**
+
 ```
 POST /predict
 Content-Type: application/json
@@ -382,6 +413,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "score": 720,
@@ -397,6 +429,7 @@ Response:
 ```
 
 **Batch predict credit scores:**
+
 ```
 POST /batch-predict
 Content-Type: application/json
@@ -436,18 +469,21 @@ Here's an example of how to integrate the different components:
 ## Running Tests
 
 ### Smart Contract Tests
+
 ```bash
 cd code/blockchain
 npx hardhat test
 ```
 
 ### Node.js API Tests
+
 ```bash
 cd code/backend
 npm test
 ```
 
 ### Python Model Tests
+
 ```bash
 cd code/ai_models
 python -m unittest discover tests
@@ -456,18 +492,21 @@ python -m unittest discover tests
 ## Deployment
 
 ### Smart Contracts
+
 ```bash
 cd code/blockchain
 npx hardhat run scripts/deploy.js --network <network-name>
 ```
 
 ### Node.js API
+
 ```bash
 cd code/backend
 npm start
 ```
 
 ### Python Model API
+
 ```bash
 cd code/ai_models
 python server.py

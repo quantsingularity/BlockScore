@@ -9,12 +9,14 @@ This guide provides comprehensive instructions for deploying the BlockScore back
 ### System Requirements
 
 **Minimum Requirements:**
+
 - CPU: 4 cores
 - RAM: 8GB
 - Storage: 50GB SSD
 - Network: 1Gbps
 
 **Recommended Production:**
+
 - CPU: 8+ cores
 - RAM: 16GB+
 - Storage: 100GB+ SSD with backup
@@ -494,7 +496,7 @@ services:
   backend:
     build: .
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://blockscore_user:password@postgres:5432/blockscore_prod
@@ -538,8 +540,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/ssl
@@ -569,9 +571,9 @@ metadata:
   name: blockscore-config
   namespace: blockscore
 data:
-  FLASK_ENV: "production"
-  LOG_LEVEL: "INFO"
-  REDIS_URL: "redis://redis-service:6379/0"
+  FLASK_ENV: 'production'
+  LOG_LEVEL: 'INFO'
+  REDIS_URL: 'redis://redis-service:6379/0'
 ```
 
 ### 2. Secrets
@@ -584,10 +586,10 @@ metadata:
   namespace: blockscore
 type: Opaque
 stringData:
-  SECRET_KEY: "your_super_secret_key_here"
-  JWT_SECRET_KEY: "your_jwt_secret_key_here"
-  DATABASE_URL: "postgresql://user:pass@postgres:5432/blockscore"
-  BLOCKCHAIN_PRIVATE_KEY: "0x_your_private_key"
+  SECRET_KEY: 'your_super_secret_key_here'
+  JWT_SECRET_KEY: 'your_jwt_secret_key_here'
+  DATABASE_URL: 'postgresql://user:pass@postgres:5432/blockscore'
+  BLOCKCHAIN_PRIVATE_KEY: '0x_your_private_key'
 ```
 
 ### 3. Deployment
@@ -609,34 +611,34 @@ spec:
         app: blockscore-backend
     spec:
       containers:
-      - name: backend
-        image: blockscore/backend:latest
-        ports:
-        - containerPort: 5000
-        envFrom:
-        - configMapRef:
-            name: blockscore-config
-        - secretRef:
-            name: blockscore-secrets
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: backend
+          image: blockscore/backend:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: blockscore-config
+            - secretRef:
+                name: blockscore-secrets
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
 ```
 
 ### 4. Service and Ingress
@@ -651,8 +653,8 @@ spec:
   selector:
     app: blockscore-backend
   ports:
-  - port: 80
-    targetPort: 5000
+    - port: 80
+      targetPort: 5000
   type: ClusterIP
 
 ---
@@ -664,23 +666,23 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit: '100'
 spec:
   tls:
-  - hosts:
-    - api.blockscore.com
-    secretName: blockscore-tls
+    - hosts:
+        - api.blockscore.com
+      secretName: blockscore-tls
   rules:
-  - host: api.blockscore.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: blockscore-backend-service
-            port:
-              number: 80
+    - host: api.blockscore.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blockscore-backend-service
+                port:
+                  number: 80
 ```
 
 ## Monitoring and Observability

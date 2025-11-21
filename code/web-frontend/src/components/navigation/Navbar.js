@@ -1,5 +1,14 @@
 import React from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Avatar, Box, Badge, useTheme } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Avatar,
+  Box,
+  Badge,
+  useTheme,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -15,7 +24,7 @@ const Navbar = ({ onDrawerToggle }) => {
       sx={{
         zIndex: theme.zIndex.drawer + 1,
         background: 'linear-gradient(90deg, #3f51b5 0%, #5c6bc0 100%)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
       }}
     >
       <Toolbar>
@@ -38,7 +47,7 @@ const Navbar = ({ onDrawerToggle }) => {
             fontWeight: 600,
             cursor: 'pointer',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
           onClick={() => navigate('/dashboard')}
         >
@@ -55,7 +64,7 @@ const Navbar = ({ onDrawerToggle }) => {
               color: 'primary.main',
               mr: 1,
               fontWeight: 700,
-              fontSize: '1.2rem'
+              fontSize: '1.2rem',
             }}
           >
             B

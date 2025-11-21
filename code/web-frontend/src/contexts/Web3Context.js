@@ -41,11 +41,10 @@ export const Web3Provider = ({ children }) => {
             window.ethereum.on('chainChanged', () => {
               window.location.reload();
             });
-
           } catch (error) {
             // User denied account access
-            console.error("User denied account access");
-            setError("Please connect your wallet to use this application");
+            console.error('User denied account access');
+            setError('Please connect your wallet to use this application');
           }
         }
         // Legacy dapp browsers
@@ -66,11 +65,13 @@ export const Web3Provider = ({ children }) => {
           // For demo purposes, we'll use a mock provider
           const web3Instance = new Web3('http://localhost:8545');
           setWeb3(web3Instance);
-          setError("No Ethereum browser extension detected. Using read-only mode.");
+          setError(
+            'No Ethereum browser extension detected. Using read-only mode.'
+          );
         }
       } catch (error) {
-        console.error("Error initializing web3:", error);
-        setError("Failed to connect to blockchain network");
+        console.error('Error initializing web3:', error);
+        setError('Failed to connect to blockchain network');
       } finally {
         setLoading(false);
       }
@@ -93,7 +94,7 @@ export const Web3Provider = ({ children }) => {
         networkId,
         loading,
         error,
-        connectToContract
+        connectToContract,
       }}
     >
       {children}

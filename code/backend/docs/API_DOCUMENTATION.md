@@ -31,9 +31,11 @@ Authorization: Bearer <your_jwt_token>
 ### Authentication Endpoints
 
 #### POST /auth/register
+
 Register a new user account.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -51,6 +53,7 @@ Register a new user account.
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "success": true,
@@ -61,6 +64,7 @@ Register a new user account.
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "success": false,
@@ -73,9 +77,11 @@ Register a new user account.
 ```
 
 #### POST /auth/login
+
 Authenticate user and obtain tokens.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -85,6 +91,7 @@ Authenticate user and obtain tokens.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -102,9 +109,11 @@ Authenticate user and obtain tokens.
 ```
 
 #### POST /auth/refresh
+
 Refresh access token using refresh token.
 
 **Request Body:**
+
 ```json
 {
   "refresh_token": "jwt_refresh_token"
@@ -112,6 +121,7 @@ Refresh access token using refresh token.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -122,14 +132,17 @@ Refresh access token using refresh token.
 ```
 
 #### POST /auth/logout
+
 Logout and invalidate tokens.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -138,14 +151,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /auth/password/change
+
 Change user password.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "current_password": "OldPassword123!",
@@ -154,6 +170,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -162,9 +179,11 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /auth/password/reset-request
+
 Request password reset.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com"
@@ -172,6 +191,7 @@ Request password reset.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -180,9 +200,11 @@ Request password reset.
 ```
 
 #### POST /auth/password/reset
+
 Reset password using reset token.
 
 **Request Body:**
+
 ```json
 {
   "reset_token": "reset_token_string",
@@ -191,6 +213,7 @@ Reset password using reset token.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -199,14 +222,17 @@ Reset password using reset token.
 ```
 
 #### POST /auth/mfa/enable
+
 Enable multi-factor authentication.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -216,14 +242,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /auth/mfa/verify
+
 Verify MFA token.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "mfa_token": "123456"
@@ -231,6 +260,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "valid": true,
@@ -239,14 +269,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /auth/mfa/disable
+
 Disable multi-factor authentication.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "mfa_token": "123456"
@@ -254,6 +287,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -264,33 +298,31 @@ Authorization: Bearer <access_token>
 ### Credit Scoring Endpoints
 
 #### GET /credit/score
+
 Get current credit score for authenticated user.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "score": 750,
   "score_range": "excellent",
   "calculated_at": "2024-01-15T10:30:00Z",
   "version": "v2.0",
-  "factors_positive": [
-    "payment_history",
-    "credit_utilization",
-    "credit_age"
-  ],
-  "factors_negative": [
-    "new_credit_inquiries"
-  ],
+  "factors_positive": ["payment_history", "credit_utilization", "credit_age"],
+  "factors_negative": ["new_credit_inquiries"],
   "next_update": "2024-02-15T10:30:00Z"
 }
 ```
 
 **Error Response (404 Not Found):**
+
 ```json
 {
   "error": "Credit score not found",
@@ -299,14 +331,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /credit/calculate
+
 Calculate or recalculate credit score.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body (Optional):**
+
 ```json
 {
   "wallet_address": "0x1234567890123456789012345678901234567890",
@@ -315,6 +350,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "score": 725,
@@ -338,19 +374,23 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /credit/history
+
 Get credit score history.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Query Parameters:**
+
 - `limit` (optional): Number of records to return (default: 10, max: 100)
 - `start_date` (optional): Start date for history (ISO 8601 format)
 - `end_date` (optional): End date for history (ISO 8601 format)
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -369,18 +409,21 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /credit/events
+
 Add credit event (payment, new account, etc.).
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "event_type": "payment_made",
-  "amount": 500.00,
+  "amount": 500.0,
   "description": "Monthly credit card payment",
   "event_date": "2024-01-15T10:30:00Z",
   "account_type": "credit_card"
@@ -388,6 +431,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "success": true,
@@ -398,14 +442,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /credit/factors
+
 Get detailed credit factors analysis.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "positive_factors": [
@@ -414,15 +461,13 @@ Authorization: Bearer <access_token>
       "weight": 0.35,
       "score": 95,
       "description": "Excellent payment history",
-      "recommendations": [
-        "Continue making on-time payments"
-      ]
+      "recommendations": ["Continue making on-time payments"]
     }
   ],
   "negative_factors": [
     {
       "factor": "credit_utilization",
-      "weight": 0.30,
+      "weight": 0.3,
       "score": 60,
       "description": "High credit utilization",
       "recommendations": [
@@ -435,14 +480,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /credit/recommendations
+
 Get personalized credit improvement recommendations.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -461,23 +509,27 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /credit/simulate
+
 Simulate impact of potential credit events.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "event_type": "payment_made",
-  "amount": 1000.00,
+  "amount": 1000.0,
   "scenario": "monthly_payment"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "current_score": 720,
@@ -489,14 +541,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /credit/report
+
 Generate comprehensive credit report.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "user_info": {
@@ -523,30 +578,34 @@ Authorization: Bearer <access_token>
 ### Loan Management Endpoints
 
 #### POST /loans/apply
+
 Submit loan application.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "loan_type": "personal",
-  "requested_amount": 25000.00,
+  "requested_amount": 25000.0,
   "requested_term_months": 60,
   "requested_rate": 12.5,
   "purpose": "debt_consolidation",
   "employment_status": "employed",
-  "annual_income": 85000.00,
-  "monthly_expenses": 3500.00,
+  "annual_income": 85000.0,
+  "monthly_expenses": 3500.0,
   "collateral_type": "none",
   "additional_info": "Stable employment for 5 years"
 }
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "application_id": "uuid-string",
@@ -558,26 +617,30 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /loans/applications
+
 Get user's loan applications.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Query Parameters:**
+
 - `status` (optional): Filter by status (pending, approved, rejected, etc.)
 - `limit` (optional): Number of records to return
 - `offset` (optional): Pagination offset
 
 **Response (200 OK):**
+
 ```json
 [
   {
     "id": "uuid-string",
     "reference_number": "LA-2024-001234",
     "loan_type": "personal",
-    "requested_amount": 25000.00,
+    "requested_amount": 25000.0,
     "status": "under_review",
     "submitted_at": "2024-01-15T10:30:00Z",
     "last_updated": "2024-01-16T09:15:00Z"
@@ -586,32 +649,32 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /loans/applications/{application_id}
+
 Get specific loan application details.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "id": "uuid-string",
   "reference_number": "LA-2024-001234",
   "status": "approved",
   "loan_type": "personal",
-  "requested_amount": 25000.00,
-  "approved_amount": 22000.00,
+  "requested_amount": 25000.0,
+  "approved_amount": 22000.0,
   "approved_rate": 13.2,
   "approved_term_months": 60,
   "monthly_payment": 495.67,
-  "total_interest": 7740.20,
+  "total_interest": 7740.2,
   "submitted_at": "2024-01-15T10:30:00Z",
   "decision_date": "2024-01-17T14:22:00Z",
-  "conditions": [
-    "Provide proof of income",
-    "Set up automatic payments"
-  ],
+  "conditions": ["Provide proof of income", "Set up automatic payments"],
   "next_steps": [
     "Review and sign loan agreement",
     "Provide required documentation"
@@ -620,14 +683,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /loans/applications/{application_id}/accept
+
 Accept approved loan offer.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "electronic_signature": true,
@@ -636,6 +702,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -649,22 +716,25 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /loans/active
+
 Get user's active loans.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 [
   {
     "id": "uuid-string",
     "reference_number": "LN-2024-001234",
     "loan_type": "personal",
-    "original_amount": 22000.00,
-    "current_balance": 18500.00,
+    "original_amount": 22000.0,
+    "current_balance": 18500.0,
     "monthly_payment": 495.67,
     "next_payment_date": "2024-02-15",
     "next_payment_amount": 495.67,
@@ -676,14 +746,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /loans/{loan_id}/payments
+
 Get loan payment history.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -692,7 +765,7 @@ Authorization: Bearer <access_token>
     "amount": 495.67,
     "principal": 312.45,
     "interest": 183.22,
-    "remaining_balance": 18500.00,
+    "remaining_balance": 18500.0,
     "status": "completed",
     "payment_method": "bank_transfer"
   }
@@ -700,14 +773,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /loans/{loan_id}/payments
+
 Make loan payment.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "amount": 495.67,
@@ -717,6 +793,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "payment_id": "uuid-string",
@@ -729,14 +806,17 @@ Authorization: Bearer <access_token>
 ### Compliance Endpoints
 
 #### POST /compliance/kyc
+
 Perform KYC (Know Your Customer) assessment.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body (Optional):**
+
 ```json
 {
   "kyc_level": "enhanced"
@@ -744,6 +824,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "compliance_record_id": "uuid-string",
@@ -769,23 +850,27 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /compliance/aml
+
 Perform AML (Anti-Money Laundering) screening.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body (Optional):**
+
 ```json
 {
-  "transaction_amount": 10000.00,
+  "transaction_amount": 10000.0,
   "transaction_type": "loan_disbursement",
   "counterparty": "Bank of America"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "compliance_record_id": "uuid-string",
@@ -811,14 +896,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /compliance/status
+
 Get user's compliance status.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "kyc_status": "verified",
@@ -835,14 +923,17 @@ Authorization: Bearer <access_token>
 ### Blockchain Endpoints
 
 #### POST /blockchain/credit-score
+
 Submit credit score to blockchain.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "wallet_address": "0x1234567890123456789012345678901234567890",
@@ -851,6 +942,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "transaction_id": "uuid-string",
@@ -867,14 +959,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /blockchain/transactions/{transaction_hash}
+
 Get blockchain transaction status.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "transaction_hash": "0xabcdef1234567890...",
@@ -890,18 +985,22 @@ Authorization: Bearer <access_token>
 ```
 
 #### GET /blockchain/wallet/{wallet_address}/history
+
 Get wallet transaction history.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Query Parameters:**
+
 - `limit` (optional): Number of transactions to return
 - `offset` (optional): Pagination offset
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -916,25 +1015,29 @@ Authorization: Bearer <access_token>
 ```
 
 #### POST /blockchain/loan-agreement
+
 Submit loan agreement to blockchain.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "loan_id": "uuid-string",
   "borrower_address": "0x1234567890123456789012345678901234567890",
-  "loan_amount": 25000.00,
+  "loan_amount": 25000.0,
   "interest_rate": 12.5,
   "term_months": 60
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "transaction_id": "uuid-string",
@@ -947,14 +1050,17 @@ Authorization: Bearer <access_token>
 ### User Profile Endpoints
 
 #### GET /users/profile
+
 Get user profile information.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "id": "uuid-string",
@@ -975,7 +1081,7 @@ Authorization: Bearer <access_token>
     "status": "employed",
     "employer": "Tech Corp",
     "position": "Software Engineer",
-    "annual_income": 85000.00
+    "annual_income": 85000.0
   },
   "kyc_status": "verified",
   "created_at": "2024-01-01T10:00:00Z",
@@ -984,14 +1090,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### PUT /users/profile
+
 Update user profile information.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "first_name": "John",
@@ -1007,34 +1116,33 @@ Authorization: Bearer <access_token>
   "employment": {
     "employer": "New Tech Corp",
     "position": "Senior Software Engineer",
-    "annual_income": 95000.00
+    "annual_income": 95000.0
   }
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
   "message": "Profile updated successfully",
-  "updated_fields": [
-    "last_name",
-    "phone_number",
-    "address",
-    "employment"
-  ]
+  "updated_fields": ["last_name", "phone_number", "address", "employment"]
 }
 ```
 
 #### GET /users/sessions
+
 Get active user sessions.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -1050,14 +1158,17 @@ Authorization: Bearer <access_token>
 ```
 
 #### DELETE /users/sessions/{session_id}
+
 Revoke specific user session.
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -1068,9 +1179,11 @@ Authorization: Bearer <access_token>
 ### Health and Monitoring Endpoints
 
 #### GET /health
+
 Basic health check.
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "healthy",
@@ -1080,14 +1193,17 @@ Basic health check.
 ```
 
 #### GET /health/detailed
+
 Detailed health check (requires authentication).
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "healthy",

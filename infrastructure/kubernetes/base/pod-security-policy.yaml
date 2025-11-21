@@ -38,11 +38,11 @@ kind: ClusterRole
 metadata:
   name: blockscore-psp-user
 rules:
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames:
-  - blockscore-psp
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames:
+      - blockscore-psp
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -53,9 +53,9 @@ roleRef:
   name: blockscore-psp-user
   apiGroup: rbac.authorization.k8s.io
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: default
-- kind: ServiceAccount
-  name: blockscore-service-account
-  namespace: default
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+  - kind: ServiceAccount
+    name: blockscore-service-account
+    namespace: default

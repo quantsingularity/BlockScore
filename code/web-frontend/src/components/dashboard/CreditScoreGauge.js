@@ -15,7 +15,14 @@ const CreditScoreGauge = ({ score }) => {
   };
 
   return (
-    <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <CircularProgress
         variant="determinate"
         value={100}
@@ -43,7 +50,12 @@ const CreditScoreGauge = ({ score }) => {
           flexDirection: 'column',
         }}
       >
-        <Typography variant="h3" component="div" fontWeight={700} color={getColor(score)}>
+        <Typography
+          variant="h3"
+          component="div"
+          fontWeight={700}
+          color={getColor(score)}
+        >
           {score}
         </Typography>
         <Typography variant="body2" color="text.secondary">

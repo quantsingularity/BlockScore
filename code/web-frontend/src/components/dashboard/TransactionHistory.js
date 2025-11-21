@@ -7,7 +7,7 @@ import {
   ListItemText,
   Divider,
   Chip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { format } from 'date-fns';
 
@@ -34,19 +34,25 @@ const TransactionHistory = ({ history }) => {
                   py: 2,
                   transition: 'background-color 0.3s',
                   '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                  }
+                    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  },
                 }}
               >
                 <ListItemText
                   primary={
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
                       <Typography variant="subtitle1" fontWeight={500}>
                         ${transaction.amount.toLocaleString()}
                       </Typography>
                       <Chip
-                        label={transaction.repaid ? "Repaid" : "Outstanding"}
-                        color={transaction.repaid ? "success" : "warning"}
+                        label={transaction.repaid ? 'Repaid' : 'Outstanding'}
+                        color={transaction.repaid ? 'success' : 'warning'}
                         size="small"
                       />
                     </Box>
@@ -58,9 +64,16 @@ const TransactionHistory = ({ history }) => {
                         variant="body2"
                         color="text.primary"
                       >
-                        Transaction ID: {`TX${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`}
+                        Transaction ID:{' '}
+                        {`TX${Math.floor(Math.random() * 1000000)
+                          .toString()
+                          .padStart(6, '0')}`}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.5 }}
+                      >
                         {format(new Date(transaction.timestamp), 'PPP')}
                       </Typography>
                     </React.Fragment>

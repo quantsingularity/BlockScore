@@ -7,7 +7,7 @@ import {
   CardActionArea,
   CardContent,
   Typography,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,27 +25,41 @@ const QuickActions = () => {
     {
       title: 'Calculate Loan',
       description: 'Check loan eligibility',
-      icon: <CalculateIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />,
-      action: () => navigate('/loan-calculator')
+      icon: (
+        <CalculateIcon
+          sx={{ fontSize: 32, color: theme.palette.primary.main }}
+        />
+      ),
+      action: () => navigate('/loan-calculator'),
     },
     {
       title: 'View History',
       description: 'See transaction details',
-      icon: <HistoryIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />,
-      action: () => navigate('/history')
+      icon: (
+        <HistoryIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />
+      ),
+      action: () => navigate('/history'),
     },
     {
       title: 'Improve Score',
       description: 'Get improvement tips',
-      icon: <TrendingUpIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />,
-      action: () => navigate('/profile')
+      icon: (
+        <TrendingUpIcon
+          sx={{ fontSize: 32, color: theme.palette.primary.main }}
+        />
+      ),
+      action: () => navigate('/profile'),
     },
     {
       title: 'Get Help',
       description: 'Support and resources',
-      icon: <HelpOutlineIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />,
-      action: () => navigate('/help')
-    }
+      icon: (
+        <HelpOutlineIcon
+          sx={{ fontSize: 32, color: theme.palette.primary.main }}
+        />
+      ),
+      action: () => navigate('/help'),
+    },
   ];
 
   return (
@@ -58,8 +72,8 @@ const QuickActions = () => {
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': {
                 transform: 'translateY(-4px)',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-              }
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+              },
             }}
           >
             <CardActionArea
@@ -67,9 +81,7 @@ const QuickActions = () => {
               onClick={action.action}
             >
               <CardContent sx={{ textAlign: 'center' }}>
-                <Box sx={{ mb: 1 }}>
-                  {action.icon}
-                </Box>
+                <Box sx={{ mb: 1 }}>{action.icon}</Box>
                 <Typography variant="subtitle2" fontWeight={500}>
                   {action.title}
                 </Typography>

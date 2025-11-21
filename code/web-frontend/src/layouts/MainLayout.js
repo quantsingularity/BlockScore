@@ -18,10 +18,7 @@ const MainLayout = () => {
       <Navbar onDrawerToggle={handleDrawerToggle} />
 
       {/* Sidebar */}
-      <Sidebar
-        mobileOpen={mobileOpen}
-        onDrawerToggle={handleDrawerToggle}
-      />
+      <Sidebar mobileOpen={mobileOpen} onDrawerToggle={handleDrawerToggle} />
 
       {/* Main content */}
       <Box
@@ -32,7 +29,7 @@ const MainLayout = () => {
           width: { sm: `calc(100% - 240px)` },
           mt: '64px',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
         <Box sx={{ flexGrow: 1 }}>

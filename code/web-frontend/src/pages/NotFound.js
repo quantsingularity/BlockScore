@@ -16,7 +16,7 @@ const NotFound = () => {
           justifyContent: 'center',
           minHeight: '80vh',
           textAlign: 'center',
-          py: 8
+          py: 8,
         }}
       >
         <motion.div
@@ -33,7 +33,7 @@ const NotFound = () => {
               background: 'linear-gradient(45deg, #3f51b5 30%, #f50057 90%)',
               backgroundClip: 'text',
               textFillColor: 'transparent',
-              mb: 2
+              mb: 2,
             }}
           >
             404
@@ -68,7 +68,8 @@ const NotFound = () => {
             color="text.secondary"
             sx={{ mb: 4, maxWidth: 500 }}
           >
-            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+            The page you are looking for might have been removed, had its name
+            changed, or is temporarily unavailable.
           </Typography>
         </motion.div>
 
@@ -85,11 +86,7 @@ const NotFound = () => {
           >
             Go to Dashboard
           </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => navigate('/')}
-          >
+          <Button variant="outlined" size="large" onClick={() => navigate('/')}>
             Back to Home
           </Button>
         </motion.div>

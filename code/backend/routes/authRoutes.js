@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username and password are required'
+        message: 'Username and password are required',
       });
     }
 
@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
     if (role === 'admin' || role === 'provider') {
       return res.status(403).json({
         success: false,
-        message: 'Cannot create admin or provider accounts directly'
+        message: 'Cannot create admin or provider accounts directly',
       });
     }
 
@@ -34,13 +34,13 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: user
+      data: user,
     });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to register user'
+      message: error.message || 'Failed to register user',
     });
   }
 });
@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username and password are required'
+        message: 'Username and password are required',
       });
     }
 
@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
     console.error('Error authenticating user:', error);
     res.status(401).json({
       success: false,
-      message: error.message || 'Authentication failed'
+      message: error.message || 'Authentication failed',
     });
   }
 });
@@ -86,21 +86,24 @@ router.post('/wallet', verifyToken, async (req, res) => {
     if (!walletAddress) {
       return res.status(400).json({
         success: false,
-        message: 'Wallet address is required'
+        message: 'Wallet address is required',
       });
     }
 
-    const updatedUser = authService.updateWalletAddress(username, walletAddress);
+    const updatedUser = authService.updateWalletAddress(
+      username,
+      walletAddress
+    );
 
     res.json({
       success: true,
-      data: updatedUser
+      data: updatedUser,
     });
   } catch (error) {
     console.error('Error updating wallet address:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to update wallet address'
+      message: error.message || 'Failed to update wallet address',
     });
   }
 });
@@ -117,7 +120,7 @@ router.post('/provider', verifyToken, isAdmin, async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username and password are required'
+        message: 'Username and password are required',
       });
     }
 
@@ -125,13 +128,13 @@ router.post('/provider', verifyToken, isAdmin, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: user
+      data: user,
     });
   } catch (error) {
     console.error('Error registering provider:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to register provider'
+      message: error.message || 'Failed to register provider',
     });
   }
 });

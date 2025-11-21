@@ -7,6 +7,7 @@ This infrastructure directory provides a comprehensive, robust, and secure found
 ## 🚀 Key Features
 
 ### Security Enhancements
+
 - **Web Application Firewall (WAF)** with managed rule sets for OWASP Top 10 protection
 - **DDoS Protection** through cloud-native services
 - **Secrets Management** using AWS Secrets Manager with encryption
@@ -16,6 +17,7 @@ This infrastructure directory provides a comprehensive, robust, and secure found
 - **Pod Security Policies** for Kubernetes workloads
 
 ### Compliance Features
+
 - **Audit Logging** with AWS CloudTrail for all API calls
 - **Centralized Logging** with CloudWatch and S3 for long-term retention
 - **Data Encryption** meeting PCI DSS and financial industry standards
@@ -23,6 +25,7 @@ This infrastructure directory provides a comprehensive, robust, and secure found
 - **Compliance Testing** scripts for PCI DSS, SOX, GDPR, and CCPA
 
 ### Operational Excellence
+
 - **Auto Scaling** with CloudWatch metrics and alarms
 - **High Availability** across multiple availability zones
 - **Monitoring and Alerting** with comprehensive metrics collection
@@ -91,18 +94,21 @@ infrastructure/
 ## 🔒 Security Features
 
 ### Network Security
+
 - **Multi-layer Security Groups**: Web, application, and database tiers with restricted access
 - **Network Policies**: Kubernetes network segmentation and traffic control
 - **VPC Configuration**: Private subnets for sensitive workloads
 - **WAF Protection**: Application-layer security with managed rule sets
 
 ### Data Protection
+
 - **Encryption at Rest**: All storage encrypted with customer-managed keys
 - **Encryption in Transit**: TLS 1.2+ for all communications
 - **Secrets Management**: Centralized secret storage with rotation capabilities
 - **Data Loss Prevention**: Monitoring and alerting for sensitive data access
 
 ### Access Control
+
 - **IAM Roles and Policies**: Least privilege access with detailed permissions
 - **Service Accounts**: Kubernetes workloads with minimal required permissions
 - **Multi-Factor Authentication**: Required for all administrative access
@@ -111,6 +117,7 @@ infrastructure/
 ## 📋 Compliance Standards
 
 ### Supported Standards
+
 - **PCI DSS**: Payment Card Industry Data Security Standard
 - **SOX**: Sarbanes-Oxley Act compliance
 - **GDPR**: General Data Protection Regulation
@@ -118,6 +125,7 @@ infrastructure/
 - **Financial Industry Best Practices**
 
 ### Compliance Features
+
 - **Audit Trails**: Immutable logging of all system activities
 - **Data Retention**: Configurable retention policies for compliance
 - **Access Monitoring**: Real-time monitoring of privileged access
@@ -126,6 +134,7 @@ infrastructure/
 ## 🚀 Deployment Guide
 
 ### Prerequisites
+
 - AWS CLI configured with appropriate permissions
 - Terraform >= 1.5.0
 - kubectl >= 1.27.0
@@ -134,17 +143,20 @@ infrastructure/
 ### Quick Start
 
 1. **Initialize Terraform**
+
    ```bash
    cd terraform/
    terraform init
    ```
 
 2. **Plan Infrastructure**
+
    ```bash
    terraform plan -var-file="environments/dev/terraform.tfvars"
    ```
 
 3. **Deploy Infrastructure**
+
    ```bash
    terraform apply -var-file="environments/dev/terraform.tfvars"
    ```
@@ -157,6 +169,7 @@ infrastructure/
 ### Environment-Specific Deployment
 
 #### Development Environment
+
 ```bash
 # Deploy Terraform infrastructure
 terraform apply -var-file="environments/dev/terraform.tfvars"
@@ -167,6 +180,7 @@ kubectl set env deployment/blockscore-backend ENVIRONMENT=dev
 ```
 
 #### Production Environment
+
 ```bash
 # Deploy Terraform infrastructure (requires approval)
 terraform apply -var-file="environments/prod/terraform.tfvars"
@@ -179,19 +193,24 @@ kubectl set env deployment/blockscore-backend ENVIRONMENT=production
 ## 🔧 Configuration
 
 ### Environment Variables
+
 - `AWS_REGION`: Target AWS region for deployment
 - `ENVIRONMENT`: Deployment environment (dev/staging/prod)
 - `PROJECT_NAME`: Name of the project (default: blockscore)
 
 ### Terraform Variables
+
 Key variables that can be customized in `terraform.tfvars`:
+
 - `instance_type`: EC2 instance type for compute resources
 - `db_instance_class`: RDS instance class for database
 - `enable_multi_az`: Enable multi-AZ deployment for high availability
 - `backup_retention_period`: Database backup retention in days
 
 ### Kubernetes Configuration
+
 Environment-specific values in `kubernetes/environments/*/values.yaml`:
+
 - Resource limits and requests
 - Replica counts
 - Environment-specific secrets and configurations
@@ -199,16 +218,19 @@ Environment-specific values in `kubernetes/environments/*/values.yaml`:
 ## 📊 Monitoring and Observability
 
 ### Metrics Collection
+
 - **CloudWatch Metrics**: System and application metrics
 - **Custom Metrics**: Business-specific KPIs and performance indicators
 - **Log Aggregation**: Centralized logging with structured log format
 
 ### Alerting
+
 - **CloudWatch Alarms**: Automated alerting on threshold breaches
 - **Security Alerts**: Real-time notifications for security events
 - **Compliance Alerts**: Notifications for compliance violations
 
 ### Dashboards
+
 - **Infrastructure Health**: Real-time infrastructure status
 - **Application Performance**: Application-specific metrics and KPIs
 - **Security Dashboard**: Security events and compliance status
@@ -216,6 +238,7 @@ Environment-specific values in `kubernetes/environments/*/values.yaml`:
 ## 🧪 Testing and Validation
 
 ### Security Testing
+
 ```bash
 # Run comprehensive security scan
 ./tests/security_scan.sh
@@ -228,6 +251,7 @@ Environment-specific values in `kubernetes/environments/*/values.yaml`:
 ```
 
 ### Automated Testing
+
 - **CI/CD Integration**: Automated testing in deployment pipelines
 - **Security Scanning**: Continuous security assessment
 - **Compliance Checking**: Regular compliance validation
@@ -235,11 +259,13 @@ Environment-specific values in `kubernetes/environments/*/values.yaml`:
 ## 🔄 CI/CD Integration
 
 ### GitHub Actions Workflows
+
 - **Terraform CI/CD**: Automated infrastructure deployment with security scanning
 - **Kubernetes CI/CD**: Container deployment with security validation
 - **Security Scanning**: Automated security and compliance checks
 
 ### Pipeline Features
+
 - **Multi-environment Support**: Separate pipelines for dev, staging, and production
 - **Security Gates**: Mandatory security scans before deployment
 - **Approval Workflows**: Manual approval required for production deployments
@@ -247,11 +273,13 @@ Environment-specific values in `kubernetes/environments/*/values.yaml`:
 ## 🆘 Troubleshooting
 
 ### Common Issues
+
 1. **Terraform State Lock**: Use `terraform force-unlock` if state is locked
 2. **Kubernetes RBAC**: Ensure service accounts have proper permissions
 3. **Security Group Rules**: Verify security group configurations for connectivity
 
 ### Debugging Commands
+
 ```bash
 # Check Terraform state
 terraform show
@@ -268,11 +296,13 @@ kubectl get networkpolicies
 ## 📚 Additional Resources
 
 ### Documentation
+
 - [Architecture Design Document](docs/architecture_design.md)
 - [Security Best Practices](docs/security_best_practices.md)
 - [Compliance Guidelines](docs/compliance_guidelines.md)
 
 ### External References
+
 - [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
 - [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/)
 - [Terraform Best Practices](https://www.terraform.io/docs/cloud/guides/recommended-practices/)
@@ -280,6 +310,7 @@ kubectl get networkpolicies
 ## 🤝 Contributing
 
 ### Development Workflow
+
 1. Create feature branch from `develop`
 2. Make infrastructure changes
 3. Run security and compliance tests
@@ -287,6 +318,7 @@ kubectl get networkpolicies
 5. Undergo security review and approval
 
 ### Code Standards
+
 - Follow Terraform naming conventions
 - Use consistent tagging across all resources
 - Document all security configurations
@@ -295,6 +327,7 @@ kubectl get networkpolicies
 ## 📞 Support
 
 For questions or issues related to this infrastructure:
+
 - **Security Issues**: Contact security team immediately
 - **Infrastructure Issues**: Create ticket with infrastructure team
 - **Compliance Questions**: Consult with compliance team

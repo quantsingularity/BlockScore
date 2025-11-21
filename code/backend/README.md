@@ -7,18 +7,21 @@ BlockScore Backend is a comprehensive, production-ready financial services API b
 ## 🚀 Key Features
 
 ### Financial Services
+
 - **Advanced Credit Scoring**: AI-powered credit assessment with blockchain integration
 - **Loan Management**: Complete loan application, approval, and servicing workflow
 - **Compliance Monitoring**: KYC/AML screening and regulatory compliance automation
 - **Blockchain Integration**: Smart contract deployment and transaction management
 
 ### Enterprise Architecture
+
 - **Production-Ready**: Scalable architecture with microservices design patterns
 - **Security First**: Multi-factor authentication, encryption, audit trails
 - **High Performance**: Redis caching, database optimization, background job processing
 - **Monitoring**: Comprehensive logging, metrics, and health monitoring
 
 ### Financial Industry Standards
+
 - **Regulatory Compliance**: SOX, PCI DSS, GDPR compliance features
 - **Audit Trails**: Complete transaction and user activity logging
 - **Data Security**: Encryption at rest and in transit, secure key management
@@ -27,12 +30,14 @@ BlockScore Backend is a comprehensive, production-ready financial services API b
 ## 📋 Requirements
 
 ### System Requirements
+
 - **Python**: 3.11+
 - **Database**: PostgreSQL 14+
 - **Cache**: Redis 6.2+
 - **Message Queue**: Celery with Redis broker
 
 ### External Services
+
 - **Blockchain**: Ethereum/Polygon RPC endpoint
 - **Email**: SMTP service for notifications
 - **Monitoring**: APM service (optional)
@@ -77,6 +82,7 @@ nano .env
 ```
 
 Required environment variables:
+
 ```env
 # Application
 SECRET_KEY=your_secret_key_here
@@ -168,6 +174,7 @@ tests/
 ### Quick Start
 
 1. **Register a user**:
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
@@ -180,6 +187,7 @@ curl -X POST http://localhost:5000/api/auth/register \
 ```
 
 2. **Login**:
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -190,6 +198,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 ```
 
 3. **Get credit score**:
+
 ```bash
 curl -X GET http://localhost:5000/api/credit/score \
   -H "Authorization: Bearer <your_jwt_token>"
@@ -198,6 +207,7 @@ curl -X GET http://localhost:5000/api/credit/score \
 ### Complete API Reference
 
 See [API Documentation](docs/API_DOCUMENTATION.md) for comprehensive endpoint documentation including:
+
 - Authentication endpoints
 - Credit scoring APIs
 - Loan management APIs
@@ -255,16 +265,16 @@ The application uses a comprehensive database schema designed for financial serv
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `SECRET_KEY` | Flask secret key | Yes |
-| `JWT_SECRET_KEY` | JWT signing key | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `REDIS_URL` | Redis connection string | Yes |
-| `BLOCKCHAIN_PROVIDER_URL` | Blockchain RPC endpoint | Yes |
-| `BLOCKCHAIN_PRIVATE_KEY` | Blockchain private key | Yes |
-| `MAIL_SERVER` | SMTP server | No |
-| `SENTRY_DSN` | Error tracking DSN | No |
+| Variable                  | Description                  | Required |
+| ------------------------- | ---------------------------- | -------- |
+| `SECRET_KEY`              | Flask secret key             | Yes      |
+| `JWT_SECRET_KEY`          | JWT signing key              | Yes      |
+| `DATABASE_URL`            | PostgreSQL connection string | Yes      |
+| `REDIS_URL`               | Redis connection string      | Yes      |
+| `BLOCKCHAIN_PROVIDER_URL` | Blockchain RPC endpoint      | Yes      |
+| `BLOCKCHAIN_PRIVATE_KEY`  | Blockchain private key       | Yes      |
+| `MAIL_SERVER`             | SMTP server                  | No       |
+| `SENTRY_DSN`              | Error tracking DSN           | No       |
 
 ### Feature Flags
 
@@ -285,6 +295,7 @@ ENABLE_RATE_LIMITING = os.getenv('ENABLE_RATE_LIMITING', 'true').lower() == 'tru
 ### Metrics
 
 The application exposes Prometheus metrics at `/metrics` including:
+
 - Request count and duration
 - Database connection pool status
 - Cache hit rates
@@ -293,6 +304,7 @@ The application exposes Prometheus metrics at `/metrics` including:
 ### Logging
 
 Structured logging with multiple levels:
+
 - **INFO**: General application events
 - **WARNING**: Potential issues
 - **ERROR**: Application errors
@@ -378,6 +390,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Getting Help
 
 For questions and support:
+
 1. Check the documentation
 2. Search existing issues
 3. Create a new issue with detailed information
@@ -387,6 +400,7 @@ For questions and support:
 ### Database Configuration
 
 #### Connection Pooling
+
 ```python
 # config.py
 SQLALCHEMY_ENGINE_OPTIONS = {
@@ -398,6 +412,7 @@ SQLALCHEMY_ENGINE_OPTIONS = {
 ```
 
 #### Read Replicas
+
 ```python
 # For read-heavy workloads
 SQLALCHEMY_BINDS = {
@@ -408,6 +423,7 @@ SQLALCHEMY_BINDS = {
 ### Redis Configuration
 
 #### Caching Strategy
+
 ```python
 # Cache configuration
 CACHE_CONFIG = {
@@ -419,6 +435,7 @@ CACHE_CONFIG = {
 ```
 
 #### Session Storage
+
 ```python
 # Session configuration
 SESSION_TYPE = 'redis'
@@ -430,6 +447,7 @@ SESSION_USE_SIGNER = True
 ### Background Jobs Configuration
 
 #### Celery Configuration
+
 ```python
 # celery_config.py
 broker_url = os.getenv('REDIS_URL')
@@ -453,6 +471,7 @@ task_routes = {
 ### Database Optimization
 
 #### Indexing Strategy
+
 ```sql
 -- Critical indexes for performance
 CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
@@ -463,6 +482,7 @@ CREATE INDEX CONCURRENTLY idx_blockchain_transactions_hash ON blockchain_transac
 ```
 
 #### Query Optimization
+
 ```python
 # Use query optimization techniques
 from sqlalchemy.orm import joinedload, selectinload
@@ -477,6 +497,7 @@ users = db.session.query(User).options(
 ### Caching Strategy
 
 #### Multi-level Caching
+
 ```python
 # L1: Application-level caching
 @lru_cache(maxsize=1000)
@@ -497,6 +518,7 @@ def get_current_loan_rates():
 ### API Performance
 
 #### Response Compression
+
 ```python
 from flask_compress import Compress
 
@@ -505,6 +527,7 @@ compress.init_app(app)
 ```
 
 #### Pagination
+
 ```python
 # Efficient pagination
 @app.route('/api/loans/applications')
@@ -535,6 +558,7 @@ def get_loan_applications():
 ## 🛡️ Advanced Security
 
 ### Security Headers
+
 ```python
 from flask_talisman import Talisman
 
@@ -555,6 +579,7 @@ Talisman(app, content_security_policy=csp)
 ```
 
 ### Input Validation
+
 ```python
 from marshmallow import Schema, fields, validate
 
@@ -573,6 +598,7 @@ class UserRegistrationSchema(Schema):
 ```
 
 ### Encryption Utilities
+
 ```python
 from cryptography.fernet import Fernet
 import base64
@@ -598,6 +624,7 @@ class EncryptionService:
 ## 📊 Advanced Monitoring
 
 ### Custom Metrics
+
 ```python
 from prometheus_client import Counter, Histogram, Gauge
 import time
@@ -625,6 +652,7 @@ def after_request(response):
 ```
 
 ### Health Check Endpoints
+
 ```python
 @app.route('/api/health/detailed')
 @auth_required
@@ -672,6 +700,7 @@ def detailed_health_check():
 ## 🔄 Background Jobs
 
 ### Task Definitions
+
 ```python
 # tasks.py
 from celery import Celery
@@ -726,6 +755,7 @@ def send_notification_email(user_id, template, context):
 ```
 
 ### Task Scheduling
+
 ```python
 # Beat schedule for periodic tasks
 from celery.schedules import crontab
@@ -749,6 +779,7 @@ celery.conf.beat_schedule = {
 ## 🧪 Advanced Testing
 
 ### Test Configuration
+
 ```python
 # conftest.py
 import pytest
@@ -785,6 +816,7 @@ def mock_blockchain_service():
 ```
 
 ### Integration Tests
+
 ```python
 # test_integration.py
 def test_complete_loan_application_flow(client, auth_headers):
@@ -821,6 +853,7 @@ def test_complete_loan_application_flow(client, auth_headers):
 ```
 
 ### Performance Tests
+
 ```python
 # test_performance.py
 import time
@@ -849,6 +882,7 @@ def test_concurrent_requests(client, auth_headers):
 ## 📋 Compliance & Audit
 
 ### Audit Trail Implementation
+
 ```python
 # audit_service.py
 class AuditService:
@@ -878,6 +912,7 @@ class AuditService:
 ```
 
 ### Compliance Reporting
+
 ```python
 # compliance_reporting.py
 class ComplianceReporter:
@@ -920,6 +955,7 @@ class ComplianceReporter:
 ## 🚀 Production Deployment
 
 ### Docker Configuration
+
 ```dockerfile
 # Dockerfile
 FROM python:3.11-slim
@@ -954,6 +990,7 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120",
 ```
 
 ### Docker Compose
+
 ```yaml
 # docker-compose.yml
 version: '3.8'
@@ -962,7 +999,7 @@ services:
   app:
     build: .
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
       - REDIS_URL=redis://redis:6379/0
@@ -981,12 +1018,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5432:5432'
 
   redis:
     image: redis:6-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
 
@@ -1016,6 +1053,7 @@ volumes:
 ```
 
 ### Kubernetes Deployment
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -1035,40 +1073,40 @@ spec:
         app: blockscore-backend
     spec:
       containers:
-      - name: backend
-        image: blockscore-backend:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: blockscore-secrets
-              key: database-url
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: blockscore-secrets
-              key: redis-url
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: backend
+          image: blockscore-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blockscore-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blockscore-secrets
+                  key: redis-url
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
 ---
 apiVersion: v1
 kind: Service
@@ -1078,9 +1116,9 @@ spec:
   selector:
     app: blockscore-backend
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 5000
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
   type: LoadBalancer
 ```
 

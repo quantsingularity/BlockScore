@@ -10,7 +10,7 @@ import {
   useTheme,
   useMediaQuery,
   Collapse,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -32,13 +32,13 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
 
   const [open, setOpen] = useState({
     transactions: false,
-    settings: false
+    settings: false,
   });
 
   const handleClick = (section) => {
     setOpen({
       ...open,
-      [section]: !open[section]
+      [section]: !open[section],
     });
   };
 
@@ -46,50 +46,52 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
     {
       text: 'Dashboard',
       icon: <DashboardIcon />,
-      path: '/dashboard'
+      path: '/dashboard',
     },
     {
       text: 'Loan Calculator',
       icon: <CalculateIcon />,
-      path: '/loan-calculator'
+      path: '/loan-calculator',
     },
     {
       text: 'Wallet',
       icon: <AccountBalanceWalletIcon />,
-      path: '/profile'
+      path: '/profile',
     },
     {
       text: 'Transaction History',
       icon: <HistoryIcon />,
-      path: '/history'
+      path: '/history',
     },
     {
       text: 'Settings',
       icon: <SettingsIcon />,
-      path: '/settings'
+      path: '/settings',
     },
     {
       text: 'Help & Support',
       icon: <HelpIcon />,
-      path: '/help'
-    }
+      path: '/help',
+    },
   ];
 
   const drawer = (
     <div>
-      <Box sx={{
-        height: 64,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottom: `1px solid ${theme.palette.divider}`
-      }}>
+      <Box
+        sx={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}
+      >
         <Typography
           variant="h6"
           sx={{
             fontFamily: '"Poppins", sans-serif',
             fontWeight: 600,
-            color: theme.palette.primary.main
+            color: theme.palette.primary.main,
           }}
         >
           BlockScore
@@ -122,22 +124,30 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
                   height: '50%',
                   width: 4,
                   backgroundColor: theme.palette.primary.main,
-                  borderRadius: '0 4px 4px 0'
-                }
-              })
+                  borderRadius: '0 4px 4px 0',
+                },
+              }),
             }}
           >
-            <ListItemIcon sx={{
-              minWidth: 40,
-              color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.secondary
-            }}>
+            <ListItemIcon
+              sx={{
+                minWidth: 40,
+                color:
+                  location.pathname === item.path
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+              }}
+            >
               {item.icon}
             </ListItemIcon>
             <ListItemText
               primary={item.text}
               primaryTypographyProps={{
                 fontWeight: location.pathname === item.path ? 500 : 400,
-                color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.primary
+                color:
+                  location.pathname === item.path
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary,
               }}
             />
           </ListItem>
@@ -170,7 +180,7 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: drawerWidth,
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
           },
         }}
       >
@@ -186,7 +196,7 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
             boxSizing: 'border-box',
             width: drawerWidth,
             borderRight: `1px solid ${theme.palette.divider}`,
-            boxShadow: 'none'
+            boxShadow: 'none',
           },
         }}
         open

@@ -1,15 +1,18 @@
 # API Documentation
 
 ## Base URL
+
 ```
 Development: http://localhost:3000/api/v1
 Production: https://api.blockscore.com/v1
 ```
 
 ## Authentication
+
 All API requests require authentication using JWT tokens or Web3 wallet signatures.
 
 ### Headers
+
 ```
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
@@ -20,11 +23,13 @@ Content-Type: application/json
 ### User Management
 
 #### Register User
+
 ```http
 POST /users/register
 ```
 
 **Request Body:**
+
 ```json
 {
   "walletAddress": "0x...",
@@ -34,6 +39,7 @@ POST /users/register
 ```
 
 **Response:**
+
 ```json
 {
   "userId": "user_123",
@@ -43,11 +49,13 @@ POST /users/register
 ```
 
 #### Get User Profile
+
 ```http
 GET /users/profile
 ```
 
 **Response:**
+
 ```json
 {
   "userId": "user_123",
@@ -60,11 +68,13 @@ GET /users/profile
 ### Credit Score
 
 #### Get Credit Score
+
 ```http
 GET /credit-score/{userId}
 ```
 
 **Response:**
+
 ```json
 {
   "userId": "user_123",
@@ -81,11 +91,13 @@ GET /credit-score/{userId}
 ```
 
 #### Update Credit Data
+
 ```http
 POST /credit-score/update
 ```
 
 **Request Body:**
+
 ```json
 {
   "userId": "user_123",
@@ -100,11 +112,13 @@ POST /credit-score/update
 ### Loan Management
 
 #### Submit Loan Application
+
 ```http
 POST /loans/apply
 ```
 
 **Request Body:**
+
 ```json
 {
   "userId": "user_123",
@@ -115,11 +129,13 @@ POST /loans/apply
 ```
 
 #### Get Loan Status
+
 ```http
 GET /loans/{loanId}
 ```
 
 **Response:**
+
 ```json
 {
   "loanId": "loan_456",
@@ -133,16 +149,19 @@ GET /loans/{loanId}
 ### Transaction History
 
 #### Get Transaction History
+
 ```http
 GET /transactions/{userId}
 ```
 
 **Query Parameters:**
+
 - `startDate` (optional): Filter transactions from this date
 - `endDate` (optional): Filter transactions until this date
 - `type` (optional): Transaction type filter
 
 **Response:**
+
 ```json
 {
   "transactions": [
@@ -165,6 +184,7 @@ GET /transactions/{userId}
 ## Error Handling
 
 ### Error Response Format
+
 ```json
 {
   "error": {
@@ -176,6 +196,7 @@ GET /transactions/{userId}
 ```
 
 ### Common Error Codes
+
 - `AUTH_001`: Authentication failed
 - `AUTH_002`: Invalid signature
 - `USER_001`: User not found
@@ -183,17 +204,20 @@ GET /transactions/{userId}
 - `SCORE_001`: Unable to calculate credit score
 
 ## Rate Limiting
+
 - 100 requests per minute per IP
 - 1000 requests per hour per user
 
 ## Webhook Notifications
 
 ### Credit Score Updates
+
 ```http
 POST /webhook/credit-score
 ```
 
 **Payload:**
+
 ```json
 {
   "userId": "user_123",
@@ -206,12 +230,13 @@ POST /webhook/credit-score
 ## SDK Examples
 
 ### JavaScript/TypeScript
+
 ```typescript
 import { BlockScoreAPI } from '@blockscore/sdk';
 
 const api = new BlockScoreAPI({
   apiKey: 'your_api_key',
-  environment: 'production'
+  environment: 'production',
 });
 
 // Get user's credit score
@@ -219,6 +244,7 @@ const score = await api.creditScore.get('user_123');
 ```
 
 ### Python
+
 ```python
 from blockscore import BlockScoreAPI
 

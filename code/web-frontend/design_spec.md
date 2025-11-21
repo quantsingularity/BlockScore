@@ -1,6 +1,7 @@
 # BlockScore Frontend Design
 
 ## Design Principles
+
 - Modern, clean aesthetic
 - Responsive design for all devices
 - Intuitive user experience
@@ -8,6 +9,7 @@
 - Consistent color scheme and typography
 
 ## Color Palette
+
 - Primary: #3f51b5 (Indigo)
 - Secondary: #f50057 (Pink)
 - Background: #f5f5f5 (Light Grey)
@@ -19,11 +21,13 @@
 - Text Secondary: #757575 (Medium Grey)
 
 ## Typography
+
 - Primary Font: 'Roboto', sans-serif
 - Headings: 'Poppins', sans-serif
 - Monospace: 'Roboto Mono', monospace
 
 ## Components
+
 1. Dashboard
    - Credit score display (gauge visualization)
    - Transaction history timeline
@@ -48,18 +52,21 @@
    - User authentication area
 
 ## Layout Structure
+
 - Header with navigation and user info
 - Main content area with responsive grid
 - Footer with links and information
 - Mobile-optimized views
 
 ## Animations
+
 - Subtle transitions between pages
 - Loading states with skeleton screens
 - Interactive elements with feedback
 - Data visualization animations
 
 ## Responsive Breakpoints
+
 - Mobile: < 600px
 - Tablet: 600px - 960px
 - Desktop: > 960px

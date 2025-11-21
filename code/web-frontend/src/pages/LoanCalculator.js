@@ -11,16 +11,35 @@ import {
   Paper,
   Divider,
   CircularProgress,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useWeb3 } from '../contexts/Web3Context';
 import { calculateLoan } from '../utils/api';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+} from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title
+);
 
 const LoanCalculator = () => {
   const theme = useTheme();
@@ -40,7 +59,10 @@ const LoanCalculator = () => {
       setError(null);
 
       // Use the wallet address from context if available, otherwise use demo address
-      const walletAddress = accounts[0] || user?.address || '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+      const walletAddress =
+        accounts[0] ||
+        user?.address ||
+        '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
 
       // Use the API service to calculate loan eligibility
       const data = await calculateLoan(walletAddress, amount, rate);
@@ -55,7 +77,7 @@ const LoanCalculator = () => {
         monthly_payment: 149.85,
         credit_score: 720,
         loan_term: 36,
-        total_payment: 5394.60
+        total_payment: 5394.6,
       });
     } finally {
       setLoading(false);
@@ -83,7 +105,7 @@ const LoanCalculator = () => {
         principal: principalPayment,
         interest: interestPayment,
         totalInterest,
-        balance: Math.max(0, remainingBalance)
+        balance: Math.max(0, remainingBalance),
       });
     }
 
@@ -93,21 +115,21 @@ const LoanCalculator = () => {
   // Prepare chart data
   const paymentSchedule = generatePaymentSchedule();
   const chartData = {
-    labels: paymentSchedule.slice(0, 12).map(item => `Month ${item.month}`),
+    labels: paymentSchedule.slice(0, 12).map((item) => `Month ${item.month}`),
     datasets: [
       {
         label: 'Principal',
-        data: paymentSchedule.slice(0, 12).map(item => item.principal),
+        data: paymentSchedule.slice(0, 12).map((item) => item.principal),
         backgroundColor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
       },
       {
         label: 'Interest',
-        data: paymentSchedule.slice(0, 12).map(item => item.interest),
+        data: paymentSchedule.slice(0, 12).map((item) => item.interest),
         backgroundColor: theme.palette.secondary.main,
         borderColor: theme.palette.secondary.main,
-      }
-    ]
+      },
+    ],
   };
 
   // Approval probability chart
@@ -115,11 +137,10 @@ const LoanCalculator = () => {
     labels: ['Approval', 'Rejection'],
     datasets: [
       {
-        data: result ? [result.approval_probability, 100 - result.approval_probability] : [50, 50],
-        backgroundColor: [
-          theme.palette.success.main,
-          theme.palette.grey[300],
-        ],
+        data: result
+          ? [result.approval_probability, 100 - result.approval_probability]
+          : [50, 50],
+        backgroundColor: [theme.palette.success.main, theme.palette.grey[300]],
         borderWidth: 0,
       },
     ],
@@ -136,7 +157,8 @@ const LoanCalculator = () => {
           Loan Calculator
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Estimate your loan eligibility and monthly payments based on your credit score.
+          Estimate your loan eligibility and monthly payments based on your
+          credit score.
         </Typography>
       </Box>
 
@@ -169,9 +191,7 @@ const LoanCalculator = () => {
                     sx={{ mb: 4 }}
                   />
 
-                  <Typography gutterBottom>
-                    Interest Rate: {rate}%
-                  </Typography>
+                  <Typography gutterBottom>Interest Rate: {rate}%</Typography>
                   <Slider
                     value={rate}
                     onChange={(e, newValue) => setRate(newValue)}
@@ -183,9 +203,7 @@ const LoanCalculator = () => {
                     sx={{ mb: 4 }}
                   />
 
-                  <Typography gutterBottom>
-                    Loan Term: {term} months
-                  </Typography>
+                  <Typography gutterBottom>Loan Term: {term} months</Typography>
                   <Slider
                     value={term}
                     onChange={(e, newValue) => setTerm(newValue)}
@@ -234,18 +252,27 @@ const LoanCalculator = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 <Typography variant="h6" gutterBottom>
                   Loan Eligibility Results
                 </Typography>
 
                 {!result ? (
-                  <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexGrow: 1
-                  }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexGrow: 1,
+                    }}
+                  >
                     <Typography color="text.secondary">
                       Adjust parameters and click Calculate to see results
                     </Typography>
@@ -254,13 +281,19 @@ const LoanCalculator = () => {
                   <Box sx={{ mt: 2, flexGrow: 1 }}>
                     <Grid container spacing={3}>
                       <Grid item xs={12} sm={6}>
-                        <Box sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          mb: 3
-                        }}>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            mb: 3,
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            gutterBottom
+                          >
                             Approval Probability
                           </Typography>
                           <Box sx={{ width: 150, height: 150 }}>
@@ -270,16 +303,16 @@ const LoanCalculator = () => {
                                 cutout: '70%',
                                 plugins: {
                                   legend: {
-                                    display: false
+                                    display: false,
                                   },
                                   tooltip: {
                                     callbacks: {
-                                      label: function(context) {
+                                      label: function (context) {
                                         return `${context.label}: ${context.raw}%`;
-                                      }
-                                    }
-                                  }
-                                }
+                                      },
+                                    },
+                                  },
+                                },
                               }}
                             />
                           </Box>
@@ -288,8 +321,12 @@ const LoanCalculator = () => {
                             sx={{
                               mt: 2,
                               fontWeight: 600,
-                              color: result.approval_probability > 70 ? 'success.main' :
-                                     result.approval_probability > 50 ? 'primary.main' : 'warning.main'
+                              color:
+                                result.approval_probability > 70
+                                  ? 'success.main'
+                                  : result.approval_probability > 50
+                                    ? 'primary.main'
+                                    : 'warning.main',
                             }}
                           >
                             {result.approval_probability.toFixed(1)}%
@@ -303,7 +340,7 @@ const LoanCalculator = () => {
                           sx={{
                             p: 2,
                             bgcolor: 'background.default',
-                            borderRadius: 2
+                            borderRadius: 2,
                           }}
                         >
                           <Typography variant="subtitle2" gutterBottom>
@@ -315,7 +352,13 @@ const LoanCalculator = () => {
 
                           <Divider sx={{ my: 1.5 }} />
 
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              mb: 1,
+                            }}
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Loan Amount:
                             </Typography>
@@ -324,16 +367,26 @@ const LoanCalculator = () => {
                             </Typography>
                           </Box>
 
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              mb: 1,
+                            }}
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Interest Rate:
                             </Typography>
-                            <Typography variant="body2">
-                              {rate}%
-                            </Typography>
+                            <Typography variant="body2">{rate}%</Typography>
                           </Box>
 
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              mb: 1,
+                            }}
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Loan Term:
                             </Typography>
@@ -342,7 +395,13 @@ const LoanCalculator = () => {
                             </Typography>
                           </Box>
 
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              mb: 1,
+                            }}
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Total Payment:
                             </Typography>
@@ -351,12 +410,20 @@ const LoanCalculator = () => {
                             </Typography>
                           </Box>
 
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Total Interest:
                             </Typography>
                             <Typography variant="body2" fontWeight={500}>
-                              ${((result.monthly_payment * term) - amount).toFixed(2)}
+                              $
+                              {(result.monthly_payment * term - amount).toFixed(
+                                2
+                              )}
                             </Typography>
                           </Box>
                         </Paper>
@@ -378,27 +445,22 @@ const LoanCalculator = () => {
                                 beginAtZero: true,
                                 title: {
                                   display: true,
-                                  text: 'Amount ($)'
-                                }
-                              }
-                            }
+                                  text: 'Amount ($)',
+                                },
+                              },
+                            },
                           }}
                         />
                       </Box>
                     </Box>
 
-                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        sx={{ mr: 2 }}
-                      >
+                    <Box
+                      sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
+                    >
+                      <Button variant="outlined" color="primary" sx={{ mr: 2 }}>
                         Save Results
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                      >
+                      <Button variant="contained" color="secondary">
                         Apply for Loan
                       </Button>
                     </Box>

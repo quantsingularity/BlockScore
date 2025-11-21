@@ -13,6 +13,7 @@ The code directory is organized into four main subdirectories:
 The `ai_models` subdirectory contains machine learning models and algorithms that form the analytical core of BlockScore's credit assessment capabilities. These models analyze financial data to generate credit scores and risk assessments. The directory includes model training scripts, pre-trained model files, API endpoints for model integration, and testing infrastructure.
 
 Key components include:
+
 - API interface for model access (`api.py`)
 - Pre-trained credit scoring model (`credit_scoring_model.pkl`)
 - Financial dataset for model training and validation (`financial_data.csv`)
@@ -26,6 +27,7 @@ Key components include:
 The `backend` subdirectory houses the server-side application logic and API endpoints that power the BlockScore platform. This component serves as the bridge between the frontend interfaces, blockchain contracts, and AI models. The backend is implemented using a combination of Node.js and Python, providing a robust and scalable service layer.
 
 Key components include:
+
 - Main application entry points (`app.js` and `app.py`)
 - Configuration management (`config.js`)
 - Authentication middleware for secure access control

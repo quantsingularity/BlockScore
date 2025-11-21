@@ -10,7 +10,7 @@ import {
   Divider,
   Paper,
   Chip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -31,7 +31,14 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '80vh',
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -61,12 +68,14 @@ const Dashboard = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <Card sx={{ height: '100%' }}>
-              <CardContent sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                p: 3
-              }}>
+              <CardContent
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  p: 3,
+                }}
+              >
                 <Typography variant="h6" gutterBottom>
                   Your Credit Score
                 </Typography>
@@ -75,7 +84,11 @@ const Dashboard = () => {
                   <CreditScoreGauge score={creditData?.score || 0} />
                 </Box>
 
-                <Typography variant="body2" color="text.secondary" align="center">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  align="center"
+                >
                   Last updated: {new Date().toLocaleDateString()}
                 </Typography>
 
@@ -87,16 +100,26 @@ const Dashboard = () => {
                   </Typography>
                   <Chip
                     label={
-                      creditData?.score >= 750 ? "Excellent" :
-                      creditData?.score >= 700 ? "Good" :
-                      creditData?.score >= 650 ? "Fair" :
-                      creditData?.score >= 600 ? "Poor" : "Very Poor"
+                      creditData?.score >= 750
+                        ? 'Excellent'
+                        : creditData?.score >= 700
+                          ? 'Good'
+                          : creditData?.score >= 650
+                            ? 'Fair'
+                            : creditData?.score >= 600
+                              ? 'Poor'
+                              : 'Very Poor'
                     }
                     color={
-                      creditData?.score >= 750 ? "success" :
-                      creditData?.score >= 700 ? "primary" :
-                      creditData?.score >= 650 ? "info" :
-                      creditData?.score >= 600 ? "warning" : "error"
+                      creditData?.score >= 750
+                        ? 'success'
+                        : creditData?.score >= 700
+                          ? 'primary'
+                          : creditData?.score >= 650
+                            ? 'info'
+                            : creditData?.score >= 600
+                              ? 'warning'
+                              : 'error'
                     }
                     sx={{ fontWeight: 500 }}
                   />

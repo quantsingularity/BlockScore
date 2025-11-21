@@ -1,8 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native'; // Import Alert
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../utils/responsive';
-import { Slider, Icon } from '@rneui/themed'; // Import Icon
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native'; // Import Alert
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from '../utils/responsive';
+import {Slider, Icon} from '@rneui/themed'; // Import Icon
+import {useNavigation} from '@react-navigation/native'; // Import useNavigation
 
 // Define modern color palette (same as other screens)
 const colors = {
@@ -36,10 +47,13 @@ const LoanCalculatorScreen = () => {
       return '0.00';
     }
 
-    const monthlyPayment = principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) /
-                          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+    const monthlyPayment =
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+      (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 
-    return isNaN(monthlyPayment) || !isFinite(monthlyPayment) ? '0.00' : monthlyPayment.toFixed(2);
+    return isNaN(monthlyPayment) || !isFinite(monthlyPayment)
+      ? '0.00'
+      : monthlyPayment.toFixed(2);
   };
 
   // Calculate total payment
@@ -55,10 +69,12 @@ const LoanCalculatorScreen = () => {
   };
 
   // Format large numbers for display
-  const formatNumber = (num) => {
+  const formatNumber = num => {
     // Ensure num is a number before formatting
     const numberValue = parseFloat(num);
-    if (isNaN(numberValue)) {return '0';}
+    if (isNaN(numberValue)) {
+      return '0';
+    }
     return numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
@@ -67,18 +83,26 @@ const LoanCalculatorScreen = () => {
     Alert.alert(
       'Apply for Loan',
       'This feature is not yet implemented. Loan application functionality requires backend integration.',
-      [{ text: 'OK' }]
+      [{text: 'OK'}],
     );
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-back-ios" type="material" color={colors.cardBackground} size={responsiveFontSize(2.5)} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon
+            name="arrow-back-ios"
+            type="material"
+            color={colors.cardBackground}
+            size={responsiveFontSize(2.5)}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Loan Calculator</Text>
-        <View style={styles.headerPlaceholder} />{/* To balance the back button */}
+        <View style={styles.headerPlaceholder} />
+        {/* To balance the back button */}
       </View>
 
       <View style={styles.calculatorContainer}>
@@ -86,7 +110,9 @@ const LoanCalculatorScreen = () => {
         <View style={styles.inputGroup}>
           <Text style={styles.inputLabel}>Loan Amount</Text>
           <View style={styles.inputDisplayContainer}>
-            <Text style={styles.inputDisplayValue}>${formatNumber(loanAmount)}</Text>
+            <Text style={styles.inputDisplayValue}>
+              ${formatNumber(loanAmount)}
+            </Text>
           </View>
           <Slider
             value={loanAmount}
@@ -108,7 +134,7 @@ const LoanCalculatorScreen = () => {
         {/* Loan Term Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.inputLabel}>Loan Term</Text>
-           <View style={styles.inputDisplayContainer}>
+          <View style={styles.inputDisplayContainer}>
             <Text style={styles.inputDisplayValue}>{loanTerm} months</Text>
           </View>
           <Slider
@@ -132,7 +158,9 @@ const LoanCalculatorScreen = () => {
         <View style={styles.inputGroup}>
           <Text style={styles.inputLabel}>Interest Rate</Text>
           <View style={styles.inputDisplayContainer}>
-            <Text style={styles.inputDisplayValue}>{interestRate.toFixed(1)}%</Text>
+            <Text style={styles.inputDisplayValue}>
+              {interestRate.toFixed(1)}%
+            </Text>
           </View>
           <Slider
             value={interestRate}
@@ -168,17 +196,27 @@ const LoanCalculatorScreen = () => {
 
         <View style={styles.resultRow}>
           <Text style={styles.resultLabel}>Total Interest:</Text>
-          <Text style={styles.resultValue}>${formatNumber(calculateTotalInterest())}</Text>
+          <Text style={styles.resultValue}>
+            ${formatNumber(calculateTotalInterest())}
+          </Text>
         </View>
 
         <View style={[styles.resultRow, styles.resultRowLast]}>
           <Text style={styles.resultLabelTotal}>Total Payment:</Text>
-          <Text style={styles.resultValueTotal}>${formatNumber(calculateTotalPayment())}</Text>
+          <Text style={styles.resultValueTotal}>
+            ${formatNumber(calculateTotalPayment())}
+          </Text>
         </View>
       </View>
 
       <TouchableOpacity style={styles.actionButton} onPress={handleApplyLoan}>
-        <Icon name="check-circle" type="material" color={colors.cardBackground} size={responsiveFontSize(2.5)} style={styles.buttonIcon} />
+        <Icon
+          name="check-circle"
+          type="material"
+          color={colors.cardBackground}
+          size={responsiveFontSize(2.5)}
+          style={styles.buttonIcon}
+        />
         <Text style={styles.actionButtonText}>Apply for Loan</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -222,7 +260,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -276,7 +314,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -329,7 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(4),
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },

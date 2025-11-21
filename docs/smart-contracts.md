@@ -1,6 +1,7 @@
 # Smart Contract Documentation
 
 ## Overview
+
 BlockScore's smart contracts form the backbone of our decentralized credit scoring system, ensuring transparency and immutability of credit data.
 
 ## Contract Architecture
@@ -8,6 +9,7 @@ BlockScore's smart contracts form the backbone of our decentralized credit scori
 ### Core Contracts
 
 #### 1. CreditScore.sol
+
 The main contract managing credit scores and credit data.
 
 ```solidity
@@ -19,11 +21,13 @@ interface ICreditScore {
 ```
 
 **Key Functions:**
+
 - `updateScore`: Updates a user's credit score
 - `getScore`: Retrieves current credit score
 - `getScoreHistory`: Gets historical score data
 
 #### 2. LoanAgreement.sol
+
 Manages loan agreements and terms.
 
 ```solidity
@@ -35,6 +39,7 @@ interface ILoanAgreement {
 ```
 
 #### 3. DataRegistry.sol
+
 Stores and manages credit-related data.
 
 ```solidity
@@ -47,11 +52,13 @@ interface IDataRegistry {
 ## Contract Deployment
 
 ### Network Information
+
 - **Mainnet**: [Contract Addresses]
 - **Testnet**: [Contract Addresses]
 - **Local Development**: [Setup Instructions]
 
 ### Deployment Process
+
 1. Deploy DataRegistry
 2. Deploy CreditScore with DataRegistry address
 3. Deploy LoanAgreement with CreditScore address
@@ -59,6 +66,7 @@ interface IDataRegistry {
 ## Security Measures
 
 ### Access Control
+
 ```solidity
 contract CreditScore is Ownable, AccessControl {
     bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
@@ -71,11 +79,13 @@ contract CreditScore is Ownable, AccessControl {
 ```
 
 ### Data Privacy
+
 - On-chain data is hashed
 - Sensitive information stored off-chain
 - Access control for data updates
 
 ### Emergency Controls
+
 ```solidity
 contract CreditScore is Pausable {
     function pause() external onlyOwner {
@@ -91,6 +101,7 @@ contract CreditScore is Pausable {
 ## Contract Interaction
 
 ### Web3.js Example
+
 ```javascript
 const creditScore = new web3.eth.Contract(CreditScoreABI, contractAddress);
 
@@ -98,11 +109,13 @@ const creditScore = new web3.eth.Contract(CreditScoreABI, contractAddress);
 const score = await creditScore.methods.getScore(userAddress).call();
 
 // Update credit score (requires appropriate permissions)
-await creditScore.methods.updateScore(userAddress, newScore)
-    .send({ from: updaterAddress });
+await creditScore.methods
+  .updateScore(userAddress, newScore)
+  .send({ from: updaterAddress });
 ```
 
 ### Ethers.js Example
+
 ```typescript
 const creditScore = new ethers.Contract(address, abi, provider);
 
@@ -117,6 +130,7 @@ await tx.wait();
 ## Events
 
 ### CreditScore Events
+
 ```solidity
 event ScoreUpdated(
     address indexed user,
@@ -133,6 +147,7 @@ event DataAdded(
 ```
 
 ### LoanAgreement Events
+
 ```solidity
 event LoanCreated(
     uint256 indexed loanId,
@@ -151,6 +166,7 @@ event LoanRepaid(
 ## Gas Optimization
 
 ### Storage Patterns
+
 ```solidity
 contract CreditScore {
     struct Score {
@@ -163,6 +179,7 @@ contract CreditScore {
 ```
 
 ### Batch Operations
+
 ```solidity
 function batchUpdateScores(
     address[] calldata users,
@@ -178,6 +195,7 @@ function batchUpdateScores(
 ## Upgrade Pattern
 
 ### Proxy Contract
+
 ```solidity
 contract CreditScoreProxy is TransparentUpgradeableProxy {
     constructor(
@@ -189,6 +207,7 @@ contract CreditScoreProxy is TransparentUpgradeableProxy {
 ```
 
 ### Implementation Contract
+
 ```solidity
 contract CreditScoreV1 is Initializable {
     function initialize() public initializer {
@@ -200,37 +219,42 @@ contract CreditScoreV1 is Initializable {
 ## Testing
 
 ### Test Coverage
+
 - Unit tests for each contract
 - Integration tests for contract interactions
 - Stress tests for gas optimization
 
 ### Test Examples
+
 ```javascript
-describe("CreditScore", function() {
-    it("should update score correctly", async function() {
-        const [owner, user] = await ethers.getSigners();
-        const CreditScore = await ethers.getContractFactory("CreditScore");
-        const creditScore = await CreditScore.deploy();
+describe('CreditScore', function () {
+  it('should update score correctly', async function () {
+    const [owner, user] = await ethers.getSigners();
+    const CreditScore = await ethers.getContractFactory('CreditScore');
+    const creditScore = await CreditScore.deploy();
 
-        await creditScore.updateScore(user.address, 750);
-        const score = await creditScore.getScore(user.address);
+    await creditScore.updateScore(user.address, 750);
+    const score = await creditScore.getScore(user.address);
 
-        expect(score).to.equal(750);
-    });
+    expect(score).to.equal(750);
+  });
 });
 ```
 
 ## Audit Information
+
 - Latest audit: [Date]
 - Auditor: [Name]
 - [Link to audit report]
 
 ## Known Limitations
+
 1. Gas costs for batch operations
 2. Block time dependencies
 3. Oracle reliance for external data
 
 ## Future Improvements
+
 1. Layer 2 integration
 2. Cross-chain compatibility
 3. Enhanced privacy features

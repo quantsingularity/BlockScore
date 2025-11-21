@@ -5,7 +5,7 @@ import {
   LinearProgress,
   Grid,
   Paper,
-  useTheme
+  useTheme,
 } from '@mui/material';
 
 const CreditFactors = ({ features }) => {
@@ -16,15 +16,18 @@ const CreditFactors = ({ features }) => {
     total_loans: 0,
     total_amount: 0,
     repaid_ratio: 0,
-    avg_loan_amount: 0
+    avg_loan_amount: 0,
   };
 
   const data = features || defaultFeatures;
 
   // Calculate normalized values for progress bars (0-100)
   const normalizedRepaidRatio = data.repaid_ratio * 100;
-  const normalizedTotalLoans = Math.min(data.total_loans / 10 * 100, 100); // Assuming 10+ loans is max
-  const normalizedAvgAmount = Math.min(data.avg_loan_amount / 5000 * 100, 100); // Assuming $5000+ is max
+  const normalizedTotalLoans = Math.min((data.total_loans / 10) * 100, 100); // Assuming 10+ loans is max
+  const normalizedAvgAmount = Math.min(
+    (data.avg_loan_amount / 5000) * 100,
+    100
+  ); // Assuming $5000+ is max
 
   // Get color based on value
   const getColorForValue = (value) => {
@@ -45,7 +48,7 @@ const CreditFactors = ({ features }) => {
             sx={{
               p: 2,
               bgcolor: 'background.default',
-              borderRadius: 2
+              borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
@@ -61,8 +64,8 @@ const CreditFactors = ({ features }) => {
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: getColorForValue(normalizedRepaidRatio)
-                    }
+                      backgroundColor: getColorForValue(normalizedRepaidRatio),
+                    },
                   }}
                 />
               </Box>
@@ -83,7 +86,7 @@ const CreditFactors = ({ features }) => {
             sx={{
               p: 2,
               bgcolor: 'background.default',
-              borderRadius: 2
+              borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
@@ -99,8 +102,8 @@ const CreditFactors = ({ features }) => {
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: getColorForValue(normalizedTotalLoans)
-                    }
+                      backgroundColor: getColorForValue(normalizedTotalLoans),
+                    },
                   }}
                 />
               </Box>
@@ -121,7 +124,7 @@ const CreditFactors = ({ features }) => {
             sx={{
               p: 2,
               bgcolor: 'background.default',
-              borderRadius: 2
+              borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
@@ -137,8 +140,8 @@ const CreditFactors = ({ features }) => {
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: getColorForValue(normalizedAvgAmount)
-                    }
+                      backgroundColor: getColorForValue(normalizedAvgAmount),
+                    },
                   }}
                 />
               </Box>

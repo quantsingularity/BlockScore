@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         const demoUser = {
           address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
           name: 'Demo User',
-          balance: '2.5 ETH'
+          balance: '2.5 ETH',
         };
 
         setUser(demoUser);
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       const user = {
         address,
         name: 'Demo User',
-        balance: '2.5 ETH'
+        balance: '2.5 ETH',
       };
 
       setUser(user);
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         loading,
         login,
-        logout
+        logout,
       }}
     >
       {children}

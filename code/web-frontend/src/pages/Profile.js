@@ -14,7 +14,7 @@ import {
   Button,
   Chip,
   Paper,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -33,7 +33,10 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const { accounts, networkId } = useWeb3();
 
-  const walletAddress = accounts[0] || user?.address || '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+  const walletAddress =
+    accounts[0] ||
+    user?.address ||
+    '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
 
   // Format wallet address for display
   const formatAddress = (address) => {
@@ -44,12 +47,18 @@ const Profile = () => {
   // Get network name
   const getNetworkName = (id) => {
     switch (id) {
-      case 1: return 'Ethereum Mainnet';
-      case 3: return 'Ropsten Testnet';
-      case 4: return 'Rinkeby Testnet';
-      case 5: return 'Goerli Testnet';
-      case 42: return 'Kovan Testnet';
-      default: return 'Unknown Network';
+      case 1:
+        return 'Ethereum Mainnet';
+      case 3:
+        return 'Ropsten Testnet';
+      case 4:
+        return 'Rinkeby Testnet';
+      case 5:
+        return 'Goerli Testnet';
+      case 42:
+        return 'Kovan Testnet';
+      default:
+        return 'Unknown Network';
     }
   };
 
@@ -78,18 +87,20 @@ const Profile = () => {
           >
             <Card>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  mb: 3
-                }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
                   <Avatar
                     sx={{
                       width: 80,
                       height: 80,
                       bgcolor: 'primary.main',
-                      mb: 2
+                      mb: 2,
                     }}
                   >
                     <AccountBalanceWalletIcon sx={{ fontSize: 40 }} />
@@ -134,10 +145,7 @@ const Profile = () => {
                     <ListItemIcon sx={{ minWidth: 40 }}>
                       <SettingsIcon fontSize="small" color="primary" />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Account Type"
-                      secondary="Standard"
-                    />
+                    <ListItemText primary="Account Type" secondary="Standard" />
                   </ListItem>
                 </List>
 
@@ -176,13 +184,20 @@ const Profile = () => {
                         p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
-                        height: '100%'
+                        height: '100%',
                       }}
                     >
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
                         Credit Score
                       </Typography>
-                      <Typography variant="h4" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                      <Typography
+                        variant="h4"
+                        sx={{ fontWeight: 600, color: 'primary.main' }}
+                      >
                         720
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -198,10 +213,14 @@ const Profile = () => {
                         p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
-                        height: '100%'
+                        height: '100%',
                       }}
                     >
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
                         Active Loans
                       </Typography>
                       <Typography variant="h4" sx={{ fontWeight: 600 }}>
@@ -220,13 +239,20 @@ const Profile = () => {
                         p: 2,
                         bgcolor: 'background.default',
                         borderRadius: 2,
-                        height: '100%'
+                        height: '100%',
                       }}
                     >
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
                         Repayment Rate
                       </Typography>
-                      <Typography variant="h4" sx={{ fontWeight: 600, color: 'success.main' }}>
+                      <Typography
+                        variant="h4"
+                        sx={{ fontWeight: 600, color: 'success.main' }}
+                      >
                         98%
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -236,7 +262,11 @@ const Profile = () => {
                   </Grid>
                 </Grid>
 
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 4, mb: 2 }}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ mt: 4, mb: 2 }}
+                >
                   Credit Factors
                 </Typography>
 
@@ -245,27 +275,29 @@ const Profile = () => {
                     {
                       factor: 'Payment History',
                       status: 'Excellent',
-                      description: 'You have a strong history of on-time payments',
-                      positive: true
+                      description:
+                        'You have a strong history of on-time payments',
+                      positive: true,
                     },
                     {
                       factor: 'Credit Utilization',
                       status: 'Good',
-                      description: 'Your current loan amount is well within your capacity',
-                      positive: true
+                      description:
+                        'Your current loan amount is well within your capacity',
+                      positive: true,
                     },
                     {
                       factor: 'Credit Age',
                       status: 'Fair',
                       description: 'Your credit history is relatively new',
-                      positive: false
+                      positive: false,
                     },
                     {
                       factor: 'Credit Mix',
                       status: 'Poor',
                       description: 'You have limited variety in credit types',
-                      positive: false
-                    }
+                      positive: false,
+                    },
                   ].map((item, index) => (
                     <ListItem
                       key={index}
@@ -274,7 +306,7 @@ const Profile = () => {
                         px: 2,
                         mb: 1,
                         bgcolor: 'background.default',
-                        borderRadius: 2
+                        borderRadius: 2,
                       }}
                     >
                       <ListItemIcon>
@@ -286,7 +318,12 @@ const Profile = () => {
                       </ListItemIcon>
                       <ListItemText
                         primary={
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
                             <Typography variant="body1" fontWeight={500}>
                               {item.factor}
                             </Typography>
@@ -294,9 +331,13 @@ const Profile = () => {
                               label={item.status}
                               size="small"
                               color={
-                                item.status === 'Excellent' ? 'success' :
-                                item.status === 'Good' ? 'primary' :
-                                item.status === 'Fair' ? 'warning' : 'error'
+                                item.status === 'Excellent'
+                                  ? 'success'
+                                  : item.status === 'Good'
+                                    ? 'primary'
+                                    : item.status === 'Fair'
+                                      ? 'warning'
+                                      : 'error'
                               }
                               sx={{ fontWeight: 500 }}
                             />
@@ -309,10 +350,7 @@ const Profile = () => {
                 </List>
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                  >
+                  <Button variant="contained" color="primary">
                     View Detailed Report
                   </Button>
                 </Box>
@@ -338,19 +376,43 @@ const Profile = () => {
                   {[
                     {
                       title: 'Diversify Your Credit Mix',
-                      description: 'Consider adding different types of credit to your portfolio, such as a small secured loan.',
-                      icon: <SettingsIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                      description:
+                        'Consider adding different types of credit to your portfolio, such as a small secured loan.',
+                      icon: (
+                        <SettingsIcon
+                          sx={{
+                            fontSize: 40,
+                            color: theme.palette.primary.main,
+                          }}
+                        />
+                      ),
                     },
                     {
                       title: 'Build Credit History',
-                      description: 'Continue making on-time payments to establish a longer credit history.',
-                      icon: <HistoryIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                      description:
+                        'Continue making on-time payments to establish a longer credit history.',
+                      icon: (
+                        <HistoryIcon
+                          sx={{
+                            fontSize: 40,
+                            color: theme.palette.primary.main,
+                          }}
+                        />
+                      ),
                     },
                     {
                       title: 'Monitor Your Score',
-                      description: 'Regularly check your credit score to track improvements and detect issues early.',
-                      icon: <SecurityIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
-                    }
+                      description:
+                        'Regularly check your credit score to track improvements and detect issues early.',
+                      icon: (
+                        <SecurityIcon
+                          sx={{
+                            fontSize: 40,
+                            color: theme.palette.primary.main,
+                          }}
+                        />
+                      ),
+                    },
                   ].map((tip, index) => (
                     <Grid item xs={12} md={4} key={index}>
                       <Paper
@@ -363,13 +425,15 @@ const Profile = () => {
                           alignItems: 'center',
                           textAlign: 'center',
                           bgcolor: 'background.default',
-                          borderRadius: 2
+                          borderRadius: 2,
                         }}
                       >
-                        <Box sx={{ mb: 2 }}>
-                          {tip.icon}
-                        </Box>
-                        <Typography variant="subtitle1" gutterBottom fontWeight={500}>
+                        <Box sx={{ mb: 2 }}>{tip.icon}</Box>
+                        <Typography
+                          variant="subtitle1"
+                          gutterBottom
+                          fontWeight={500}
+                        >
                           {tip.title}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">

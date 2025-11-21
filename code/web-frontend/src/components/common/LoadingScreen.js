@@ -11,7 +11,7 @@ const LoadingScreen = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        bgcolor: 'background.default'
+        bgcolor: 'background.default',
       }}
     >
       <motion.div
@@ -32,7 +32,7 @@ const LoadingScreen = () => {
           sx={{
             mt: 3,
             fontFamily: '"Poppins", sans-serif',
-            fontWeight: 500
+            fontWeight: 500,
           }}
         >
           Loading BlockScore
@@ -44,11 +44,7 @@ const LoadingScreen = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.5 }}
       >
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 1 }}
-        >
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           Decentralized Credit Scoring System
         </Typography>
       </motion.div>

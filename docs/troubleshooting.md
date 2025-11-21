@@ -5,12 +5,15 @@
 ### Development Environment Setup
 
 #### Node.js Installation Issues
+
 **Problem**: Unable to install or run Node.js dependencies
+
 ```
 Error: Cannot find module '@blockscore/sdk'
 ```
 
 **Solution**:
+
 1. Clear npm cache:
    ```bash
    npm cache clean --force
@@ -25,12 +28,15 @@ Error: Cannot find module '@blockscore/sdk'
    ```
 
 #### Python Environment Issues
+
 **Problem**: AI model training fails
+
 ```
 ImportError: No module named 'tensorflow'
 ```
 
 **Solution**:
+
 1. Create a new virtual environment:
    ```bash
    python -m venv venv
@@ -44,23 +50,29 @@ ImportError: No module named 'tensorflow'
 ### Blockchain Integration
 
 #### MetaMask Connection Issues
+
 **Problem**: Unable to connect to MetaMask
+
 ```
 Error: Please install MetaMask
 ```
 
 **Solution**:
+
 1. Check if MetaMask is installed and unlocked
 2. Ensure correct network is selected
 3. Clear browser cache and reload
 
 #### Smart Contract Deployment Errors
+
 **Problem**: Contract deployment fails
+
 ```
 Error: Transaction has been reverted by the EVM
 ```
 
 **Solution**:
+
 1. Check gas limits and prices
 2. Verify contract bytecode
 3. Ensure sufficient funds in deployer account
@@ -68,7 +80,9 @@ Error: Transaction has been reverted by the EVM
 ### API Issues
 
 #### Authentication Errors
+
 **Problem**: API requests failing with 401
+
 ```
 {
   "error": {
@@ -79,12 +93,15 @@ Error: Transaction has been reverted by the EVM
 ```
 
 **Solution**:
+
 1. Check token expiration
 2. Verify token format
 3. Regenerate token if necessary
 
 #### Rate Limiting
+
 **Problem**: Too many requests (429 error)
+
 ```
 {
   "error": {
@@ -95,6 +112,7 @@ Error: Transaction has been reverted by the EVM
 ```
 
 **Solution**:
+
 1. Implement request throttling
 2. Cache responses where possible
 3. Contact support for rate limit increase
@@ -102,12 +120,15 @@ Error: Transaction has been reverted by the EVM
 ### Database Issues
 
 #### MongoDB Connection
+
 **Problem**: Cannot connect to MongoDB
+
 ```
 MongoNetworkError: connect ECONNREFUSED
 ```
 
 **Solution**:
+
 1. Verify MongoDB is running:
    ```bash
    sudo systemctl status mongodb
@@ -118,23 +139,29 @@ MongoNetworkError: connect ECONNREFUSED
 ### AI Model Issues
 
 #### Model Training Errors
+
 **Problem**: Model training fails to converge
+
 ```
 WARNING: Loss value is NaN
 ```
 
 **Solution**:
+
 1. Check input data normalization
 2. Adjust learning rate
 3. Verify data preprocessing steps
 
 #### Prediction Errors
+
 **Problem**: Unexpected credit score predictions
+
 ```
 Error: Prediction value out of expected range
 ```
 
 **Solution**:
+
 1. Validate input data format
 2. Check model version
 3. Retrain model with updated data
@@ -142,12 +169,15 @@ Error: Prediction value out of expected range
 ### Frontend Issues
 
 #### React App Build Failures
+
 **Problem**: Build process fails
+
 ```
 Error: Cannot find module 'react-scripts'
 ```
 
 **Solution**:
+
 1. Install missing dependencies:
    ```bash
    npm install react-scripts
@@ -162,12 +192,15 @@ Error: Cannot find module 'react-scripts'
    ```
 
 #### UI Rendering Issues
+
 **Problem**: Components not rendering correctly
+
 ```
 TypeError: Cannot read property 'map' of undefined
 ```
 
 **Solution**:
+
 1. Check data loading state
 2. Implement error boundaries
 3. Verify component props
@@ -175,23 +208,29 @@ TypeError: Cannot read property 'map' of undefined
 ### System Performance
 
 #### High Latency
+
 **Problem**: Slow response times
+
 ```
 Warning: API response time > 2000ms
 ```
 
 **Solution**:
+
 1. Enable caching
 2. Optimize database queries
 3. Scale infrastructure resources
 
 #### Memory Issues
+
 **Problem**: Out of memory errors
+
 ```
 Error: JavaScript heap out of memory
 ```
 
 **Solution**:
+
 1. Increase Node.js memory limit:
    ```bash
    export NODE_OPTIONS="--max-old-space-size=8192"
@@ -202,6 +241,7 @@ Error: JavaScript heap out of memory
 ## Logging and Monitoring
 
 ### Enable Debug Logging
+
 ```bash
 # Backend
 export DEBUG=blockscore:*
@@ -211,6 +251,7 @@ localStorage.setItem('debug', 'blockscore:*')
 ```
 
 ### Check System Logs
+
 ```bash
 # Backend logs
 tail -f logs/backend.log
@@ -229,12 +270,14 @@ tail -f logs/blockchain.log
 ## Emergency Procedures
 
 ### Smart Contract Emergency
+
 1. Pause affected contracts
 2. Notify stakeholders
 3. Deploy fixes
 4. Resume operations
 
 ### Data Recovery
+
 1. Identify data loss scope
 2. Restore from backup
 3. Verify data integrity
@@ -243,6 +286,7 @@ tail -f logs/blockchain.log
 ## Maintenance Mode
 
 ### Enable Maintenance Mode
+
 ```bash
 # Backend
 npm run maintenance:enable
@@ -252,6 +296,7 @@ npm run build:maintenance
 ```
 
 ### Disable Maintenance Mode
+
 ```bash
 # Backend
 npm run maintenance:disable

@@ -22,7 +22,9 @@ class AuthService {
     }
 
     const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+      .toString('hex');
 
     const user = {
       username,
@@ -30,7 +32,7 @@ class AuthService {
       hash,
       role,
       createdAt: new Date(),
-      walletAddress: null
+      walletAddress: null,
     };
 
     users[username] = user;
@@ -39,7 +41,7 @@ class AuthService {
       username: user.username,
       role: user.role,
       createdAt: user.createdAt,
-      walletAddress: user.walletAddress
+      walletAddress: user.walletAddress,
     };
   }
 
@@ -55,7 +57,9 @@ class AuthService {
       throw new Error('User not found');
     }
 
-    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString('hex');
+    const hash = crypto
+      .pbkdf2Sync(password, user.salt, 1000, 64, 'sha512')
+      .toString('hex');
     if (hash !== user.hash) {
       throw new Error('Invalid password');
     }
@@ -64,7 +68,7 @@ class AuthService {
       {
         username: user.username,
         role: user.role,
-        walletAddress: user.walletAddress
+        walletAddress: user.walletAddress,
       },
       config.api.jwtSecret,
       { expiresIn: config.api.jwtExpiration }
@@ -77,8 +81,8 @@ class AuthService {
       user: {
         username: user.username,
         role: user.role,
-        walletAddress: user.walletAddress
-      }
+        walletAddress: user.walletAddress,
+      },
     };
   }
 
@@ -99,7 +103,7 @@ class AuthService {
     return {
       username: user.username,
       role: user.role,
-      walletAddress: user.walletAddress
+      walletAddress: user.walletAddress,
     };
   }
 

@@ -22,20 +22,28 @@ describe('CreditScore Contract', function () {
 
   describe('Authorization', function () {
     it('should set the deployer as owner and authorized provider', async function () {
-      expect(await creditScore.isAuthorizedProvider(owner.address)).to.equal(true);
+      expect(await creditScore.isAuthorizedProvider(owner.address)).to.equal(
+        true
+      );
     });
 
     it('should allow owner to authorize new providers', async function () {
       await creditScore.authorizeProvider(provider1.address);
-      expect(await creditScore.isAuthorizedProvider(provider1.address)).to.equal(true);
+      expect(
+        await creditScore.isAuthorizedProvider(provider1.address)
+      ).to.equal(true);
     });
 
     it('should allow owner to revoke providers', async function () {
       await creditScore.authorizeProvider(provider1.address);
-      expect(await creditScore.isAuthorizedProvider(provider1.address)).to.equal(true);
+      expect(
+        await creditScore.isAuthorizedProvider(provider1.address)
+      ).to.equal(true);
 
       await creditScore.revokeProvider(provider1.address);
-      expect(await creditScore.isAuthorizedProvider(provider1.address)).to.equal(false);
+      expect(
+        await creditScore.isAuthorizedProvider(provider1.address)
+      ).to.equal(false);
     });
 
     it('should not allow non-owners to authorize providers', async function () {
@@ -47,7 +55,7 @@ describe('CreditScore Contract', function () {
     it('should not allow revoking the owner', async function () {
       await expect(
         creditScore.revokeProvider(owner.address)
-      ).to.be.revertedWith('Cannot revoke owner\'s authorization');
+      ).to.be.revertedWith("Cannot revoke owner's authorization");
     });
   });
 
@@ -58,12 +66,9 @@ describe('CreditScore Contract', function () {
     });
 
     it('should allow authorized providers to add credit records', async function () {
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        1000,
-        'loan',
-        5
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 1000, 'loan', 5);
 
       const history = await creditScore.getCreditHistory(user1.address);
       expect(history.length).to.equal(1);
@@ -74,42 +79,30 @@ describe('CreditScore Contract', function () {
 
     it('should not allow unauthorized providers to add credit records', async function () {
       await expect(
-        creditScore.connect(provider2).addCreditRecord(
-          user1.address,
-          1000,
-          'loan',
-          5
-        )
+        creditScore
+          .connect(provider2)
+          .addCreditRecord(user1.address, 1000, 'loan', 5)
       ).to.be.revertedWith('Only authorized providers can call this function');
     });
 
     it('should validate score impact range', async function () {
       await expect(
-        creditScore.connect(provider1).addCreditRecord(
-          user1.address,
-          1000,
-          'loan',
-          11
-        )
+        creditScore
+          .connect(provider1)
+          .addCreditRecord(user1.address, 1000, 'loan', 11)
       ).to.be.revertedWith('Score impact must be between -10 and 10');
 
       await expect(
-        creditScore.connect(provider1).addCreditRecord(
-          user1.address,
-          1000,
-          'loan',
-          -11
-        )
+        creditScore
+          .connect(provider1)
+          .addCreditRecord(user1.address, 1000, 'loan', -11)
       ).to.be.revertedWith('Score impact must be between -10 and 10');
     });
 
     it('should allow marking records as repaid', async function () {
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        1000,
-        'loan',
-        5
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 1000, 'loan', 5);
 
       await creditScore.connect(provider1).markRepaid(user1.address, 0);
 
@@ -125,12 +118,9 @@ describe('CreditScore Contract', function () {
     });
 
     it('should not allow marking already repaid records', async function () {
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        1000,
-        'loan',
-        5
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 1000, 'loan', 5);
 
       await creditScore.connect(provider1).markRepaid(user1.address, 0);
 
@@ -147,45 +137,44 @@ describe('CreditScore Contract', function () {
     });
 
     it('should initialize new users with a default score', async function () {
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        1000,
-        'loan',
-        5
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 1000, 'loan', 5);
 
-      const [score, lastUpdated] = await creditScore.getCreditScore(user1.address);
+      const [score, lastUpdated] = await creditScore.getCreditScore(
+        user1.address
+      );
       expect(score).to.be.gt(0);
       expect(lastUpdated).to.be.gt(0);
     });
 
     it('should update scores based on record impact', async function () {
       // Add first record
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        1000,
-        'loan',
-        5
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 1000, 'loan', 5);
 
-      const [initialScore, initialTimestamp] = await creditScore.getCreditScore(user1.address);
+      const [initialScore, initialTimestamp] = await creditScore.getCreditScore(
+        user1.address
+      );
 
       // Add second record with negative impact
-      await creditScore.connect(provider1).addCreditRecord(
-        user1.address,
-        2000,
-        'loan',
-        -3
-      );
+      await creditScore
+        .connect(provider1)
+        .addCreditRecord(user1.address, 2000, 'loan', -3);
 
-      const [updatedScore, updatedTimestamp] = await creditScore.getCreditScore(user1.address);
+      const [updatedScore, updatedTimestamp] = await creditScore.getCreditScore(
+        user1.address
+      );
 
       expect(updatedScore).to.be.lt(initialScore);
       expect(updatedTimestamp).to.be.gt(initialTimestamp);
     });
 
     it('should return zero for users with no credit profile', async function () {
-      const [score, lastUpdated] = await creditScore.getCreditScore(user2.address);
+      const [score, lastUpdated] = await creditScore.getCreditScore(
+        user2.address
+      );
       expect(score).to.equal(0);
       expect(lastUpdated).to.equal(0);
     });
@@ -193,12 +182,9 @@ describe('CreditScore Contract', function () {
     it('should keep scores within valid range (300-850)', async function () {
       // Add multiple positive records to push score up
       for (let i = 0; i < 20; i++) {
-        await creditScore.connect(provider1).addCreditRecord(
-          user1.address,
-          1000,
-          'loan',
-          10
-        );
+        await creditScore
+          .connect(provider1)
+          .addCreditRecord(user1.address, 1000, 'loan', 10);
       }
 
       const [highScore, _] = await creditScore.getCreditScore(user1.address);
@@ -206,12 +192,9 @@ describe('CreditScore Contract', function () {
 
       // Create a new user and add multiple negative records
       for (let i = 0; i < 20; i++) {
-        await creditScore.connect(provider1).addCreditRecord(
-          user2.address,
-          1000,
-          'loan',
-          -10
-        );
+        await creditScore
+          .connect(provider1)
+          .addCreditRecord(user2.address, 1000, 'loan', -10);
       }
 
       const [lowScore, __] = await creditScore.getCreditScore(user2.address);
