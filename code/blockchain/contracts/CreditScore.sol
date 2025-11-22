@@ -35,7 +35,12 @@ contract CreditScore {
     address private owner;
 
     // Events
-    event NewCreditRecord(address indexed user, address indexed provider, uint256 amount, string recordType);
+    event NewCreditRecord(
+        address indexed user,
+        address indexed provider,
+        uint256 amount,
+        string recordType
+    );
     event RecordRepaid(address indexed user, uint256 recordIndex, uint256 timestamp);
     event ScoreUpdated(address indexed user, uint256 newScore);
     event ProviderAuthorized(address indexed provider);
@@ -53,7 +58,7 @@ contract CreditScore {
      * @dev Modifier to restrict functions to owner only
      */
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, 'Only owner can call this function');
         _;
     }
 
@@ -61,7 +66,10 @@ contract CreditScore {
      * @dev Modifier to restrict functions to authorized providers
      */
     modifier onlyAuthorizedProvider() {
-        require(authorizedProviders[msg.sender], "Only authorized providers can call this function");
+        require(
+            authorizedProviders[msg.sender],
+            'Only authorized providers can call this function'
+        );
         _;
     }
 
@@ -97,17 +105,11 @@ contract CreditScore {
         string calldata recordType,
         int8 scoreImpact
     ) external onlyAuthorizedProvider {
-        require(scoreImpact >= -10 && scoreImpact <= 10, "Score impact must be between -10 and 10");
+        require(scoreImpact >= -10 && scoreImpact <= 10, 'Score impact must be between -10 and 10');
 
-        creditHistory[user].push(CreditRecord(
-            block.timestamp,
-            amount,
-            false,
-            0,
-            msg.sender,
-            recordType,
-            scoreImpact
-        ));
+        creditHistory[user].push(
+            CreditRecord(block.timestamp, amount, false, 0, msg.sender, recordType, scoreImpact)
+        );
 
         // Initialize credit profile if it doesn't exist
         if (!creditProfiles[user].exists) {
@@ -126,8 +128,8 @@ contract CreditScore {
      * @param recordIndex Index of the record in the user's credit history
      */
     function markRepaid(address user, uint256 recordIndex) external onlyAuthorizedProvider {
-        require(recordIndex < creditHistory[user].length, "Record index out of bounds");
-        require(!creditHistory[user][recordIndex].repaid, "Record already marked as repaid");
+        require(recordIndex < creditHistory[user].length, 'Record index out of bounds');
+        require(!creditHistory[user][recordIndex].repaid, 'Record already marked as repaid');
 
         creditHistory[user][recordIndex].repaid = true;
         creditHistory[user][recordIndex].repaymentTimestamp = block.timestamp;
@@ -162,7 +164,9 @@ contract CreditScore {
      * @return score The user's credit score (300-850)
      * @return lastUpdated Timestamp of last score update
      */
-    function getCreditScore(address user) external view returns (uint256 score, uint256 lastUpdated) {
+    function getCreditScore(
+        address user
+    ) external view returns (uint256 score, uint256 lastUpdated) {
         if (!creditProfiles[user].exists) {
             return (0, 0);
         }

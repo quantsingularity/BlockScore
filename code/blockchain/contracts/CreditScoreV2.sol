@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
+import '@openzeppelin/contracts/access/AccessControl.sol';
+import '@openzeppelin/contracts/utils/cryptography/ECDSA.sol';
+import '@openzeppelin/contracts/utils/cryptography/EIP712.sol';
 
 /**
  * @title CreditScoreV2
@@ -16,10 +16,10 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     using ECDSA for bytes32;
 
     // Role definitions for granular access control
-    bytes32 public constant CREDIT_PROVIDER_ROLE = keccak256("CREDIT_PROVIDER_ROLE");
-    bytes32 public constant COMPLIANCE_OFFICER_ROLE = keccak256("COMPLIANCE_OFFICER_ROLE");
-    bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
-    bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
+    bytes32 public constant CREDIT_PROVIDER_ROLE = keccak256('CREDIT_PROVIDER_ROLE');
+    bytes32 public constant COMPLIANCE_OFFICER_ROLE = keccak256('COMPLIANCE_OFFICER_ROLE');
+    bytes32 public constant AUDITOR_ROLE = keccak256('AUDITOR_ROLE');
+    bytes32 public constant EMERGENCY_ROLE = keccak256('EMERGENCY_ROLE');
 
     // Credit score bounds (FICO standard)
     uint256 public constant MIN_CREDIT_SCORE = 300;
@@ -155,7 +155,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Constructor initializes the contract with proper role setup
      */
-    constructor() EIP712("CreditScoreV2", "1") {
+    constructor() EIP712('CreditScoreV2', '1') {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(EMERGENCY_ROLE, msg.sender);
         _grantRole(COMPLIANCE_OFFICER_ROLE, msg.sender);
@@ -204,7 +204,8 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         bytes32 dataHash,
         string calldata complianceFlags,
         bytes calldata signature
-    ) external
+    )
+        external
         onlyRole(CREDIT_PROVIDER_ROLE)
         nonReentrant
         whenNotPaused
@@ -218,21 +219,27 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         }
 
         // Verify signature for data integrity
-        bytes32 structHash = keccak256(abi.encode(
-            keccak256("CreditRecord(address user,uint256 amount,string recordType,int16 scoreImpact,bytes32 dataHash,uint256 nonce)"),
-            user,
-            amount,
-            keccak256(bytes(recordType)),
-            scoreImpact,
-            dataHash,
-            userNonces[user]
-        ));
+        bytes32 structHash = keccak256(
+            abi.encode(
+                keccak256(
+                    'CreditRecord(address user,uint256 amount,string recordType,int16 scoreImpact,bytes32 dataHash,uint256 nonce)'
+                ),
+                user,
+                amount,
+                keccak256(bytes(recordType)),
+                scoreImpact,
+                dataHash,
+                userNonces[user]
+            )
+        );
 
         bytes32 hash = _hashTypedDataV4(structHash);
         if (hash.recover(signature) != msg.sender) revert InvalidSignature();
 
         // Check for duplicate transactions
-        bytes32 txHash = keccak256(abi.encodePacked(user, amount, recordType, dataHash, block.timestamp));
+        bytes32 txHash = keccak256(
+            abi.encodePacked(user, amount, recordType, dataHash, block.timestamp)
+        );
         if (processedTransactions[txHash]) revert TransactionAlreadyProcessed();
         processedTransactions[txHash] = true;
 
@@ -250,20 +257,22 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         uint256 recordId = recordCounter++;
         uint256 expiryDate = block.timestamp + RECORD_RETENTION_PERIOD;
 
-        creditHistory[user].push(CreditRecord({
-            id: recordId,
-            timestamp: block.timestamp,
-            amount: amount,
-            repaid: false,
-            repaymentTimestamp: 0,
-            provider: msg.sender,
-            recordType: recordType,
-            scoreImpact: scoreImpact,
-            dataHash: dataHash,
-            disputed: false,
-            expiryDate: expiryDate,
-            complianceFlags: complianceFlags
-        }));
+        creditHistory[user].push(
+            CreditRecord({
+                id: recordId,
+                timestamp: block.timestamp,
+                amount: amount,
+                repaid: false,
+                repaymentTimestamp: 0,
+                provider: msg.sender,
+                recordType: recordType,
+                scoreImpact: scoreImpact,
+                dataHash: dataHash,
+                disputed: false,
+                expiryDate: expiryDate,
+                complianceFlags: complianceFlags
+            })
+        );
 
         // Update profile
         creditProfiles[user].recordCount++;
@@ -276,7 +285,15 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         // Compliance checks
         _performComplianceChecks(user, amount, recordType);
 
-        emit CreditRecordAdded(user, msg.sender, recordId, amount, recordType, scoreImpact, dataHash);
+        emit CreditRecordAdded(
+            user,
+            msg.sender,
+            recordId,
+            amount,
+            recordType,
+            scoreImpact,
+            dataHash
+        );
     }
 
     /**
@@ -286,25 +303,22 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         address user,
         uint256 recordIndex,
         bytes calldata signature
-    ) external
-        onlyRole(CREDIT_PROVIDER_ROLE)
-        nonReentrant
-        whenNotPaused
-        notFrozen(user)
-    {
+    ) external onlyRole(CREDIT_PROVIDER_ROLE) nonReentrant whenNotPaused notFrozen(user) {
         if (recordIndex >= creditHistory[user].length) revert RecordNotFound();
 
         CreditRecord storage record = creditHistory[user][recordIndex];
-        require(!record.repaid, "Record already repaid");
-        require(record.provider == msg.sender, "Only original provider can mark repaid");
+        require(!record.repaid, 'Record already repaid');
+        require(record.provider == msg.sender, 'Only original provider can mark repaid');
 
         // Verify signature
-        bytes32 structHash = keccak256(abi.encode(
-            keccak256("RepaymentRecord(address user,uint256 recordIndex,uint256 nonce)"),
-            user,
-            recordIndex,
-            userNonces[user]
-        ));
+        bytes32 structHash = keccak256(
+            abi.encode(
+                keccak256('RepaymentRecord(address user,uint256 recordIndex,uint256 nonce)'),
+                user,
+                recordIndex,
+                userNonces[user]
+            )
+        );
 
         bytes32 hash = _hashTypedDataV4(structHash);
         if (hash.recover(signature) != msg.sender) revert InvalidSignature();
@@ -317,7 +331,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         int16 repaymentBonus = _calculateRepaymentBonus(record);
 
         // Update credit score
-        _updateCreditScoreWithDecay(user, repaymentBonus, "repayment");
+        _updateCreditScoreWithDecay(user, repaymentBonus, 'repayment');
 
         emit RecordRepaid(user, record.id, block.timestamp, repaymentBonus);
     }
@@ -332,7 +346,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         if (recordIndex >= creditHistory[msg.sender].length) revert RecordNotFound();
 
         CreditRecord storage record = creditHistory[msg.sender][recordIndex];
-        require(!record.disputed, "Record already disputed");
+        require(!record.disputed, 'Record already disputed');
 
         // Check if dispute period is still valid (90 days from record creation)
         if (block.timestamp > record.timestamp + 90 days) revert DisputePeriodExpired();
@@ -346,7 +360,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
             reason: reason,
             timestamp: block.timestamp,
             resolved: false,
-            resolution: "",
+            resolution: '',
             resolver: address(0)
         });
 
@@ -362,7 +376,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         string calldata resolution
     ) external onlyRole(COMPLIANCE_OFFICER_ROLE) {
         DisputeRecord storage dispute = disputes[disputeId];
-        require(!dispute.resolved, "Dispute already resolved");
+        require(!dispute.resolved, 'Dispute already resolved');
 
         dispute.resolved = true;
         dispute.resolution = resolution;
@@ -387,7 +401,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         complianceViolations[user].push(reason);
 
         emit ProfileFrozen(user, reason, msg.sender);
-        emit ComplianceViolation(user, "PROFILE_FROZEN", reason, block.timestamp);
+        emit ComplianceViolation(user, 'PROFILE_FROZEN', reason, block.timestamp);
     }
 
     /**
@@ -419,19 +433,16 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Gets user's credit score with privacy controls
      */
-    function getCreditScore(address user) external view returns (
-        uint256 score,
-        uint256 lastUpdated,
-        bool frozen,
-        uint256 riskLevel
-    ) {
+    function getCreditScore(
+        address user
+    ) external view returns (uint256 score, uint256 lastUpdated, bool frozen, uint256 riskLevel) {
         // Only allow user themselves, authorized providers, or compliance officers
         require(
             msg.sender == user ||
-            hasRole(CREDIT_PROVIDER_ROLE, msg.sender) ||
-            hasRole(COMPLIANCE_OFFICER_ROLE, msg.sender) ||
-            hasRole(AUDITOR_ROLE, msg.sender),
-            "Unauthorized access to credit score"
+                hasRole(CREDIT_PROVIDER_ROLE, msg.sender) ||
+                hasRole(COMPLIANCE_OFFICER_ROLE, msg.sender) ||
+                hasRole(AUDITOR_ROLE, msg.sender),
+            'Unauthorized access to credit score'
         );
 
         CreditProfile storage profile = creditProfiles[user];
@@ -448,10 +459,10 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     function getCreditHistory(address user) external view returns (CreditRecord[] memory) {
         require(
             msg.sender == user ||
-            hasRole(CREDIT_PROVIDER_ROLE, msg.sender) ||
-            hasRole(COMPLIANCE_OFFICER_ROLE, msg.sender) ||
-            hasRole(AUDITOR_ROLE, msg.sender),
-            "Unauthorized access to credit history"
+                hasRole(CREDIT_PROVIDER_ROLE, msg.sender) ||
+                hasRole(COMPLIANCE_OFFICER_ROLE, msg.sender) ||
+                hasRole(AUDITOR_ROLE, msg.sender),
+            'Unauthorized access to credit history'
         );
 
         return creditHistory[user];
@@ -460,9 +471,9 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Gets compliance violations for a user (compliance officers only)
      */
-    function getComplianceViolations(address user) external view
-        onlyRole(COMPLIANCE_OFFICER_ROLE)
-        returns (string[] memory) {
+    function getComplianceViolations(
+        address user
+    ) external view onlyRole(COMPLIANCE_OFFICER_ROLE) returns (string[] memory) {
         return complianceViolations[user];
     }
 
@@ -477,14 +488,18 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         profile.recordCount = 0;
         profile.frozen = false;
         profile.lastScoreDecay = block.timestamp;
-        profile.kycStatus = "PENDING";
+        profile.kycStatus = 'PENDING';
         profile.riskLevel = 3; // Medium risk by default
     }
 
     /**
      * @dev Updates credit score with time decay consideration
      */
-    function _updateCreditScoreWithDecay(address user, int16 impact, string memory reason) internal {
+    function _updateCreditScoreWithDecay(
+        address user,
+        int16 impact,
+        string memory reason
+    ) internal {
         CreditProfile storage profile = creditProfiles[user];
         uint256 oldScore = profile.score;
 
@@ -554,11 +569,21 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Performs compliance checks on new records
      */
-    function _performComplianceChecks(address user, uint256 amount, string memory recordType) internal {
+    function _performComplianceChecks(
+        address user,
+        uint256 amount,
+        string memory recordType
+    ) internal {
         // Check for suspicious patterns
-        if (amount > 1000000 * 10**18) { // Very large amount
-            complianceViolations[user].push("LARGE_TRANSACTION");
-            emit ComplianceViolation(user, "LARGE_TRANSACTION", "Transaction amount exceeds threshold", block.timestamp);
+        if (amount > 1000000 * 10 ** 18) {
+            // Very large amount
+            complianceViolations[user].push('LARGE_TRANSACTION');
+            emit ComplianceViolation(
+                user,
+                'LARGE_TRANSACTION',
+                'Transaction amount exceeds threshold',
+                block.timestamp
+            );
         }
 
         // Check frequency of records
@@ -572,8 +597,13 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         }
 
         if (recentRecords > 10) {
-            complianceViolations[user].push("HIGH_FREQUENCY");
-            emit ComplianceViolation(user, "HIGH_FREQUENCY", "High frequency of credit records", block.timestamp);
+            complianceViolations[user].push('HIGH_FREQUENCY');
+            emit ComplianceViolation(
+                user,
+                'HIGH_FREQUENCY',
+                'High frequency of credit records',
+                block.timestamp
+            );
         }
     }
 
@@ -583,7 +613,12 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     function _archiveOldRecords(address user) internal {
         // In a production system, you'd move old records to cheaper storage
         // For now, we'll just emit an event
-        emit ComplianceViolation(user, "RECORD_LIMIT", "Maximum records reached, archiving old records", block.timestamp);
+        emit ComplianceViolation(
+            user,
+            'RECORD_LIMIT',
+            'Maximum records reached, archiving old records',
+            block.timestamp
+        );
     }
 
     /**
@@ -594,7 +629,11 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         for (uint256 i = 0; i < creditHistory[user].length; i++) {
             if (creditHistory[user][i].id == recordId) {
                 // Reverse the score impact
-                _updateCreditScoreWithDecay(user, -creditHistory[user][i].scoreImpact, "dispute_resolution");
+                _updateCreditScoreWithDecay(
+                    user,
+                    -creditHistory[user][i].scoreImpact,
+                    'dispute_resolution'
+                );
                 break;
             }
         }
@@ -608,7 +647,7 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
         int16[] calldata impacts,
         string calldata reason
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(users.length == impacts.length, "Array length mismatch");
+        require(users.length == impacts.length, 'Array length mismatch');
 
         for (uint256 i = 0; i < users.length; i++) {
             if (creditProfiles[users[i]].exists && !creditProfiles[users[i]].frozen) {
@@ -620,22 +659,24 @@ contract CreditScoreV2 is ReentrancyGuard, Pausable, AccessControl, EIP712 {
     /**
      * @dev Updates contract configuration (admin only)
      */
-    function updateConfiguration(
-        uint256 _maxDailyRecords
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function updateConfiguration(uint256 _maxDailyRecords) external onlyRole(DEFAULT_ADMIN_ROLE) {
         maxDailyRecords = _maxDailyRecords;
     }
 
     /**
      * @dev Gets contract statistics for monitoring
      */
-    function getContractStats() external view returns (
-        uint256 totalRecords,
-        uint256 totalDisputes,
-        uint256 activeProviders,
-        bool isPaused,
-        bool isEmergencyMode
-    ) {
+    function getContractStats()
+        external
+        view
+        returns (
+            uint256 totalRecords,
+            uint256 totalDisputes,
+            uint256 activeProviders,
+            bool isPaused,
+            bool isEmergencyMode
+        )
+    {
         // This would require additional tracking in a production system
         return (recordCounter - 1, disputeCounter - 1, 0, paused(), emergencyMode);
     }

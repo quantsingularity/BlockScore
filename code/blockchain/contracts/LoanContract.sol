@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./CreditScore.sol";
+import './CreditScore.sol';
 
 /**
  * @title LoanContract
@@ -53,7 +53,7 @@ contract LoanContract {
      * @dev Modifier to restrict functions to owner only
      */
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, 'Only owner can call this function');
         _;
     }
 
@@ -64,9 +64,13 @@ contract LoanContract {
      * @param durationDays Loan duration in days
      * @return loanId Unique identifier for the created loan
      */
-    function createLoan(uint256 amount, uint256 interestRate, uint256 durationDays) external returns (uint256 loanId) {
-        require(amount > 0, "Loan amount must be greater than zero");
-        require(durationDays > 0, "Loan duration must be greater than zero");
+    function createLoan(
+        uint256 amount,
+        uint256 interestRate,
+        uint256 durationDays
+    ) external returns (uint256 loanId) {
+        require(amount > 0, 'Loan amount must be greater than zero');
+        require(durationDays > 0, 'Loan duration must be greater than zero');
 
         loanId = loanCounter++;
 
@@ -92,8 +96,8 @@ contract LoanContract {
      * @param loanId ID of the loan to approve
      */
     function approveLoan(uint256 loanId) external onlyOwner {
-        require(loanId < loanCounter, "Invalid loan ID");
-        require(!loans[loanId].approved, "Loan already approved");
+        require(loanId < loanCounter, 'Invalid loan ID');
+        require(!loans[loanId].approved, 'Loan already approved');
 
         loans[loanId].approved = true;
 
@@ -101,7 +105,7 @@ contract LoanContract {
         creditScoreContract.addCreditRecord(
             loans[loanId].borrower,
             loans[loanId].amount,
-            "loan",
+            'loan',
             2 // Positive impact for getting approved for a loan
         );
 
@@ -113,10 +117,13 @@ contract LoanContract {
      * @param loanId ID of the loan to mark as repaid
      */
     function repayLoan(uint256 loanId) external {
-        require(loanId < loanCounter, "Invalid loan ID");
-        require(loans[loanId].borrower == msg.sender || msg.sender == owner, "Only borrower or owner can repay");
-        require(loans[loanId].approved, "Loan not approved");
-        require(!loans[loanId].repaid, "Loan already repaid");
+        require(loanId < loanCounter, 'Invalid loan ID');
+        require(
+            loans[loanId].borrower == msg.sender || msg.sender == owner,
+            'Only borrower or owner can repay'
+        );
+        require(loans[loanId].approved, 'Loan not approved');
+        require(!loans[loanId].repaid, 'Loan already repaid');
 
         loans[loanId].repaid = true;
         loans[loanId].repaymentTimestamp = block.timestamp;
@@ -135,7 +142,7 @@ contract LoanContract {
         creditScoreContract.addCreditRecord(
             loans[loanId].borrower,
             loans[loanId].amount,
-            "repayment",
+            'repayment',
             scoreImpact
         );
 
@@ -157,7 +164,7 @@ contract LoanContract {
      * @return Loan struct containing all loan details
      */
     function getLoanDetails(uint256 loanId) external view returns (Loan memory) {
-        require(loanId < loanCounter, "Invalid loan ID");
+        require(loanId < loanCounter, 'Invalid loan ID');
         return loans[loanId];
     }
 
@@ -167,7 +174,9 @@ contract LoanContract {
      * @return score The borrower's credit score
      * @return lastUpdated Timestamp of last score update
      */
-    function getBorrowerCreditScore(address borrower) external view returns (uint256 score, uint256 lastUpdated) {
+    function getBorrowerCreditScore(
+        address borrower
+    ) external view returns (uint256 score, uint256 lastUpdated) {
         return creditScoreContract.getCreditScore(borrower);
     }
 }
