@@ -17,39 +17,39 @@ import Landing from './pages/Landing';
 import LoadingScreen from './components/common/LoadingScreen';
 
 function App() {
-  const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
+    const location = useLocation();
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate initial loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    useEffect(() => {
+        // Simulate initial loading
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
 
-    return () => clearTimeout(timer);
-  }, []);
+        return () => clearTimeout(timer);
+    }, []);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Landing />} />
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                    <Route path="/" element={<Landing />} />
 
-          <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/loan-calculator" element={<LoanCalculator />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
+                    <Route element={<MainLayout />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/loan-calculator" element={<LoanCalculator />} />
+                        <Route path="/profile" element={<Profile />} />
+                    </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AnimatePresence>
-    </Box>
-  );
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </AnimatePresence>
+        </Box>
+    );
 }
 
 export default App;

@@ -22,8 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
 });
 
 // Routes
@@ -33,40 +33,40 @@ app.use('/api/loans', loanRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date() });
+    res.json({ status: 'ok', timestamp: new Date() });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
-  });
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    });
 });
 
 // Initialize services
 const initServices = async () => {
-  try {
-    // Initialize authentication service
-    authService.init();
+    try {
+        // Initialize authentication service
+        authService.init();
 
-    // Initialize contract service
-    await contractService.init();
+        // Initialize contract service
+        await contractService.init();
 
-    console.log('Services initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize services:', error);
-    process.exit(1);
-  }
+        console.log('Services initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize services:', error);
+        process.exit(1);
+    }
 };
 
 // Start server
 const PORT = config.api.port;
 app.listen(PORT, async () => {
-  console.log(`BlockScore API running on port ${PORT}`);
-  await initServices();
+    console.log(`BlockScore API running on port ${PORT}`);
+    await initServices();
 });
 
 module.exports = app;
