@@ -1,90 +1,90 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blockscore-backend
-  labels:
-    app: blockscore-backend
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: blockscore-backend
-  template:
-    metadata:
-      labels:
+    name: blockscore-backend
+    labels:
         app: blockscore-backend
-    spec:
-      serviceAccountName: blockscore-service-account
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 2000
-      containers:
-        - name: backend
-          image: blockscore/backend:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: blockscore-secrets
-                  key: database-url
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: blockscore-secrets
-                  key: redis-url
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: blockscore-secrets
-                  key: jwt-secret
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 1000
-            capabilities:
-              drop:
-                - ALL
-          resources:
-            limits:
-              cpu: 500m
-              memory: 512Mi
-            requests:
-              cpu: 250m
-              memory: 256Mi
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          volumeMounts:
-            - name: tmp-volume
-              mountPath: /tmp
-            - name: var-run-volume
-              mountPath: /var/run
-      volumes:
-        - name: tmp-volume
-          emptyDir: {}
-        - name: var-run-volume
-          emptyDir: {}
-      nodeSelector:
-        kubernetes.io/os: linux
-      tolerations:
-        - key: 'node.kubernetes.io/not-ready'
-          operator: 'Exists'
-          effect: 'NoExecute'
-          tolerationSeconds: 300
-        - key: 'node.kubernetes.io/unreachable'
-          operator: 'Exists'
-          effect: 'NoExecute'
-          tolerationSeconds: 300
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: blockscore-backend
+    template:
+        metadata:
+            labels:
+                app: blockscore-backend
+        spec:
+            serviceAccountName: blockscore-service-account
+            securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                fsGroup: 2000
+            containers:
+                - name: backend
+                  image: blockscore/backend:latest
+                  ports:
+                      - containerPort: 8080
+                  env:
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: blockscore-secrets
+                                key: database-url
+                      - name: REDIS_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: blockscore-secrets
+                                key: redis-url
+                      - name: JWT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: blockscore-secrets
+                                key: jwt-secret
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      readOnlyRootFilesystem: true
+                      runAsNonRoot: true
+                      runAsUser: 1000
+                      capabilities:
+                          drop:
+                              - ALL
+                  resources:
+                      limits:
+                          cpu: 500m
+                          memory: 512Mi
+                      requests:
+                          cpu: 250m
+                          memory: 256Mi
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /ready
+                          port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
+                  volumeMounts:
+                      - name: tmp-volume
+                        mountPath: /tmp
+                      - name: var-run-volume
+                        mountPath: /var/run
+            volumes:
+                - name: tmp-volume
+                  emptyDir: {}
+                - name: var-run-volume
+                  emptyDir: {}
+            nodeSelector:
+                kubernetes.io/os: linux
+            tolerations:
+                - key: 'node.kubernetes.io/not-ready'
+                  operator: 'Exists'
+                  effect: 'NoExecute'
+                  tolerationSeconds: 300
+                - key: 'node.kubernetes.io/unreachable'
+                  operator: 'Exists'
+                  effect: 'NoExecute'
+                  tolerationSeconds: 300
