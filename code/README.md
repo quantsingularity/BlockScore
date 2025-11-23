@@ -2,11 +2,11 @@
 
 ## Overview
 
-The code directory contains the core implementation of the BlockScore platform, a comprehensive credit scoring and financial assessment system built on blockchain technology. This directory houses all the source code components that power the BlockScore ecosystem, including artificial intelligence models, backend services, blockchain smart contracts, and web frontend interfaces. Each component is organized into its own subdirectory with specific responsibilities and integration points with other parts of the system.
+The code directory contains the core implementation of the BlockScore platform, a comprehensive credit scoring and financial assessment system built on blockchain technology. This directory houses all the source code components that power the BlockScore ecosystem, including artificial intelligence models, backend services and blockchain smart contracts. Each component is organized into its own subdirectory with specific responsibilities and integration points with other parts of the system.
 
 ## Directory Structure
 
-The code directory is organized into four main subdirectories:
+The code directory is organized into three main subdirectories:
 
 ### AI Models
 
@@ -40,12 +40,6 @@ Key components include:
 The `blockchain` subdirectory contains smart contracts and blockchain integration code that forms the decentralized foundation of the BlockScore platform. These components ensure transparent, immutable record-keeping of credit scores and financial transactions, while enabling trustless interactions between parties.
 
 This directory includes smart contract implementations, deployment scripts, blockchain interaction utilities, and testing frameworks for the decentralized components of the system.
-
-### Web Frontend
-
-The `web-frontend` subdirectory contains the user interface implementation for web browsers, providing the visual and interactive layer of the BlockScore platform. This component is built using modern web technologies and frameworks, offering a responsive and intuitive user experience for accessing BlockScore's features.
-
-The web frontend includes user interface components, state management logic, API integration code, and assets required for the web application.
 
 ## Integration
 
