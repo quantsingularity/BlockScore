@@ -24,56 +24,56 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 
 - **Technology**: React.js
 - **Key Components**:
-  - User authentication interface
-  - Credit score dashboard
-  - Transaction history viewer
-  - Loan application forms
-  - Wallet integration (MetaMask)
+    - User authentication interface
+    - Credit score dashboard
+    - Transaction history viewer
+    - Loan application forms
+    - Wallet integration (MetaMask)
 
 ### 2. Backend Layer
 
 - **Technology**: Node.js with Express
 - **Responsibilities**:
-  - API endpoint management
-  - Business logic implementation
-  - Data validation and processing
-  - Integration with blockchain and AI models
-  - Authentication and authorization
+    - API endpoint management
+    - Business logic implementation
+    - Data validation and processing
+    - Integration with blockchain and AI models
+    - Authentication and authorization
 
 ### 3. Blockchain Layer
 
 - **Technology**: Ethereum/Polygon
 - **Smart Contracts**:
-  - CreditScore.sol: Manages credit score data
-  - LoanAgreement.sol: Handles loan terms and conditions
-  - DataRegistry.sol: Stores transaction history
+    - CreditScore.sol: Manages credit score data
+    - LoanAgreement.sol: Handles loan terms and conditions
+    - DataRegistry.sol: Stores transaction history
 
 ### 4. AI/ML Layer
 
 - **Technology**: Python (TensorFlow/PyTorch)
 - **Models**:
-  - Credit risk assessment
-  - Fraud detection
-  - Payment behavior prediction
+    - Credit risk assessment
+    - Fraud detection
+    - Payment behavior prediction
 
 ## Data Flow
 
 1. **User Interaction**:
 
-   ```
-   User → Frontend → Backend → Blockchain
-   ```
+    ```
+    User → Frontend → Backend → Blockchain
+    ```
 
 2. **Credit Score Calculation**:
 
-   ```
-   Transaction Data → AI Models → Credit Score → Blockchain
-   ```
+    ```
+    Transaction Data → AI Models → Credit Score → Blockchain
+    ```
 
 3. **Loan Processing**:
-   ```
-   Loan Application → Risk Assessment → Smart Contract → Approval/Rejection
-   ```
+    ```
+    Loan Application → Risk Assessment → Smart Contract → Approval/Rejection
+    ```
 
 ## Security Architecture
 
@@ -120,11 +120,11 @@ BlockScore is a decentralized credit scoring system that combines blockchain tec
 ## Future Architecture Considerations
 
 1. **Planned Improvements**:
-   - Integration with additional blockchains
-   - Enhanced AI model capabilities
-   - Improved scalability solutions
+    - Integration with additional blockchains
+    - Enhanced AI model capabilities
+    - Improved scalability solutions
 
 2. **Potential Upgrades**:
-   - Layer 2 scaling solutions
-   - Cross-chain interoperability
-   - Advanced privacy features
+    - Layer 2 scaling solutions
+    - Cross-chain interoperability
+    - Advanced privacy features

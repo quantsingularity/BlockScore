@@ -15,17 +15,17 @@ Error: Cannot find module '@blockscore/sdk'
 **Solution**:
 
 1. Clear npm cache:
-   ```bash
-   npm cache clean --force
-   ```
+    ```bash
+    npm cache clean --force
+    ```
 2. Delete node_modules and package-lock.json:
-   ```bash
-   rm -rf node_modules package-lock.json
-   ```
+    ```bash
+    rm -rf node_modules package-lock.json
+    ```
 3. Reinstall dependencies:
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 #### Python Environment Issues
 
@@ -38,14 +38,14 @@ ImportError: No module named 'tensorflow'
 **Solution**:
 
 1. Create a new virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-   ```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+    ```
 2. Install requirements:
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ### Blockchain Integration
 
@@ -130,9 +130,9 @@ MongoNetworkError: connect ECONNREFUSED
 **Solution**:
 
 1. Verify MongoDB is running:
-   ```bash
-   sudo systemctl status mongodb
-   ```
+    ```bash
+    sudo systemctl status mongodb
+    ```
 2. Check connection string
 3. Ensure network access is configured
 
@@ -179,17 +179,17 @@ Error: Cannot find module 'react-scripts'
 **Solution**:
 
 1. Install missing dependencies:
-   ```bash
-   npm install react-scripts
-   ```
+    ```bash
+    npm install react-scripts
+    ```
 2. Clear build cache:
-   ```bash
-   npm run clean
-   ```
+    ```bash
+    npm run clean
+    ```
 3. Rebuild application:
-   ```bash
-   npm run build
-   ```
+    ```bash
+    npm run build
+    ```
 
 #### UI Rendering Issues
 
@@ -232,9 +232,9 @@ Error: JavaScript heap out of memory
 **Solution**:
 
 1. Increase Node.js memory limit:
-   ```bash
-   export NODE_OPTIONS="--max-old-space-size=8192"
-   ```
+    ```bash
+    export NODE_OPTIONS="--max-old-space-size=8192"
+    ```
 2. Optimize memory usage
 3. Implement garbage collection
 

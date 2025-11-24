@@ -493,65 +493,65 @@ CMD ["gunicorn", "-c", "gunicorn.conf.py", "app:app"]
 version: '3.8'
 
 services:
-  backend:
-    build: .
-    ports:
-      - '5000:5000'
-    environment:
-      - FLASK_ENV=production
-      - DATABASE_URL=postgresql://blockscore_user:password@postgres:5432/blockscore_prod
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./uploads:/app/uploads
-    restart: unless-stopped
+    backend:
+        build: .
+        ports:
+            - '5000:5000'
+        environment:
+            - FLASK_ENV=production
+            - DATABASE_URL=postgresql://blockscore_user:password@postgres:5432/blockscore_prod
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - postgres
+            - redis
+        volumes:
+            - ./uploads:/app/uploads
+        restart: unless-stopped
 
-  postgres:
-    image: postgres:14
-    environment:
-      - POSTGRES_DB=blockscore_prod
-      - POSTGRES_USER=blockscore_user
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+    postgres:
+        image: postgres:14
+        environment:
+            - POSTGRES_DB=blockscore_prod
+            - POSTGRES_USER=blockscore_user
+            - POSTGRES_PASSWORD=password
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        restart: unless-stopped
 
-  redis:
-    image: redis:6.2-alpine
-    command: redis-server --requirepass password
-    volumes:
-      - redis_data:/data
-    restart: unless-stopped
+    redis:
+        image: redis:6.2-alpine
+        command: redis-server --requirepass password
+        volumes:
+            - redis_data:/data
+        restart: unless-stopped
 
-  celery:
-    build: .
-    command: celery -A app.celery worker --loglevel=info
-    environment:
-      - FLASK_ENV=production
-      - DATABASE_URL=postgresql://blockscore_user:password@postgres:5432/blockscore_prod
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - postgres
-      - redis
-    restart: unless-stopped
+    celery:
+        build: .
+        command: celery -A app.celery worker --loglevel=info
+        environment:
+            - FLASK_ENV=production
+            - DATABASE_URL=postgresql://blockscore_user:password@postgres:5432/blockscore_prod
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - postgres
+            - redis
+        restart: unless-stopped
 
-  nginx:
-    image: nginx:alpine
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl:/etc/ssl
-    depends_on:
-      - backend
-    restart: unless-stopped
+    nginx:
+        image: nginx:alpine
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./nginx.conf:/etc/nginx/nginx.conf
+            - ./ssl:/etc/ssl
+        depends_on:
+            - backend
+        restart: unless-stopped
 
 volumes:
-  postgres_data:
-  redis_data:
+    postgres_data:
+    redis_data:
 ```
 
 ## Kubernetes Deployment
@@ -562,18 +562,18 @@ volumes:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: blockscore
+    name: blockscore
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blockscore-config
-  namespace: blockscore
+    name: blockscore-config
+    namespace: blockscore
 data:
-  FLASK_ENV: 'production'
-  LOG_LEVEL: 'INFO'
-  REDIS_URL: 'redis://redis-service:6379/0'
+    FLASK_ENV: 'production'
+    LOG_LEVEL: 'INFO'
+    REDIS_URL: 'redis://redis-service:6379/0'
 ```
 
 ### 2. Secrets
@@ -582,14 +582,14 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: blockscore-secrets
-  namespace: blockscore
+    name: blockscore-secrets
+    namespace: blockscore
 type: Opaque
 stringData:
-  SECRET_KEY: 'your_super_secret_key_here'
-  JWT_SECRET_KEY: 'your_jwt_secret_key_here'
-  DATABASE_URL: 'postgresql://user:pass@postgres:5432/blockscore'
-  BLOCKCHAIN_PRIVATE_KEY: '0x_your_private_key'
+    SECRET_KEY: 'your_super_secret_key_here'
+    JWT_SECRET_KEY: 'your_jwt_secret_key_here'
+    DATABASE_URL: 'postgresql://user:pass@postgres:5432/blockscore'
+    BLOCKCHAIN_PRIVATE_KEY: '0x_your_private_key'
 ```
 
 ### 3. Deployment
@@ -598,47 +598,47 @@ stringData:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blockscore-backend
-  namespace: blockscore
+    name: blockscore-backend
+    namespace: blockscore
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: blockscore-backend
-  template:
-    metadata:
-      labels:
-        app: blockscore-backend
-    spec:
-      containers:
-        - name: backend
-          image: blockscore/backend:latest
-          ports:
-            - containerPort: 5000
-          envFrom:
-            - configMapRef:
-                name: blockscore-config
-            - secretRef:
-                name: blockscore-secrets
-          livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 5000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          resources:
-            requests:
-              memory: '512Mi'
-              cpu: '250m'
-            limits:
-              memory: '1Gi'
-              cpu: '500m'
+    replicas: 3
+    selector:
+        matchLabels:
+            app: blockscore-backend
+    template:
+        metadata:
+            labels:
+                app: blockscore-backend
+        spec:
+            containers:
+                - name: backend
+                  image: blockscore/backend:latest
+                  ports:
+                      - containerPort: 5000
+                  envFrom:
+                      - configMapRef:
+                            name: blockscore-config
+                      - secretRef:
+                            name: blockscore-secrets
+                  livenessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 5000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 5000
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
+                  resources:
+                      requests:
+                          memory: '512Mi'
+                          cpu: '250m'
+                      limits:
+                          memory: '1Gi'
+                          cpu: '500m'
 ```
 
 ### 4. Service and Ingress
@@ -647,42 +647,42 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockscore-backend-service
-  namespace: blockscore
+    name: blockscore-backend-service
+    namespace: blockscore
 spec:
-  selector:
-    app: blockscore-backend
-  ports:
-    - port: 80
-      targetPort: 5000
-  type: ClusterIP
+    selector:
+        app: blockscore-backend
+    ports:
+        - port: 80
+          targetPort: 5000
+    type: ClusterIP
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blockscore-ingress
-  namespace: blockscore
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rate-limit: '100'
+    name: blockscore-ingress
+    namespace: blockscore
+    annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/rate-limit: '100'
 spec:
-  tls:
-    - hosts:
-        - api.blockscore.com
-      secretName: blockscore-tls
-  rules:
-    - host: api.blockscore.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: blockscore-backend-service
-                port:
-                  number: 80
+    tls:
+        - hosts:
+              - api.blockscore.com
+          secretName: blockscore-tls
+    rules:
+        - host: api.blockscore.com
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: blockscore-backend-service
+                            port:
+                                number: 80
 ```
 
 ## Monitoring and Observability
@@ -917,19 +917,19 @@ engine = create_engine(
 ### Common Issues
 
 1. **High Memory Usage**
-   - Check Gunicorn worker count
-   - Monitor Redis memory usage
-   - Review database query performance
+    - Check Gunicorn worker count
+    - Monitor Redis memory usage
+    - Review database query performance
 
 2. **Slow Response Times**
-   - Enable query logging
-   - Check Redis hit rates
-   - Monitor database connections
+    - Enable query logging
+    - Check Redis hit rates
+    - Monitor database connections
 
 3. **SSL Certificate Issues**
-   - Verify certificate chain
-   - Check certificate expiration
-   - Validate DNS configuration
+    - Verify certificate chain
+    - Check certificate expiration
+    - Validate DNS configuration
 
 ### Useful Commands
 
@@ -961,19 +961,19 @@ free -m
 ### Regular Tasks
 
 1. **Daily**
-   - Monitor application logs
-   - Check system resources
-   - Verify backup completion
+    - Monitor application logs
+    - Check system resources
+    - Verify backup completion
 
 2. **Weekly**
-   - Review security logs
-   - Update system packages
-   - Analyze performance metrics
+    - Review security logs
+    - Update system packages
+    - Analyze performance metrics
 
 3. **Monthly**
-   - Update application dependencies
-   - Review and rotate logs
-   - Test backup restoration
+    - Update application dependencies
+    - Review and rotate logs
+    - Test backup restoration
 
 ### Update Procedure
 

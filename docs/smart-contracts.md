@@ -69,10 +69,10 @@ interface IDataRegistry {
 
 ```solidity
 contract CreditScore is Ownable, AccessControl {
-    bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
+    bytes32 public constant UPDATER_ROLE = keccak256('UPDATER_ROLE');
 
     modifier onlyUpdater() {
-        require(hasRole(UPDATER_ROLE, msg.sender), "Caller is not an updater");
+        require(hasRole(UPDATER_ROLE, msg.sender), 'Caller is not an updater');
         _;
     }
 }
@@ -109,9 +109,7 @@ const creditScore = new web3.eth.Contract(CreditScoreABI, contractAddress);
 const score = await creditScore.methods.getScore(userAddress).call();
 
 // Update credit score (requires appropriate permissions)
-await creditScore.methods
-  .updateScore(userAddress, newScore)
-  .send({ from: updaterAddress });
+await creditScore.methods.updateScore(userAddress, newScore).send({ from: updaterAddress });
 ```
 
 ### Ethers.js Example
@@ -132,18 +130,9 @@ await tx.wait();
 ### CreditScore Events
 
 ```solidity
-event ScoreUpdated(
-    address indexed user,
-    uint256 oldScore,
-    uint256 newScore,
-    uint256 timestamp
-);
+event ScoreUpdated(address indexed user, uint256 oldScore, uint256 newScore, uint256 timestamp);
 
-event DataAdded(
-    address indexed user,
-    bytes32 indexed dataHash,
-    uint256 timestamp
-);
+event DataAdded(address indexed user, bytes32 indexed dataHash, uint256 timestamp);
 ```
 
 ### LoanAgreement Events
@@ -156,11 +145,7 @@ event LoanCreated(
     uint256 timestamp
 );
 
-event LoanRepaid(
-    uint256 indexed loanId,
-    uint256 amount,
-    uint256 timestamp
-);
+event LoanRepaid(uint256 indexed loanId, uint256 amount, uint256 timestamp);
 ```
 
 ## Gas Optimization
@@ -185,7 +170,7 @@ function batchUpdateScores(
     address[] calldata users,
     uint256[] calldata scores
 ) external onlyUpdater {
-    require(users.length == scores.length, "Array length mismatch");
+    require(users.length == scores.length, 'Array length mismatch');
     for (uint i = 0; i < users.length; i++) {
         _updateScore(users[i], scores[i]);
     }
@@ -228,16 +213,16 @@ contract CreditScoreV1 is Initializable {
 
 ```javascript
 describe('CreditScore', function () {
-  it('should update score correctly', async function () {
-    const [owner, user] = await ethers.getSigners();
-    const CreditScore = await ethers.getContractFactory('CreditScore');
-    const creditScore = await CreditScore.deploy();
+    it('should update score correctly', async function () {
+        const [owner, user] = await ethers.getSigners();
+        const CreditScore = await ethers.getContractFactory('CreditScore');
+        const creditScore = await CreditScore.deploy();
 
-    await creditScore.updateScore(user.address, 750);
-    const score = await creditScore.getScore(user.address);
+        await creditScore.updateScore(user.address, 750);
+        const score = await creditScore.getScore(user.address);
 
-    expect(score).to.equal(750);
-  });
+        expect(score).to.equal(750);
+    });
 });
 ```
 

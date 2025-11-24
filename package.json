@@ -1,19 +1,25 @@
 {
-  "name": "blockscore",
-  "version": "1.0.0",
-  "description": "BlockScore: A blockchain project for credit scoring and DeFi smart contracts using Solidity.",
-  "main": ".eslintrc.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["solidity", "blockchain", "DeFi", "smart-contracts", "credit-score"],
-  "author": "Abrar Ahmed",
-  "license": "ISC",
-  "devDependencies": {
-    "prettier": "^3.6.2",
-    "prettier-plugin-solidity": "^2.2.0"
-  }
+    "name": "blockscore",
+    "version": "1.0.0",
+    "description": "BlockScore: A blockchain project for credit scoring and DeFi smart contracts using Solidity.",
+    "main": ".eslintrc.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "solidity",
+        "blockchain",
+        "DeFi",
+        "smart-contracts",
+        "credit-score"
+    ],
+    "author": "Abrar Ahmed",
+    "license": "ISC",
+    "devDependencies": {
+        "prettier": "^3.6.2",
+        "prettier-plugin-solidity": "^2.2.0"
+    }
 }

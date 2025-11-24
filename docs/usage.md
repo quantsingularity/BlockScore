@@ -164,14 +164,14 @@ Response:
 
 ```json
 {
-  "success": true,
-  "message": "Authentication successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "username": "user123",
-    "role": "user",
-    "walletAddress": null
-  }
+    "success": true,
+    "message": "Authentication successful",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "username": "user123",
+        "role": "user",
+        "walletAddress": null
+    }
 }
 ```
 
@@ -199,11 +199,11 @@ Response:
 
 ```json
 {
-  "success": true,
-  "data": {
-    "score": 750,
-    "lastUpdated": 1621500000
-  }
+    "success": true,
+    "data": {
+        "score": 750,
+        "lastUpdated": 1621500000
+    }
 }
 ```
 
@@ -217,18 +217,18 @@ Response:
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "timestamp": 1621500000,
-      "amount": 5000,
-      "repaid": true,
-      "repaymentTimestamp": 1623500000,
-      "provider": "0x123...",
-      "recordType": "loan",
-      "scoreImpact": 5
-    }
-  ]
+    "success": true,
+    "data": [
+        {
+            "timestamp": 1621500000,
+            "amount": 5000,
+            "repaid": true,
+            "repaymentTimestamp": 1623500000,
+            "provider": "0x123...",
+            "recordType": "loan",
+            "scoreImpact": 5
+        }
+    ]
 }
 ```
 
@@ -277,19 +277,19 @@ Response:
 
 ```json
 {
-  "success": true,
-  "data": {
-    "address": "0x123456789abcdef...",
-    "calculatedScore": 720,
-    "blockchainScore": 750,
-    "factors": [
-      {
-        "factor": "Good payment history",
-        "impact": "positive",
-        "description": "Generally repaying debts on time"
-      }
-    ]
-  }
+    "success": true,
+    "data": {
+        "address": "0x123456789abcdef...",
+        "calculatedScore": 720,
+        "blockchainScore": 750,
+        "factors": [
+            {
+                "factor": "Good payment history",
+                "impact": "positive",
+                "description": "Generally repaying debts on time"
+            }
+        ]
+    }
 }
 ```
 
@@ -305,17 +305,17 @@ Response:
 
 ```json
 {
-  "success": true,
-  "data": {
-    "borrower": "0x123456789abcdef...",
-    "amount": 10000,
-    "interestRate": 500,
-    "creationTimestamp": 1621500000,
-    "dueDate": 1623500000,
-    "approved": true,
-    "repaid": false,
-    "repaymentTimestamp": 0
-  }
+    "success": true,
+    "data": {
+        "borrower": "0x123456789abcdef...",
+        "amount": 10000,
+        "interestRate": 500,
+        "creationTimestamp": 1621500000,
+        "dueDate": 1623500000,
+        "approved": true,
+        "repaid": false,
+        "repaymentTimestamp": 0
+    }
 }
 ```
 
@@ -416,15 +416,15 @@ Response:
 
 ```json
 {
-  "score": 720,
-  "confidence": 0.85,
-  "factors": [
-    {
-      "factor": "Good payment history",
-      "impact": "positive",
-      "description": "Generally repaying debts on time"
-    }
-  ]
+    "score": 720,
+    "confidence": 0.85,
+    "factors": [
+        {
+            "factor": "Good payment history",
+            "impact": "positive",
+            "description": "Generally repaying debts on time"
+        }
+    ]
 }
 ```
 

@@ -38,17 +38,17 @@ Register a new user account.
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "StrongPassword123!",
-  "first_name": "John",
-  "last_name": "Doe",
-  "date_of_birth": "1990-01-01",
-  "phone_number": "+1234567890",
-  "address_line1": "123 Main Street",
-  "city": "New York",
-  "state": "NY",
-  "postal_code": "10001",
-  "country": "US"
+    "email": "user@example.com",
+    "password": "StrongPassword123!",
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-01",
+    "phone_number": "+1234567890",
+    "address_line1": "123 Main Street",
+    "city": "New York",
+    "state": "NY",
+    "postal_code": "10001",
+    "country": "US"
 }
 ```
 
@@ -56,10 +56,10 @@ Register a new user account.
 
 ```json
 {
-  "success": true,
-  "user_id": "uuid-string",
-  "message": "User registered successfully",
-  "verification_required": true
+    "success": true,
+    "user_id": "uuid-string",
+    "message": "User registered successfully",
+    "verification_required": true
 }
 ```
 
@@ -67,12 +67,12 @@ Register a new user account.
 
 ```json
 {
-  "success": false,
-  "message": "Validation failed",
-  "errors": {
-    "email": ["Invalid email format"],
-    "password": ["Password must be at least 8 characters"]
-  }
+    "success": false,
+    "message": "Validation failed",
+    "errors": {
+        "email": ["Invalid email format"],
+        "password": ["Password must be at least 8 characters"]
+    }
 }
 ```
 
@@ -84,9 +84,9 @@ Authenticate user and obtain tokens.
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "StrongPassword123!",
-  "mfa_token": "123456"
+    "email": "user@example.com",
+    "password": "StrongPassword123!",
+    "mfa_token": "123456"
 }
 ```
 
@@ -94,17 +94,17 @@ Authenticate user and obtain tokens.
 
 ```json
 {
-  "success": true,
-  "access_token": "jwt_access_token",
-  "refresh_token": "jwt_refresh_token",
-  "expires_in": 3600,
-  "user": {
-    "id": "uuid-string",
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "mfa_enabled": false
-  }
+    "success": true,
+    "access_token": "jwt_access_token",
+    "refresh_token": "jwt_refresh_token",
+    "expires_in": 3600,
+    "user": {
+        "id": "uuid-string",
+        "email": "user@example.com",
+        "first_name": "John",
+        "last_name": "Doe",
+        "mfa_enabled": false
+    }
 }
 ```
 
@@ -116,7 +116,7 @@ Refresh access token using refresh token.
 
 ```json
 {
-  "refresh_token": "jwt_refresh_token"
+    "refresh_token": "jwt_refresh_token"
 }
 ```
 
@@ -124,10 +124,10 @@ Refresh access token using refresh token.
 
 ```json
 {
-  "success": true,
-  "access_token": "new_jwt_access_token",
-  "refresh_token": "new_jwt_refresh_token",
-  "expires_in": 3600
+    "success": true,
+    "access_token": "new_jwt_access_token",
+    "refresh_token": "new_jwt_refresh_token",
+    "expires_in": 3600
 }
 ```
 
@@ -145,8 +145,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "message": "Logged out successfully"
+    "success": true,
+    "message": "Logged out successfully"
 }
 ```
 
@@ -164,8 +164,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "current_password": "OldPassword123!",
-  "new_password": "NewPassword123!"
+    "current_password": "OldPassword123!",
+    "new_password": "NewPassword123!"
 }
 ```
 
@@ -173,8 +173,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "message": "Password changed successfully"
+    "success": true,
+    "message": "Password changed successfully"
 }
 ```
 
@@ -186,7 +186,7 @@ Request password reset.
 
 ```json
 {
-  "email": "user@example.com"
+    "email": "user@example.com"
 }
 ```
 
@@ -194,8 +194,8 @@ Request password reset.
 
 ```json
 {
-  "success": true,
-  "message": "Password reset email sent"
+    "success": true,
+    "message": "Password reset email sent"
 }
 ```
 
@@ -207,8 +207,8 @@ Reset password using reset token.
 
 ```json
 {
-  "reset_token": "reset_token_string",
-  "new_password": "NewPassword123!"
+    "reset_token": "reset_token_string",
+    "new_password": "NewPassword123!"
 }
 ```
 
@@ -216,8 +216,8 @@ Reset password using reset token.
 
 ```json
 {
-  "success": true,
-  "message": "Password reset successfully"
+    "success": true,
+    "message": "Password reset successfully"
 }
 ```
 
@@ -235,9 +235,9 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "secret": "mfa_secret_key",
-  "qr_code": "data:image/png;base64,..."
+    "success": true,
+    "secret": "mfa_secret_key",
+    "qr_code": "data:image/png;base64,..."
 }
 ```
 
@@ -255,7 +255,7 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "mfa_token": "123456"
+    "mfa_token": "123456"
 }
 ```
 
@@ -263,8 +263,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "valid": true,
-  "message": "MFA token verified"
+    "valid": true,
+    "message": "MFA token verified"
 }
 ```
 
@@ -282,7 +282,7 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "mfa_token": "123456"
+    "mfa_token": "123456"
 }
 ```
 
@@ -290,8 +290,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "message": "MFA disabled successfully"
+    "success": true,
+    "message": "MFA disabled successfully"
 }
 ```
 
@@ -311,13 +311,13 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "score": 750,
-  "score_range": "excellent",
-  "calculated_at": "2024-01-15T10:30:00Z",
-  "version": "v2.0",
-  "factors_positive": ["payment_history", "credit_utilization", "credit_age"],
-  "factors_negative": ["new_credit_inquiries"],
-  "next_update": "2024-02-15T10:30:00Z"
+    "score": 750,
+    "score_range": "excellent",
+    "calculated_at": "2024-01-15T10:30:00Z",
+    "version": "v2.0",
+    "factors_positive": ["payment_history", "credit_utilization", "credit_age"],
+    "factors_negative": ["new_credit_inquiries"],
+    "next_update": "2024-02-15T10:30:00Z"
 }
 ```
 
@@ -325,8 +325,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "error": "Credit score not found",
-  "message": "No credit score available for this user"
+    "error": "Credit score not found",
+    "message": "No credit score available for this user"
 }
 ```
 
@@ -344,8 +344,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "wallet_address": "0x1234567890123456789012345678901234567890",
-  "force_recalculation": true
+    "wallet_address": "0x1234567890123456789012345678901234567890",
+    "force_recalculation": true
 }
 ```
 
@@ -353,23 +353,23 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "score": 725,
-  "score_change": 15,
-  "factors": [
-    {
-      "factor": "payment_history",
-      "impact": "positive",
-      "weight": 0.35,
-      "description": "Consistent on-time payments"
+    "score": 725,
+    "score_change": 15,
+    "factors": [
+        {
+            "factor": "payment_history",
+            "impact": "positive",
+            "weight": 0.35,
+            "description": "Consistent on-time payments"
+        }
+    ],
+    "version": "v2.0",
+    "ai_confidence": 0.87,
+    "blockchain_transaction": {
+        "transaction_id": "uuid-string",
+        "transaction_hash": "0xabcdef...",
+        "status": "submitted"
     }
-  ],
-  "version": "v2.0",
-  "ai_confidence": 0.87,
-  "blockchain_transaction": {
-    "transaction_id": "uuid-string",
-    "transaction_hash": "0xabcdef...",
-    "status": "submitted"
-  }
 }
 ```
 
@@ -393,18 +393,18 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "score": 750,
-    "calculated_at": "2024-01-15T10:30:00Z",
-    "version": "v2.0",
-    "score_change": 10
-  },
-  {
-    "score": 740,
-    "calculated_at": "2024-01-01T10:30:00Z",
-    "version": "v2.0",
-    "score_change": -5
-  }
+    {
+        "score": 750,
+        "calculated_at": "2024-01-15T10:30:00Z",
+        "version": "v2.0",
+        "score_change": 10
+    },
+    {
+        "score": 740,
+        "calculated_at": "2024-01-01T10:30:00Z",
+        "version": "v2.0",
+        "score_change": -5
+    }
 ]
 ```
 
@@ -422,11 +422,11 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "event_type": "payment_made",
-  "amount": 500.0,
-  "description": "Monthly credit card payment",
-  "event_date": "2024-01-15T10:30:00Z",
-  "account_type": "credit_card"
+    "event_type": "payment_made",
+    "amount": 500.0,
+    "description": "Monthly credit card payment",
+    "event_date": "2024-01-15T10:30:00Z",
+    "account_type": "credit_card"
 }
 ```
 
@@ -434,10 +434,10 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "event_id": "uuid-string",
-  "message": "Credit event added successfully",
-  "impact_score": 5
+    "success": true,
+    "event_id": "uuid-string",
+    "message": "Credit event added successfully",
+    "impact_score": 5
 }
 ```
 
@@ -455,27 +455,24 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "positive_factors": [
-    {
-      "factor": "payment_history",
-      "weight": 0.35,
-      "score": 95,
-      "description": "Excellent payment history",
-      "recommendations": ["Continue making on-time payments"]
-    }
-  ],
-  "negative_factors": [
-    {
-      "factor": "credit_utilization",
-      "weight": 0.3,
-      "score": 60,
-      "description": "High credit utilization",
-      "recommendations": [
-        "Reduce credit card balances",
-        "Consider increasing credit limits"
-      ]
-    }
-  ]
+    "positive_factors": [
+        {
+            "factor": "payment_history",
+            "weight": 0.35,
+            "score": 95,
+            "description": "Excellent payment history",
+            "recommendations": ["Continue making on-time payments"]
+        }
+    ],
+    "negative_factors": [
+        {
+            "factor": "credit_utilization",
+            "weight": 0.3,
+            "score": 60,
+            "description": "High credit utilization",
+            "recommendations": ["Reduce credit card balances", "Consider increasing credit limits"]
+        }
+    ]
 }
 ```
 
@@ -493,18 +490,18 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "title": "Reduce Credit Utilization",
-    "description": "Lower your credit card balances to improve your score",
-    "priority": "high",
-    "estimated_impact": "+25 points",
-    "timeframe": "1-2 months",
-    "actions": [
-      "Pay down credit card balances",
-      "Consider balance transfer options",
-      "Request credit limit increases"
-    ]
-  }
+    {
+        "title": "Reduce Credit Utilization",
+        "description": "Lower your credit card balances to improve your score",
+        "priority": "high",
+        "estimated_impact": "+25 points",
+        "timeframe": "1-2 months",
+        "actions": [
+            "Pay down credit card balances",
+            "Consider balance transfer options",
+            "Request credit limit increases"
+        ]
+    }
 ]
 ```
 
@@ -522,9 +519,9 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "event_type": "payment_made",
-  "amount": 1000.0,
-  "scenario": "monthly_payment"
+    "event_type": "payment_made",
+    "amount": 1000.0,
+    "scenario": "monthly_payment"
 }
 ```
 
@@ -532,11 +529,11 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "current_score": 720,
-  "projected_score": 735,
-  "score_change": 15,
-  "confidence": 0.82,
-  "timeframe": "1-3 months"
+    "current_score": 720,
+    "projected_score": 735,
+    "score_change": 15,
+    "confidence": 0.82,
+    "timeframe": "1-3 months"
 }
 ```
 
@@ -591,16 +588,16 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "loan_type": "personal",
-  "requested_amount": 25000.0,
-  "requested_term_months": 60,
-  "requested_rate": 12.5,
-  "purpose": "debt_consolidation",
-  "employment_status": "employed",
-  "annual_income": 85000.0,
-  "monthly_expenses": 3500.0,
-  "collateral_type": "none",
-  "additional_info": "Stable employment for 5 years"
+    "loan_type": "personal",
+    "requested_amount": 25000.0,
+    "requested_term_months": 60,
+    "requested_rate": 12.5,
+    "purpose": "debt_consolidation",
+    "employment_status": "employed",
+    "annual_income": 85000.0,
+    "monthly_expenses": 3500.0,
+    "collateral_type": "none",
+    "additional_info": "Stable employment for 5 years"
 }
 ```
 
@@ -608,11 +605,11 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "application_id": "uuid-string",
-  "status": "submitted",
-  "reference_number": "LA-2024-001234",
-  "submitted_at": "2024-01-15T10:30:00Z",
-  "estimated_decision_time": "2-3 business days"
+    "application_id": "uuid-string",
+    "status": "submitted",
+    "reference_number": "LA-2024-001234",
+    "submitted_at": "2024-01-15T10:30:00Z",
+    "estimated_decision_time": "2-3 business days"
 }
 ```
 
@@ -636,15 +633,15 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "id": "uuid-string",
-    "reference_number": "LA-2024-001234",
-    "loan_type": "personal",
-    "requested_amount": 25000.0,
-    "status": "under_review",
-    "submitted_at": "2024-01-15T10:30:00Z",
-    "last_updated": "2024-01-16T09:15:00Z"
-  }
+    {
+        "id": "uuid-string",
+        "reference_number": "LA-2024-001234",
+        "loan_type": "personal",
+        "requested_amount": 25000.0,
+        "status": "under_review",
+        "submitted_at": "2024-01-15T10:30:00Z",
+        "last_updated": "2024-01-16T09:15:00Z"
+    }
 ]
 ```
 
@@ -662,23 +659,20 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "id": "uuid-string",
-  "reference_number": "LA-2024-001234",
-  "status": "approved",
-  "loan_type": "personal",
-  "requested_amount": 25000.0,
-  "approved_amount": 22000.0,
-  "approved_rate": 13.2,
-  "approved_term_months": 60,
-  "monthly_payment": 495.67,
-  "total_interest": 7740.2,
-  "submitted_at": "2024-01-15T10:30:00Z",
-  "decision_date": "2024-01-17T14:22:00Z",
-  "conditions": ["Provide proof of income", "Set up automatic payments"],
-  "next_steps": [
-    "Review and sign loan agreement",
-    "Provide required documentation"
-  ]
+    "id": "uuid-string",
+    "reference_number": "LA-2024-001234",
+    "status": "approved",
+    "loan_type": "personal",
+    "requested_amount": 25000.0,
+    "approved_amount": 22000.0,
+    "approved_rate": 13.2,
+    "approved_term_months": 60,
+    "monthly_payment": 495.67,
+    "total_interest": 7740.2,
+    "submitted_at": "2024-01-15T10:30:00Z",
+    "decision_date": "2024-01-17T14:22:00Z",
+    "conditions": ["Provide proof of income", "Set up automatic payments"],
+    "next_steps": ["Review and sign loan agreement", "Provide required documentation"]
 }
 ```
 
@@ -696,8 +690,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "electronic_signature": true,
-  "terms_accepted": true
+    "electronic_signature": true,
+    "terms_accepted": true
 }
 ```
 
@@ -705,13 +699,10 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "loan_id": "uuid-string",
-  "status": "accepted",
-  "next_steps": [
-    "Complete final verification",
-    "Funds will be disbursed within 2 business days"
-  ]
+    "success": true,
+    "loan_id": "uuid-string",
+    "status": "accepted",
+    "next_steps": ["Complete final verification", "Funds will be disbursed within 2 business days"]
 }
 ```
 
@@ -729,19 +720,19 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "id": "uuid-string",
-    "reference_number": "LN-2024-001234",
-    "loan_type": "personal",
-    "original_amount": 22000.0,
-    "current_balance": 18500.0,
-    "monthly_payment": 495.67,
-    "next_payment_date": "2024-02-15",
-    "next_payment_amount": 495.67,
-    "interest_rate": 13.2,
-    "remaining_payments": 37,
-    "status": "current"
-  }
+    {
+        "id": "uuid-string",
+        "reference_number": "LN-2024-001234",
+        "loan_type": "personal",
+        "original_amount": 22000.0,
+        "current_balance": 18500.0,
+        "monthly_payment": 495.67,
+        "next_payment_date": "2024-02-15",
+        "next_payment_amount": 495.67,
+        "interest_rate": 13.2,
+        "remaining_payments": 37,
+        "status": "current"
+    }
 ]
 ```
 
@@ -759,16 +750,16 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "payment_id": "uuid-string",
-    "payment_date": "2024-01-15",
-    "amount": 495.67,
-    "principal": 312.45,
-    "interest": 183.22,
-    "remaining_balance": 18500.0,
-    "status": "completed",
-    "payment_method": "bank_transfer"
-  }
+    {
+        "payment_id": "uuid-string",
+        "payment_date": "2024-01-15",
+        "amount": 495.67,
+        "principal": 312.45,
+        "interest": 183.22,
+        "remaining_balance": 18500.0,
+        "status": "completed",
+        "payment_method": "bank_transfer"
+    }
 ]
 ```
 
@@ -786,9 +777,9 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "amount": 495.67,
-  "payment_method": "bank_transfer",
-  "payment_date": "2024-01-15"
+    "amount": 495.67,
+    "payment_method": "bank_transfer",
+    "payment_date": "2024-01-15"
 }
 ```
 
@@ -796,10 +787,10 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "payment_id": "uuid-string",
-  "status": "processing",
-  "confirmation_number": "PAY-2024-567890",
-  "estimated_completion": "2024-01-17T10:00:00Z"
+    "payment_id": "uuid-string",
+    "status": "processing",
+    "confirmation_number": "PAY-2024-567890",
+    "estimated_completion": "2024-01-17T10:00:00Z"
 }
 ```
 
@@ -819,7 +810,7 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "kyc_level": "enhanced"
+    "kyc_level": "enhanced"
 }
 ```
 
@@ -827,25 +818,25 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "compliance_record_id": "uuid-string",
-  "kyc_status": "verified",
-  "compliance_score": 92,
-  "assessment_results": {
-    "identity_verification": {
-      "status": "passed",
-      "score": 95
+    "compliance_record_id": "uuid-string",
+    "kyc_status": "verified",
+    "compliance_score": 92,
+    "assessment_results": {
+        "identity_verification": {
+            "status": "passed",
+            "score": 95
+        },
+        "address_verification": {
+            "status": "passed",
+            "score": 90
+        },
+        "document_verification": {
+            "status": "passed",
+            "score": 88
+        }
     },
-    "address_verification": {
-      "status": "passed",
-      "score": 90
-    },
-    "document_verification": {
-      "status": "passed",
-      "score": 88
-    }
-  },
-  "required_actions": [],
-  "next_review_date": "2025-01-15T10:30:00Z"
+    "required_actions": [],
+    "next_review_date": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -863,9 +854,9 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "transaction_amount": 10000.0,
-  "transaction_type": "loan_disbursement",
-  "counterparty": "Bank of America"
+    "transaction_amount": 10000.0,
+    "transaction_type": "loan_disbursement",
+    "counterparty": "Bank of America"
 }
 ```
 
@@ -873,25 +864,25 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "compliance_record_id": "uuid-string",
-  "aml_status": "compliant",
-  "risk_score": 15,
-  "screening_results": {
-    "sanctions_check": {
-      "status": "clear",
-      "matches": []
+    "compliance_record_id": "uuid-string",
+    "aml_status": "compliant",
+    "risk_score": 15,
+    "screening_results": {
+        "sanctions_check": {
+            "status": "clear",
+            "matches": []
+        },
+        "pep_check": {
+            "status": "clear",
+            "risk_level": "low"
+        },
+        "transaction_monitoring": {
+            "status": "normal",
+            "risk_indicators": []
+        }
     },
-    "pep_check": {
-      "status": "clear",
-      "risk_level": "low"
-    },
-    "transaction_monitoring": {
-      "status": "normal",
-      "risk_indicators": []
-    }
-  },
-  "sar_required": false,
-  "recommended_actions": []
+    "sar_required": false,
+    "recommended_actions": []
 }
 ```
 
@@ -909,14 +900,14 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "kyc_status": "verified",
-  "kyc_level": "enhanced",
-  "aml_status": "compliant",
-  "last_kyc_date": "2024-01-15T10:30:00Z",
-  "last_aml_screening": "2024-01-16T14:20:00Z",
-  "next_review_date": "2025-01-15T10:30:00Z",
-  "compliance_score": 92,
-  "risk_level": "low"
+    "kyc_status": "verified",
+    "kyc_level": "enhanced",
+    "aml_status": "compliant",
+    "last_kyc_date": "2024-01-15T10:30:00Z",
+    "last_aml_screening": "2024-01-16T14:20:00Z",
+    "next_review_date": "2025-01-15T10:30:00Z",
+    "compliance_score": 92,
+    "risk_level": "low"
 }
 ```
 
@@ -936,8 +927,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "wallet_address": "0x1234567890123456789012345678901234567890",
-  "score": 750
+    "wallet_address": "0x1234567890123456789012345678901234567890",
+    "score": 750
 }
 ```
 
@@ -945,16 +936,16 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "transaction_id": "uuid-string",
-  "transaction_hash": "0xabcdef1234567890...",
-  "status": "submitted",
-  "estimated_confirmation_time": 180,
-  "network": "ethereum",
-  "gas_estimate": {
-    "gas_limit": 200000,
-    "gas_price": "20 gwei",
-    "estimated_cost": "0.004 ETH"
-  }
+    "transaction_id": "uuid-string",
+    "transaction_hash": "0xabcdef1234567890...",
+    "status": "submitted",
+    "estimated_confirmation_time": 180,
+    "network": "ethereum",
+    "gas_estimate": {
+        "gas_limit": 200000,
+        "gas_price": "20 gwei",
+        "estimated_cost": "0.004 ETH"
+    }
 }
 ```
 
@@ -972,15 +963,15 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "transaction_hash": "0xabcdef1234567890...",
-  "status": "confirmed",
-  "block_number": 18500000,
-  "block_hash": "0x123456789abcdef...",
-  "confirmations": 12,
-  "gas_used": 185000,
-  "gas_price": "20000000000",
-  "transaction_fee": "0.0037 ETH",
-  "confirmed_at": "2024-01-15T10:35:00Z"
+    "transaction_hash": "0xabcdef1234567890...",
+    "status": "confirmed",
+    "block_number": 18500000,
+    "block_hash": "0x123456789abcdef...",
+    "confirmations": 12,
+    "gas_used": 185000,
+    "gas_price": "20000000000",
+    "transaction_fee": "0.0037 ETH",
+    "confirmed_at": "2024-01-15T10:35:00Z"
 }
 ```
 
@@ -1003,14 +994,14 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "transaction_hash": "0xabcdef1234567890...",
-    "transaction_type": "credit_score_update",
-    "status": "confirmed",
-    "timestamp": "2024-01-15T10:35:00Z",
-    "block_number": 18500000,
-    "gas_used": 185000
-  }
+    {
+        "transaction_hash": "0xabcdef1234567890...",
+        "transaction_type": "credit_score_update",
+        "status": "confirmed",
+        "timestamp": "2024-01-15T10:35:00Z",
+        "block_number": 18500000,
+        "gas_used": 185000
+    }
 ]
 ```
 
@@ -1028,11 +1019,11 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "loan_id": "uuid-string",
-  "borrower_address": "0x1234567890123456789012345678901234567890",
-  "loan_amount": 25000.0,
-  "interest_rate": 12.5,
-  "term_months": 60
+    "loan_id": "uuid-string",
+    "borrower_address": "0x1234567890123456789012345678901234567890",
+    "loan_amount": 25000.0,
+    "interest_rate": 12.5,
+    "term_months": 60
 }
 ```
 
@@ -1040,10 +1031,10 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "transaction_id": "uuid-string",
-  "transaction_hash": "0xfedcba0987654321...",
-  "status": "submitted",
-  "contract_address": "0x9876543210987654321098765432109876543210"
+    "transaction_id": "uuid-string",
+    "transaction_hash": "0xfedcba0987654321...",
+    "status": "submitted",
+    "contract_address": "0x9876543210987654321098765432109876543210"
 }
 ```
 
@@ -1063,29 +1054,29 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "id": "uuid-string",
-  "email": "user@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "date_of_birth": "1990-01-01",
-  "phone_number": "+1234567890",
-  "address": {
-    "line1": "123 Main Street",
-    "line2": "Apt 4B",
-    "city": "New York",
-    "state": "NY",
-    "postal_code": "10001",
-    "country": "US"
-  },
-  "employment": {
-    "status": "employed",
-    "employer": "Tech Corp",
-    "position": "Software Engineer",
-    "annual_income": 85000.0
-  },
-  "kyc_status": "verified",
-  "created_at": "2024-01-01T10:00:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
+    "id": "uuid-string",
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-01",
+    "phone_number": "+1234567890",
+    "address": {
+        "line1": "123 Main Street",
+        "line2": "Apt 4B",
+        "city": "New York",
+        "state": "NY",
+        "postal_code": "10001",
+        "country": "US"
+    },
+    "employment": {
+        "status": "employed",
+        "employer": "Tech Corp",
+        "position": "Software Engineer",
+        "annual_income": 85000.0
+    },
+    "kyc_status": "verified",
+    "created_at": "2024-01-01T10:00:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -1103,21 +1094,21 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "first_name": "John",
-  "last_name": "Smith",
-  "phone_number": "+1234567891",
-  "address": {
-    "line1": "456 Oak Avenue",
-    "city": "Boston",
-    "state": "MA",
-    "postal_code": "02101",
-    "country": "US"
-  },
-  "employment": {
-    "employer": "New Tech Corp",
-    "position": "Senior Software Engineer",
-    "annual_income": 95000.0
-  }
+    "first_name": "John",
+    "last_name": "Smith",
+    "phone_number": "+1234567891",
+    "address": {
+        "line1": "456 Oak Avenue",
+        "city": "Boston",
+        "state": "MA",
+        "postal_code": "02101",
+        "country": "US"
+    },
+    "employment": {
+        "employer": "New Tech Corp",
+        "position": "Senior Software Engineer",
+        "annual_income": 95000.0
+    }
 }
 ```
 
@@ -1125,9 +1116,9 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "message": "Profile updated successfully",
-  "updated_fields": ["last_name", "phone_number", "address", "employment"]
+    "success": true,
+    "message": "Profile updated successfully",
+    "updated_fields": ["last_name", "phone_number", "address", "employment"]
 }
 ```
 
@@ -1145,15 +1136,15 @@ Authorization: Bearer <access_token>
 
 ```json
 [
-  {
-    "id": "uuid-string",
-    "device_info": "Chrome on Windows",
-    "ip_address": "192.168.1.100",
-    "location": "New York, NY",
-    "created_at": "2024-01-15T10:30:00Z",
-    "last_activity": "2024-01-15T14:22:00Z",
-    "is_current": true
-  }
+    {
+        "id": "uuid-string",
+        "device_info": "Chrome on Windows",
+        "ip_address": "192.168.1.100",
+        "location": "New York, NY",
+        "created_at": "2024-01-15T10:30:00Z",
+        "last_activity": "2024-01-15T14:22:00Z",
+        "is_current": true
+    }
 ]
 ```
 
@@ -1171,8 +1162,8 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "success": true,
-  "message": "Session revoked successfully"
+    "success": true,
+    "message": "Session revoked successfully"
 }
 ```
 
@@ -1186,9 +1177,9 @@ Basic health check.
 
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-15T10:30:00Z",
-  "version": "1.0.0"
+    "status": "healthy",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0.0"
 }
 ```
 
@@ -1206,31 +1197,31 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "status": "healthy",
-  "health_score": 95,
-  "timestamp": "2024-01-15T10:30:00Z",
-  "services": {
-    "database": {
-      "status": "healthy",
-      "response_time_ms": 15,
-      "connections": 5
+    "status": "healthy",
+    "health_score": 95,
+    "timestamp": "2024-01-15T10:30:00Z",
+    "services": {
+        "database": {
+            "status": "healthy",
+            "response_time_ms": 15,
+            "connections": 5
+        },
+        "cache": {
+            "status": "healthy",
+            "hit_rate": 87.5,
+            "memory_usage": "45%"
+        },
+        "blockchain": {
+            "status": "connected",
+            "network": "ethereum",
+            "latest_block": 18500000
+        }
     },
-    "cache": {
-      "status": "healthy",
-      "hit_rate": 87.5,
-      "memory_usage": "45%"
-    },
-    "blockchain": {
-      "status": "connected",
-      "network": "ethereum",
-      "latest_block": 18500000
+    "metrics": {
+        "requests_per_minute": 150,
+        "average_response_time": 245,
+        "error_rate": 0.02
     }
-  },
-  "metrics": {
-    "requests_per_minute": 150,
-    "average_response_time": 245,
-    "error_rate": 0.02
-  }
 }
 ```
 
@@ -1242,14 +1233,14 @@ The API uses standard HTTP status codes and returns consistent error responses:
 
 ```json
 {
-  "error": "Error type",
-  "message": "Human-readable error description",
-  "code": "ERROR_CODE",
-  "details": {
-    "field": "Additional error details"
-  },
-  "timestamp": "2024-01-15T10:30:00Z",
-  "request_id": "uuid-string"
+    "error": "Error type",
+    "message": "Human-readable error description",
+    "code": "ERROR_CODE",
+    "details": {
+        "field": "Additional error details"
+    },
+    "timestamp": "2024-01-15T10:30:00Z",
+    "request_id": "uuid-string"
 }
 ```
 
@@ -1337,15 +1328,15 @@ The API supports webhooks for real-time notifications:
 
 ```json
 {
-  "event": "credit_score.calculated",
-  "timestamp": "2024-01-15T10:30:00Z",
-  "data": {
-    "user_id": "uuid-string",
-    "score": 750,
-    "previous_score": 740,
-    "calculated_at": "2024-01-15T10:30:00Z"
-  },
-  "webhook_id": "uuid-string"
+    "event": "credit_score.calculated",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "data": {
+        "user_id": "uuid-string",
+        "score": 750,
+        "previous_score": 740,
+        "calculated_at": "2024-01-15T10:30:00Z"
+    },
+    "webhook_id": "uuid-string"
 }
 ```
 

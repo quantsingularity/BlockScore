@@ -144,27 +144,27 @@ infrastructure/
 
 1. **Initialize Terraform**
 
-   ```bash
-   cd terraform/
-   terraform init
-   ```
+    ```bash
+    cd terraform/
+    terraform init
+    ```
 
 2. **Plan Infrastructure**
 
-   ```bash
-   terraform plan -var-file="environments/dev/terraform.tfvars"
-   ```
+    ```bash
+    terraform plan -var-file="environments/dev/terraform.tfvars"
+    ```
 
 3. **Deploy Infrastructure**
 
-   ```bash
-   terraform apply -var-file="environments/dev/terraform.tfvars"
-   ```
+    ```bash
+    terraform apply -var-file="environments/dev/terraform.tfvars"
+    ```
 
 4. **Deploy Kubernetes Resources**
-   ```bash
-   kubectl apply -f kubernetes/base/
-   ```
+    ```bash
+    kubectl apply -f kubernetes/base/
+    ```
 
 ### Environment-Specific Deployment
 

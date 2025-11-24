@@ -15,9 +15,9 @@ This directory contains automation scripts for the BlockScore project. These scr
 1. Clone the BlockScore repository
 2. Copy these scripts to the root directory of your BlockScore project
 3. Make the scripts executable:
-   ```bash
-   chmod +x scripts/*.sh
-   ```
+    ```bash
+    chmod +x scripts/*.sh
+    ```
 
 ## Usage Instructions
 

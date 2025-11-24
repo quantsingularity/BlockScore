@@ -996,60 +996,60 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120",
 version: '3.8'
 
 services:
-  app:
-    build: .
-    ports:
-      - '5000:5000'
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./logs:/app/logs
+    app:
+        build: .
+        ports:
+            - '5000:5000'
+        environment:
+            - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - db
+            - redis
+        volumes:
+            - ./logs:/app/logs
 
-  db:
-    image: postgres:14
-    environment:
-      - POSTGRES_DB=blockscore
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
+    db:
+        image: postgres:14
+        environment:
+            - POSTGRES_DB=blockscore
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
 
-  redis:
-    image: redis:6-alpine
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
+    redis:
+        image: redis:6-alpine
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis_data:/data
 
-  celery:
-    build: .
-    command: celery -A app.celery worker --loglevel=info
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
+    celery:
+        build: .
+        command: celery -A app.celery worker --loglevel=info
+        environment:
+            - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - db
+            - redis
 
-  celery-beat:
-    build: .
-    command: celery -A app.celery beat --loglevel=info
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
+    celery-beat:
+        build: .
+        command: celery -A app.celery beat --loglevel=info
+        environment:
+            - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - db
+            - redis
 
 volumes:
-  postgres_data:
-  redis_data:
+    postgres_data:
+    redis_data:
 ```
 
 ### Kubernetes Deployment
@@ -1059,67 +1059,67 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blockscore-backend
-  labels:
-    app: blockscore-backend
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: blockscore-backend
-  template:
-    metadata:
-      labels:
+    name: blockscore-backend
+    labels:
         app: blockscore-backend
-    spec:
-      containers:
-        - name: backend
-          image: blockscore-backend:latest
-          ports:
-            - containerPort: 5000
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: blockscore-secrets
-                  key: database-url
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: blockscore-secrets
-                  key: redis-url
-          livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 5000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          resources:
-            requests:
-              memory: '256Mi'
-              cpu: '250m'
-            limits:
-              memory: '512Mi'
-              cpu: '500m'
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: blockscore-backend
+    template:
+        metadata:
+            labels:
+                app: blockscore-backend
+        spec:
+            containers:
+                - name: backend
+                  image: blockscore-backend:latest
+                  ports:
+                      - containerPort: 5000
+                  env:
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: blockscore-secrets
+                                key: database-url
+                      - name: REDIS_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: blockscore-secrets
+                                key: redis-url
+                  livenessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 5000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 5000
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
+                  resources:
+                      requests:
+                          memory: '256Mi'
+                          cpu: '250m'
+                      limits:
+                          memory: '512Mi'
+                          cpu: '500m'
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockscore-backend-service
+    name: blockscore-backend-service
 spec:
-  selector:
-    app: blockscore-backend
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: LoadBalancer
+    selector:
+        app: blockscore-backend
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 5000
+    type: LoadBalancer
 ```
 
 This comprehensive documentation provides everything needed to understand, deploy, and maintain the BlockScore backend system in a production environment.

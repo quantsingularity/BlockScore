@@ -32,9 +32,9 @@ POST /users/register
 
 ```json
 {
-  "walletAddress": "0x...",
-  "email": "user@example.com",
-  "signature": "0x..."
+    "walletAddress": "0x...",
+    "email": "user@example.com",
+    "signature": "0x..."
 }
 ```
 
@@ -42,9 +42,9 @@ POST /users/register
 
 ```json
 {
-  "userId": "user_123",
-  "token": "jwt_token",
-  "message": "User registered successfully"
+    "userId": "user_123",
+    "token": "jwt_token",
+    "message": "User registered successfully"
 }
 ```
 
@@ -58,10 +58,10 @@ GET /users/profile
 
 ```json
 {
-  "userId": "user_123",
-  "walletAddress": "0x...",
-  "creditScore": 750,
-  "lastUpdated": "2024-03-15T12:00:00Z"
+    "userId": "user_123",
+    "walletAddress": "0x...",
+    "creditScore": 750,
+    "lastUpdated": "2024-03-15T12:00:00Z"
 }
 ```
 
@@ -77,16 +77,16 @@ GET /credit-score/{userId}
 
 ```json
 {
-  "userId": "user_123",
-  "score": 750,
-  "factors": [
-    {
-      "factor": "payment_history",
-      "impact": "high",
-      "score": 85
-    }
-  ],
-  "lastUpdated": "2024-03-15T12:00:00Z"
+    "userId": "user_123",
+    "score": 750,
+    "factors": [
+        {
+            "factor": "payment_history",
+            "impact": "high",
+            "score": 85
+        }
+    ],
+    "lastUpdated": "2024-03-15T12:00:00Z"
 }
 ```
 
@@ -100,12 +100,12 @@ POST /credit-score/update
 
 ```json
 {
-  "userId": "user_123",
-  "transactionData": {
-    "type": "payment",
-    "amount": 1000,
-    "timestamp": "2024-03-15T12:00:00Z"
-  }
+    "userId": "user_123",
+    "transactionData": {
+        "type": "payment",
+        "amount": 1000,
+        "timestamp": "2024-03-15T12:00:00Z"
+    }
 }
 ```
 
@@ -121,10 +121,10 @@ POST /loans/apply
 
 ```json
 {
-  "userId": "user_123",
-  "amount": 5000,
-  "term": 12,
-  "purpose": "business"
+    "userId": "user_123",
+    "amount": 5000,
+    "term": 12,
+    "purpose": "business"
 }
 ```
 
@@ -138,11 +138,11 @@ GET /loans/{loanId}
 
 ```json
 {
-  "loanId": "loan_456",
-  "status": "approved",
-  "amount": 5000,
-  "term": 12,
-  "apr": 5.5
+    "loanId": "loan_456",
+    "status": "approved",
+    "amount": 5000,
+    "term": 12,
+    "apr": 5.5
 }
 ```
 
@@ -164,20 +164,20 @@ GET /transactions/{userId}
 
 ```json
 {
-  "transactions": [
-    {
-      "id": "tx_789",
-      "type": "payment",
-      "amount": 1000,
-      "timestamp": "2024-03-15T12:00:00Z",
-      "status": "confirmed"
+    "transactions": [
+        {
+            "id": "tx_789",
+            "type": "payment",
+            "amount": 1000,
+            "timestamp": "2024-03-15T12:00:00Z",
+            "status": "confirmed"
+        }
+    ],
+    "pagination": {
+        "total": 50,
+        "page": 1,
+        "limit": 10
     }
-  ],
-  "pagination": {
-    "total": 50,
-    "page": 1,
-    "limit": 10
-  }
 }
 ```
 
@@ -187,11 +187,11 @@ GET /transactions/{userId}
 
 ```json
 {
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable error message",
-    "details": {}
-  }
+    "error": {
+        "code": "ERROR_CODE",
+        "message": "Human readable error message",
+        "details": {}
+    }
 }
 ```
 
@@ -220,10 +220,10 @@ POST /webhook/credit-score
 
 ```json
 {
-  "userId": "user_123",
-  "event": "score_updated",
-  "newScore": 750,
-  "timestamp": "2024-03-15T12:00:00Z"
+    "userId": "user_123",
+    "event": "score_updated",
+    "newScore": 750,
+    "timestamp": "2024-03-15T12:00:00Z"
 }
 ```
 
@@ -235,8 +235,8 @@ POST /webhook/credit-score
 import { BlockScoreAPI } from '@blockscore/sdk';
 
 const api = new BlockScoreAPI({
-  apiKey: 'your_api_key',
-  environment: 'production',
+    apiKey: 'your_api_key',
+    environment: 'production',
 });
 
 // Get user's credit score
