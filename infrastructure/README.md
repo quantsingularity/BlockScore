@@ -324,14 +324,6 @@ kubectl get networkpolicies
 - Document all security configurations
 - Include compliance justifications for changes
 
-## 📞 Support
-
-For questions or issues related to this infrastructure:
-
-- **Security Issues**: Contact security team immediately
-- **Infrastructure Issues**: Create ticket with infrastructure team
-- **Compliance Questions**: Consult with compliance team
-
 ---
 
 **Last Updated**: $(date)

@@ -380,25 +380,6 @@ See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed production deploym
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-### Documentation
-
-- [API Documentation](docs/API_DOCUMENTATION.md)
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md)
-
-### Getting Help
-
-For questions and support:
-
-1. Check the documentation
-2. Search existing issues
-3. Create a new issue with detailed information
-
-## 🔧 Advanced Configuration
-
-### Database Configuration
-
 #### Connection Pooling
 
 ```python
