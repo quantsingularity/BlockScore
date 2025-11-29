@@ -314,20 +314,28 @@ class CreditScoringService:
             .all()
         )
 
+        # Analyze transactions
         if not transactions:
-            # Mock data for demonstration
             return {
-                "total_transactions": 3,
-                "total_volume": 4500,
-                "repayment_ratio": 0.67,
-                "avg_transaction_amount": 1500,
-                "transaction_frequency": 0.1,  # transactions per day
-                "default_rate": 0.33,
+                "total_transactions": 0,
+                "total_volume": 0.0,
+                "successful_transactions": 0,
+                "success_rate": 0.0,
+                "avg_transaction_amount": 0.0,
+                "transaction_frequency": 0.0,
+                "recent_activity_days": 0,
             }
 
-        # Analyze transactions
         total_volume = sum(float(tx.value) for tx in transactions if tx.value)
         successful_txs = [tx for tx in transactions if tx.status.value == "confirmed"]
+
+        # Calculate transaction frequency
+        first_tx_date = transactions[-1].submitted_at.replace(tzinfo=timezone.utc)
+        last_tx_date = transactions[0].submitted_at.replace(tzinfo=timezone.utc)
+        time_span = (last_tx_date - first_tx_date).days
+        transaction_frequency = (
+            len(transactions) / time_span if time_span > 0 else len(transactions)
+        )
 
         return {
             "total_transactions": len(transactions),
@@ -339,7 +347,8 @@ class CreditScoringService:
             "avg_transaction_amount": (
                 total_volume / len(transactions) if transactions else 0
             ),
-            "recent_activity_days": 30,  # Simplified
+            "transaction_frequency": transaction_frequency,
+            "recent_activity_days": time_span,
         }
 
     def _calculate_factor_scores(self, data: Dict[str, Any]) -> List[CreditFactor]:
@@ -420,8 +429,27 @@ class CreditScoringService:
         self, data: Dict[str, Any]
     ) -> CreditFactor:
         """Calculate credit utilization factor score"""
-        # Simplified calculation - in production would use actual credit limits
-        utilization_ratio = 0.3  # Default 30% utilization
+        # Calculate utilization based on outstanding loan balances and estimated credit limit
+        credit_history = data.get("credit_history", [])
+        profile_data = data.get("profile_data", {})
+        annual_income = (
+            profile_data.get("annual_income") or 50000
+        )  # Default income for estimation
+
+        # Estimate total outstanding debt (simplified: sum of all loan amounts)
+        outstanding_debt = sum(
+            e["amount"]
+            for e in credit_history
+            if e["event_type"] in ["loan_approval", "loan_disbursement"]
+        )
+
+        # Estimate total available credit limit (simplified: 2x annual income)
+        total_credit_limit = annual_income * 2
+
+        if total_credit_limit > 0:
+            utilization_ratio = min(1.0, outstanding_debt / total_credit_limit)
+        else:
+            utilization_ratio = 0.5  # Neutral if no limit can be estimated
 
         # Convert to score (lower utilization is better)
         raw_score = max(0, 100 - (utilization_ratio * 100))
@@ -562,8 +590,27 @@ class CreditScoringService:
 
     def _calculate_debt_to_income_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate debt-to-income factor score"""
-        # Simplified calculation - would need actual debt and income data
-        estimated_dti = 0.25  # 25% DTI ratio
+        # Calculate DTI based on estimated monthly debt payments and annual income
+        profile_data = data.get("profile_data", {})
+        credit_history = data.get("credit_history", [])
+        annual_income = (
+            profile_data.get("annual_income") or 50000
+        )  # Default income for estimation
+        monthly_income = annual_income / 12
+
+        # Estimate total monthly debt payments (simplified: 1/12 of outstanding debt)
+        # Outstanding debt is calculated as sum of all loan amounts
+        outstanding_debt = sum(
+            e["amount"]
+            for e in credit_history
+            if e["event_type"] in ["loan_approval", "loan_disbursement"]
+        )
+        estimated_monthly_debt = outstanding_debt / 12
+
+        if monthly_income > 0:
+            estimated_dti = min(1.0, estimated_monthly_debt / monthly_income)
+        else:
+            estimated_dti = 0.5  # Neutral if income is zero or unknown
 
         # Score inversely related to DTI (lower is better)
         raw_score = max(0, 100 - (estimated_dti * 200))  # 50% DTI = 0 score
@@ -596,12 +643,23 @@ class CreditScoringService:
             # Score based on blockchain metrics
             success_rate = blockchain_data.get("success_rate", 0.5)
             transaction_count = blockchain_data.get("total_transactions", 0)
+            total_volume = blockchain_data.get("total_volume", 0)
 
-            # Combine metrics
-            activity_score = min(100, transaction_count * 5)  # Max at 20 transactions
+            # 1. Activity Score (30%): Max at 50 transactions
+            activity_score = min(100, transaction_count * 2)
+
+            # 2. Reliability Score (50%): Based on success rate
             reliability_score = success_rate * 100
 
-            raw_score = (activity_score * 0.3) + (reliability_score * 0.7)
+            # 3. Volume Score (20%): Max at $100,000 volume
+            volume_score = min(100, total_volume / 1000)
+
+            # Combine metrics with new weights
+            raw_score = (
+                (activity_score * 0.3)
+                + (reliability_score * 0.5)
+                + (volume_score * 0.2)
+            )
 
         normalized_score = raw_score / 100
         weight = self.factor_weights[CreditFactorType.BLOCKCHAIN_ACTIVITY]
@@ -786,10 +844,56 @@ class CreditScoringService:
         self, user_id: str, scenario: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Apply scenario changes to scoring data"""
-        # This would modify the scoring data based on the scenario
-        # For now, return the original data
         user = User.query.get(user_id)
-        return self._gather_scoring_data(user)
+        if not user:
+            raise ValueError("User not found")
+
+        # 1. Gather original data
+        modified_data = self._gather_scoring_data(user)
+
+        # 2. Apply profile data changes (e.g., annual_income)
+        if "profile_data" in scenario:
+            modified_data["profile_data"].update(scenario["profile_data"])
+
+        # 3. Simulate new credit events (e.g., new loan application)
+        if "new_loan" in scenario:
+            loan_data = scenario["new_loan"]
+            # Simulate a loan approval event
+            modified_data["credit_history"].append(
+                {
+                    "event_type": "loan_approval",
+                    "amount": loan_data.get("amount", 0),
+                    "event_date": datetime.now(timezone.utc),
+                    "score_change": 0,
+                }
+            )
+            # Simulate a new credit inquiry
+            modified_data["credit_history"].append(
+                {
+                    "event_type": "credit_inquiry",
+                    "amount": 0,
+                    "event_date": datetime.now(timezone.utc),
+                    "score_change": 0,
+                }
+            )
+
+        # 4. Simulate payment events (e.g., making a payment)
+        if "payment_made" in scenario:
+            payment_data = scenario["payment_made"]
+            # Simulate a positive payment event
+            modified_data["credit_history"].append(
+                {
+                    "event_type": "payment_made",
+                    "amount": payment_data.get("amount", 0),
+                    "event_date": datetime.now(timezone.utc),
+                    "score_change": 10,  # Simulate a positive score change impact
+                }
+            )
+
+        # Note: Blockchain data simulation is complex and left as a future enhancement.
+        # The current factor calculation logic will use the modified credit_history and profile_data.
+
+        return modified_data
 
     def _analyze_score_impact(
         self, factors: List[CreditFactor], scenario: Dict[str, Any]
