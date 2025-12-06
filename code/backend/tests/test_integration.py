@@ -10,6 +10,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 # Import the Flask app
 from app import app
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class TestIntegration(unittest.TestCase):
     """Integration tests for the BlockScore backend API."""
@@ -85,13 +89,12 @@ class TestIntegration(unittest.TestCase):
 
         # Check if response is successful, if not, print the error for debugging
         if response.status_code != 200:
-            print(f"Error response: {response.data}")
-
+            logger.info(f"Error response: {response.data}")
         # Use assertIn to check for 'error' key in case of failure
         if response.status_code == 500:
             data = json.loads(response.data)
             if "error" in data:
-                print(f"API error: {data['error']}")
+                logger.info(f"API error: {data['error']}")
                 # For this test, we'll accept 500 errors due to missing blockchain artifacts
                 self.skipTest("Skipping due to missing blockchain artifacts")
 
@@ -121,13 +124,12 @@ class TestIntegration(unittest.TestCase):
 
         # Check if response is successful, if not, print the error for debugging
         if response.status_code != 200:
-            print(f"Error response: {response.data}")
-
+            logger.info(f"Error response: {response.data}")
         # Use assertIn to check for 'error' key in case of failure
         if response.status_code == 500:
             data = json.loads(response.data)
             if "error" in data:
-                print(f"API error: {data['error']}")
+                logger.info(f"API error: {data['error']}")
                 # For this test, we'll accept 500 errors due to missing blockchain artifacts
                 self.skipTest("Skipping due to missing blockchain artifacts")
 
@@ -150,13 +152,12 @@ class TestIntegration(unittest.TestCase):
 
         # Check if response is successful, if not, print the error for debugging
         if response.status_code != 200:
-            print(f"Error response: {response.data}")
-
+            logger.info(f"Error response: {response.data}")
         # Use assertIn to check for 'error' key in case of failure
         if response.status_code == 500:
             data = json.loads(response.data)
             if "error" in data:
-                print(f"API error: {data['error']}")
+                logger.info(f"API error: {data['error']}")
                 # For this test, we'll accept 500 errors due to missing blockchain artifacts
                 self.skipTest("Skipping due to missing blockchain artifacts")
 

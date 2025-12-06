@@ -6,6 +6,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 def generate_synthetic_data(n_samples=1000):
     """
@@ -105,11 +109,10 @@ def evaluate_model(model, X_test, y_test):
     rmse = np.sqrt(mse)
     mae = np.mean(np.abs(predictions - y_test))
 
-    print(f"Model Performance:")
-    print(f"Mean Squared Error: {mse:.2f}")
-    print(f"Root Mean Squared Error: {rmse:.2f}")
-    print(f"Mean Absolute Error: {mae:.2f}")
-
+    logger.info(f"Model Performance:")
+    logger.info(f"Mean Squared Error: {mse:.2f}")
+    logger.info(f"Root Mean Squared Error: {rmse:.2f}")
+    logger.info(f"Mean Absolute Error: {mae:.2f}")
     return mse, rmse, mae
 
 
@@ -119,7 +122,7 @@ def save_model(model, output_path):
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     joblib.dump(model, output_path)
-    print(f"Model saved to {output_path}")
+    logger.info(f"Model saved to {output_path}")
 
 
 def main():
@@ -127,31 +130,30 @@ def main():
     os.makedirs("../ai_models", exist_ok=True)
 
     # Generate synthetic data
-    print("Generating synthetic financial data...")
+    logger.info("Generating synthetic financial data...")
     data = generate_synthetic_data(n_samples=5000)
 
     # Save data to CSV
     data_path = "../ai_models/financial_data.csv"
     data.to_csv(data_path, index=False)
-    print(f"Data saved to {data_path}")
-
+    logger.info(f"Data saved to {data_path}")
     # Preprocess data
-    print("Preprocessing data...")
+    logger.info("Preprocessing data...")
     X_train, X_test, y_train, y_test = preprocess_data(data)
 
     # Train model
-    print("Training credit scoring model...")
+    logger.info("Training credit scoring model...")
     model = train_model(X_train, y_train)
 
     # Evaluate model
-    print("Evaluating model performance...")
+    logger.info("Evaluating model performance...")
     evaluate_model(model, X_test, y_test)
 
     # Save model
     model_path = "../ai_models/credit_scoring_model.pkl"
     save_model(model, model_path)
 
-    print("Model training complete!")
+    logger.info("Model training complete!")
 
 
 if __name__ == "__main__":

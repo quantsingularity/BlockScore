@@ -37,6 +37,10 @@ from services.blockchain_service import BlockchainService
 from services.compliance_service import ComplianceService
 from services.credit_service import CreditScoringService
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 def create_app(config_name="default"):
     """Application factory pattern"""
@@ -64,7 +68,7 @@ def create_app(config_name="default"):
         redis_client = redis.from_url(app.config["REDIS_URL"])
         redis_client.ping()
     except Exception as e:
-        print(f"Redis connection failed: {e}")
+        logger.info(f"Redis connection failed: {e}")
         redis_client = None
 
     # Initialize rate limiter

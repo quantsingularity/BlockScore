@@ -19,6 +19,10 @@ from flask_bcrypt import Bcrypt
 from models.audit import AuditEventType, AuditLog, AuditSeverity
 from models.user import KYCStatus, User, UserProfile, UserSession, UserStatus
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class AuthService:
     """Authentication service with enterprise security features"""
@@ -443,7 +447,7 @@ class AuthService:
             )
         except Exception as e:
             # Log error but don't fail the operation
-            print(f"Failed to cache session: {e}")
+            logger.info(f"Failed to cache session: {e}")
 
     def _remove_cached_sessions(self, user_id: str, session_id: str = None):
         """Remove cached sessions from Redis"""
@@ -461,7 +465,7 @@ class AuthService:
                 # This is a simplified implementation
                 pass
         except Exception as e:
-            print(f"Failed to remove cached sessions: {e}")
+            logger.info(f"Failed to remove cached sessions: {e}")
 
     def _is_password_recently_used(self, user: User, new_password: str) -> bool:
         """Check if password was recently used (simplified implementation)"""
@@ -491,7 +495,7 @@ class AuthService:
             self.db.session.commit()
 
         except Exception as e:
-            print(f"Failed to log security alert: {e}")
+            logger.info(f"Failed to log security alert: {e}")
 
     def get_security_summary(self, user_id: str) -> Dict[str, Any]:
         """Get security summary for user"""

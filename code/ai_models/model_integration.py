@@ -12,6 +12,10 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Load the trained model
 model_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "credit_scoring_model.pkl"
@@ -325,6 +329,6 @@ if __name__ == "__main__":
     score = predict_score(features)
     factors = calculate_score_factors(features, score)
 
-    print(f"Extracted features: {features}")
-    print(f"Predicted score: {score}")
-    print(f"Score factors: {factors}")
+    logger.info(f"Extracted features: {features}")
+    logger.info(f"Predicted score: {score}")
+    logger.info(f"Score factors: {factors}")
