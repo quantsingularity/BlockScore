@@ -6,7 +6,6 @@ import enum
 import json
 import uuid
 from datetime import datetime, timezone
-
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
 
@@ -54,52 +53,33 @@ class CreditScore(db.Model):
     """Credit score model with versioning and audit trail"""
 
     __tablename__ = "credit_scores"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(
         db.String(36), db.ForeignKey("users.id"), nullable=False, index=True
     )
-
-    # Score Information
     score = db.Column(db.Integer, nullable=False)
     score_version = db.Column(db.String(10), nullable=False, default="1.0")
     status = db.Column(
         db.Enum(CreditScoreStatus), default=CreditScoreStatus.CALCULATING
     )
-
-    # Score Breakdown
     payment_history_score = db.Column(db.Integer, nullable=True)
     credit_utilization_score = db.Column(db.Integer, nullable=True)
     length_of_history_score = db.Column(db.Integer, nullable=True)
     credit_mix_score = db.Column(db.Integer, nullable=True)
     new_credit_score = db.Column(db.Integer, nullable=True)
-
-    # Alternative Data Scores
     income_stability_score = db.Column(db.Integer, nullable=True)
     debt_to_income_score = db.Column(db.Integer, nullable=True)
     blockchain_activity_score = db.Column(db.Integer, nullable=True)
-
-    # Model Information
     model_name = db.Column(db.String(100), nullable=False, default="BlockScore_v1.0")
     model_confidence = db.Column(db.Float, nullable=True)
-    calculation_method = db.Column(
-        db.Text, nullable=True
-    )  # JSON with calculation details
-
-    # Validity
+    calculation_method = db.Column(db.Text, nullable=True)
     calculated_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
     expires_at = db.Column(db.DateTime(timezone=True), nullable=True)
     valid_until = db.Column(db.DateTime(timezone=True), nullable=True)
-
-    # Blockchain Integration
-    blockchain_hash = db.Column(
-        db.String(66), nullable=True, index=True
-    )  # Transaction hash
+    blockchain_hash = db.Column(db.String(66), nullable=True, index=True)
     blockchain_verified = db.Column(db.Boolean, default=False)
-
-    # Timestamps
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -108,8 +88,6 @@ class CreditScore(db.Model):
         default=datetime.now(timezone.utc),
         onupdate=datetime.now(timezone.utc),
     )
-
-    # Relationships
     factors = db.relationship(
         "CreditFactor", backref="credit_score", cascade="all, delete-orphan"
     )
@@ -117,19 +95,19 @@ class CreditScore(db.Model):
         "CreditHistory", backref="credit_score", cascade="all, delete-orphan"
     )
 
-    def is_valid(self):
+    def is_valid(self) -> Any:
         """Check if credit score is still valid"""
         if self.valid_until:
             return datetime.now(timezone.utc) < self.valid_until
         return True
 
-    def is_expired(self):
+    def is_expired(self) -> Any:
         """Check if credit score is expired"""
         if self.expires_at:
             return datetime.now(timezone.utc) > self.expires_at
         return False
 
-    def get_score_breakdown(self):
+    def get_score_breakdown(self) -> Any:
         """Get detailed score breakdown"""
         return {
             "total_score": self.score,
@@ -143,7 +121,7 @@ class CreditScore(db.Model):
             "blockchain_activity": self.blockchain_activity_score,
         }
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -170,33 +148,20 @@ class CreditFactor(db.Model):
     """Individual credit factors that contribute to the overall score"""
 
     __tablename__ = "credit_factors"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     credit_score_id = db.Column(
         db.String(36), db.ForeignKey("credit_scores.id"), nullable=False
     )
-
-    # Factor Information
     factor_type = db.Column(db.Enum(CreditFactorType), nullable=False)
     factor_name = db.Column(db.String(100), nullable=False)
     factor_description = db.Column(db.Text, nullable=True)
-
-    # Factor Values
     raw_value = db.Column(db.Float, nullable=True)
-    normalized_value = db.Column(db.Float, nullable=True)  # 0-1 scale
+    normalized_value = db.Column(db.Float, nullable=True)
     weight = db.Column(db.Float, nullable=False, default=1.0)
-    contribution = db.Column(
-        db.Float, nullable=True
-    )  # Points contributed to total score
-
-    # Factor Metadata
+    contribution = db.Column(db.Float, nullable=True)
     data_source = db.Column(db.String(100), nullable=True)
     confidence_level = db.Column(db.Float, nullable=True)
-    calculation_details = db.Column(
-        db.Text, nullable=True
-    )  # JSON with calculation details
-
-    # Timestamps
+    calculation_details = db.Column(db.Text, nullable=True)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -206,7 +171,7 @@ class CreditFactor(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -229,7 +194,6 @@ class CreditHistory(db.Model):
     """Credit history events and timeline"""
 
     __tablename__ = "credit_history"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(
         db.String(36), db.ForeignKey("users.id"), nullable=False, index=True
@@ -237,34 +201,22 @@ class CreditHistory(db.Model):
     credit_score_id = db.Column(
         db.String(36), db.ForeignKey("credit_scores.id"), nullable=True
     )
-
-    # Event Information
     event_type = db.Column(db.Enum(CreditEventType), nullable=False)
     event_title = db.Column(db.String(255), nullable=False)
     event_description = db.Column(db.Text, nullable=True)
-
-    # Event Data
-    event_data = db.Column(db.Text, nullable=True)  # JSON with event-specific data
+    event_data = db.Column(db.Text, nullable=True)
     amount = db.Column(db.Decimal(15, 2), nullable=True)
     currency = db.Column(db.String(3), nullable=True, default="USD")
-
-    # Impact on Score
     score_before = db.Column(db.Integer, nullable=True)
     score_after = db.Column(db.Integer, nullable=True)
     score_change = db.Column(db.Integer, nullable=True)
-
-    # External References
     loan_id = db.Column(db.String(36), nullable=True)
     transaction_id = db.Column(db.String(255), nullable=True)
     blockchain_hash = db.Column(db.String(66), nullable=True)
-
-    # Event Timing
     event_date = db.Column(db.DateTime(timezone=True), nullable=False)
     reported_date = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
-
-    # Timestamps
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -274,7 +226,7 @@ class CreditHistory(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_event_data(self):
+    def get_event_data(self) -> Any:
         """Get parsed event data"""
         if self.event_data:
             try:
@@ -283,11 +235,11 @@ class CreditHistory(db.Model):
                 return {}
         return {}
 
-    def set_event_data(self, data):
+    def set_event_data(self, data: Any) -> Any:
         """Set event data as JSON"""
         self.event_data = json.dumps(data) if data else None
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -310,9 +262,6 @@ class CreditHistory(db.Model):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-
-
-# Marshmallow Schemas for serialization/validation
 
 
 class CreditScoreSchema(Schema):

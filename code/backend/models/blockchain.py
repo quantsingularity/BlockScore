@@ -6,7 +6,6 @@ import enum
 import json
 import uuid
 from datetime import datetime, timezone
-
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
 
@@ -59,62 +58,35 @@ class BlockchainTransaction(db.Model):
     """Blockchain transaction tracking"""
 
     __tablename__ = "blockchain_transactions"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-
-    # Transaction Information
     transaction_hash = db.Column(db.String(66), unique=True, nullable=False, index=True)
     block_number = db.Column(db.BigInteger, nullable=True, index=True)
     block_hash = db.Column(db.String(66), nullable=True)
     transaction_index = db.Column(db.Integer, nullable=True)
-
-    # Transaction Details
     transaction_type = db.Column(db.Enum(TransactionType), nullable=False)
     status = db.Column(db.Enum(TransactionStatus), default=TransactionStatus.PENDING)
-
-    # Addresses
     from_address = db.Column(db.String(42), nullable=False, index=True)
     to_address = db.Column(db.String(42), nullable=True, index=True)
     contract_address = db.Column(db.String(42), nullable=True, index=True)
-
-    # Transaction Data
     function_name = db.Column(db.String(100), nullable=True)
-    input_data = db.Column(db.Text, nullable=True)  # JSON with function parameters
-    output_data = db.Column(db.Text, nullable=True)  # JSON with function results
-
-    # Gas and Fees
+    input_data = db.Column(db.Text, nullable=True)
+    output_data = db.Column(db.Text, nullable=True)
     gas_limit = db.Column(db.BigInteger, nullable=True)
     gas_used = db.Column(db.BigInteger, nullable=True)
     gas_price = db.Column(db.BigInteger, nullable=True)
-    transaction_fee = db.Column(
-        db.Decimal(20, 8), nullable=True
-    )  # In ETH or native token
-
-    # Value Transfer
-    value = db.Column(db.Decimal(20, 8), nullable=True)  # In ETH or native token
-    token_transfers = db.Column(db.Text, nullable=True)  # JSON array of token transfers
-
-    # Network Information
-    network_id = db.Column(
-        db.Integer, nullable=False, default=1
-    )  # 1 for Ethereum mainnet
+    transaction_fee = db.Column(db.Decimal(20, 8), nullable=True)
+    value = db.Column(db.Decimal(20, 8), nullable=True)
+    token_transfers = db.Column(db.Text, nullable=True)
+    network_id = db.Column(db.Integer, nullable=False, default=1)
     network_name = db.Column(db.String(50), nullable=False, default="ethereum")
-
-    # Application Context
     user_id = db.Column(db.String(36), nullable=True, index=True)
     related_entity_type = db.Column(db.String(50), nullable=True)
     related_entity_id = db.Column(db.String(36), nullable=True, index=True)
-
-    # Transaction Lifecycle
     nonce = db.Column(db.BigInteger, nullable=True)
     confirmation_count = db.Column(db.Integer, default=0)
     required_confirmations = db.Column(db.Integer, default=12)
-
-    # Error Information
     error_message = db.Column(db.Text, nullable=True)
     revert_reason = db.Column(db.Text, nullable=True)
-
-    # Timestamps
     submitted_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -128,7 +100,7 @@ class BlockchainTransaction(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_input_data(self):
+    def get_input_data(self) -> Any:
         """Get parsed input data"""
         if self.input_data:
             try:
@@ -137,11 +109,11 @@ class BlockchainTransaction(db.Model):
                 return {}
         return {}
 
-    def set_input_data(self, data):
+    def set_input_data(self, data: Any) -> Any:
         """Set input data as JSON"""
         self.input_data = json.dumps(data) if data else None
 
-    def get_output_data(self):
+    def get_output_data(self) -> Any:
         """Get parsed output data"""
         if self.output_data:
             try:
@@ -150,11 +122,11 @@ class BlockchainTransaction(db.Model):
                 return {}
         return {}
 
-    def set_output_data(self, data):
+    def set_output_data(self, data: Any) -> Any:
         """Set output data as JSON"""
         self.output_data = json.dumps(data) if data else None
 
-    def get_token_transfers(self):
+    def get_token_transfers(self) -> Any:
         """Get parsed token transfers"""
         if self.token_transfers:
             try:
@@ -163,24 +135,24 @@ class BlockchainTransaction(db.Model):
                 return []
         return []
 
-    def set_token_transfers(self, transfers):
+    def set_token_transfers(self, transfers: Any) -> Any:
         """Set token transfers as JSON"""
         self.token_transfers = json.dumps(transfers) if transfers else None
 
-    def is_confirmed(self):
+    def is_confirmed(self) -> Any:
         """Check if transaction is confirmed"""
         return (
             self.status == TransactionStatus.CONFIRMED
             and self.confirmation_count >= self.required_confirmations
         )
 
-    def calculate_transaction_fee_usd(self, eth_price_usd=None):
+    def calculate_transaction_fee_usd(self, eth_price_usd: Any = None) -> Any:
         """Calculate transaction fee in USD"""
         if self.transaction_fee and eth_price_usd:
             return float(self.transaction_fee) * eth_price_usd
         return None
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -228,55 +200,32 @@ class SmartContract(db.Model):
     """Smart contract registry and management"""
 
     __tablename__ = "smart_contracts"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-
-    # Contract Information
     contract_address = db.Column(db.String(42), unique=True, nullable=False, index=True)
     contract_name = db.Column(db.String(100), nullable=False)
     contract_type = db.Column(db.Enum(ContractType), nullable=False)
     contract_version = db.Column(db.String(20), nullable=False, default="1.0.0")
-
-    # Contract Status
     status = db.Column(db.Enum(ContractStatus), default=ContractStatus.DEPLOYED)
     is_verified = db.Column(db.Boolean, default=False)
     is_proxy = db.Column(db.Boolean, default=False)
     implementation_address = db.Column(db.String(42), nullable=True)
-
-    # Contract Code
     bytecode = db.Column(db.Text, nullable=True)
     source_code = db.Column(db.Text, nullable=True)
-    abi = db.Column(db.Text, nullable=False)  # JSON ABI
-    constructor_args = db.Column(db.Text, nullable=True)  # JSON constructor arguments
-
-    # Deployment Information
+    abi = db.Column(db.Text, nullable=False)
+    constructor_args = db.Column(db.Text, nullable=True)
     deployment_transaction_hash = db.Column(db.String(66), nullable=False, index=True)
     deployment_block_number = db.Column(db.BigInteger, nullable=True)
     deployer_address = db.Column(db.String(42), nullable=False)
-
-    # Network Information
     network_id = db.Column(db.Integer, nullable=False, default=1)
     network_name = db.Column(db.String(50), nullable=False, default="ethereum")
-
-    # Contract Metadata
     description = db.Column(db.Text, nullable=True)
     documentation_url = db.Column(db.String(255), nullable=True)
     source_code_url = db.Column(db.String(255), nullable=True)
-
-    # Security and Audit
     security_audit_status = db.Column(db.String(50), nullable=True)
-    audit_reports = db.Column(
-        db.Text, nullable=True
-    )  # JSON array of audit report references
-    known_vulnerabilities = db.Column(
-        db.Text, nullable=True
-    )  # JSON array of vulnerabilities
-
-    # Usage Statistics
+    audit_reports = db.Column(db.Text, nullable=True)
+    known_vulnerabilities = db.Column(db.Text, nullable=True)
     total_transactions = db.Column(db.BigInteger, default=0)
     last_interaction = db.Column(db.DateTime(timezone=True), nullable=True)
-
-    # Timestamps
     deployed_at = db.Column(db.DateTime(timezone=True), nullable=False)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
@@ -287,7 +236,7 @@ class SmartContract(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_abi(self):
+    def get_abi(self) -> Any:
         """Get parsed ABI"""
         if self.abi:
             try:
@@ -296,11 +245,11 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_abi(self, abi):
+    def set_abi(self, abi: Any) -> Any:
         """Set ABI as JSON"""
         self.abi = json.dumps(abi) if abi else None
 
-    def get_constructor_args(self):
+    def get_constructor_args(self) -> Any:
         """Get parsed constructor arguments"""
         if self.constructor_args:
             try:
@@ -309,11 +258,11 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_constructor_args(self, args):
+    def set_constructor_args(self, args: Any) -> Any:
         """Set constructor arguments as JSON"""
         self.constructor_args = json.dumps(args) if args else None
 
-    def get_audit_reports(self):
+    def get_audit_reports(self) -> Any:
         """Get parsed audit reports"""
         if self.audit_reports:
             try:
@@ -322,11 +271,11 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_audit_reports(self, reports):
+    def set_audit_reports(self, reports: Any) -> Any:
         """Set audit reports as JSON"""
         self.audit_reports = json.dumps(reports) if reports else None
 
-    def get_known_vulnerabilities(self):
+    def get_known_vulnerabilities(self) -> Any:
         """Get parsed known vulnerabilities"""
         if self.known_vulnerabilities:
             try:
@@ -335,17 +284,17 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_known_vulnerabilities(self, vulnerabilities):
+    def set_known_vulnerabilities(self, vulnerabilities: Any) -> Any:
         """Set known vulnerabilities as JSON"""
         self.known_vulnerabilities = (
             json.dumps(vulnerabilities) if vulnerabilities else None
         )
 
-    def is_active(self):
+    def is_active(self) -> Any:
         """Check if contract is active"""
         return self.status == ContractStatus.ACTIVE
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -379,9 +328,6 @@ class SmartContract(db.Model):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-
-
-# Marshmallow Schemas for serialization/validation
 
 
 class BlockchainTransactionSchema(Schema):

@@ -7,23 +7,19 @@ It includes functions for data transformation, model inference, and API communic
 
 import os
 from datetime import datetime
-
 import joblib
 import numpy as np
 import pandas as pd
-
 from core.logging import get_logger
 
 logger = get_logger(__name__)
-
-# Load the trained model
 model_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "credit_scoring_model.pkl"
 )
 model = joblib.load(model_path)
 
 
-def transform_blockchain_data(credit_history):
+def transform_blockchain_data(credit_history: Any) -> Any:
     """
     Transform blockchain credit history data into features for model input
 
@@ -39,83 +35,52 @@ def transform_blockchain_data(credit_history):
     """
     if not credit_history:
         return None
-
-    # Extract features from credit history
     datetime.now().timestamp()
-
-    # Initialize feature values
     income_proxy = 0
     debt_ratio = 0
     payment_history = 0
     loan_count = 0
     credit_utilization = 0
-
-    # Count of repaid and total records
     repaid_count = 0
     total_records = len(credit_history)
-
-    # Total borrowed amount
     total_borrowed = 0
-
-    # Average time to repayment (in days)
     repayment_times = []
-
     for record in credit_history:
-        # Count loans
         if record["recordType"] == "loan":
             loan_count += 1
             total_borrowed += int(record["amount"])
-
-        # Track repayments
         if record["repaid"]:
             repaid_count += 1
-
-            # Calculate time to repayment if available
             if record["repaymentTimestamp"] > 0:
                 days_to_repay = (
                     int(record["repaymentTimestamp"]) - int(record["timestamp"])
                 ) / (60 * 60 * 24)
                 repayment_times.append(days_to_repay)
-
-    # Calculate payment history score (0-1)
     payment_history = repaid_count / total_records if total_records > 0 else 0
-
-    # Use average loan amount as a proxy for income
     avg_loan = total_borrowed / loan_count if loan_count > 0 else 0
-    income_proxy = avg_loan * 10  # Simple heuristic
-
-    # Calculate debt ratio proxy
+    income_proxy = avg_loan * 10
     active_debt = (
-        total_borrowed - (repaid_count / total_records * total_borrowed)
+        total_borrowed - repaid_count / total_records * total_borrowed
         if total_records > 0
         else 0
     )
     debt_ratio = active_debt / income_proxy if income_proxy > 0 else 0.5
-
-    # Cap debt ratio at 1.0
     debt_ratio = min(debt_ratio, 1.0)
-
-    # Use average repayment time as a proxy for credit utilization
     avg_repayment_time = np.mean(repayment_times) if repayment_times else 30
-    credit_utilization = min(
-        avg_repayment_time / 90, 1.0
-    )  # Normalize to 0-1, capped at 90 days
-
-    # Create feature dictionary
+    credit_utilization = min(avg_repayment_time / 90, 1.0)
     features = {
         "income": income_proxy,
         "debt_ratio": debt_ratio,
         "payment_history": payment_history,
         "loan_count": loan_count,
         "loan_amount": avg_loan,
-        "age": 30,  # Default value as we don't have age data
+        "age": 30,
         "credit_utilization": credit_utilization,
     }
-
     return features
 
 
-def predict_score(features):
+def predict_score(features: Any) -> Any:
     """
     Predict credit score based on features
 
@@ -129,19 +94,13 @@ def predict_score(features):
     int
         Predicted credit score (300-850)
     """
-    # Convert features to DataFrame
     df = pd.DataFrame([features])
-
-    # Make prediction
     prediction = model.predict(df)[0]
-
-    # Ensure prediction is within valid credit score range
     prediction = max(300, min(850, prediction))
-
     return int(prediction)
 
 
-def calculate_score_factors(features, prediction):
+def calculate_score_factors(features: Any, prediction: Any) -> Any:
     """
     Calculate contributing factors to the credit score
 
@@ -158,8 +117,6 @@ def calculate_score_factors(features, prediction):
         List of factors affecting the credit score
     """
     factors = []
-
-    # Payment history factor
     payment_history = features["payment_history"]
     if payment_history >= 0.9:
         factors.append(
@@ -185,8 +142,6 @@ def calculate_score_factors(features, prediction):
                 "description": "Frequently missing payments",
             }
         )
-
-    # Debt ratio factor
     debt_ratio = features["debt_ratio"]
     if debt_ratio <= 0.3:
         factors.append(
@@ -204,8 +159,6 @@ def calculate_score_factors(features, prediction):
                 "description": "High amount of debt relative to income",
             }
         )
-
-    # Credit utilization factor
     credit_util = features["credit_utilization"]
     if credit_util <= 0.3:
         factors.append(
@@ -223,8 +176,6 @@ def calculate_score_factors(features, prediction):
                 "description": "Using a large portion of available credit",
             }
         )
-
-    # Loan count factor
     loan_count = features["loan_count"]
     if loan_count >= 5:
         factors.append(
@@ -242,11 +193,10 @@ def calculate_score_factors(features, prediction):
                 "description": "Few or no previous loans on record",
             }
         )
-
     return factors
 
 
-def batch_score(credit_histories):
+def batch_score(credit_histories: Any) -> Any:
     """
     Process multiple credit histories for batch scoring
 
@@ -261,14 +211,12 @@ def batch_score(credit_histories):
         List of scoring results
     """
     results = []
-
     for history in credit_histories:
         features = transform_blockchain_data(history)
-
         if features is None:
             results.append(
                 {
-                    "score": 500,  # Default score for no history
+                    "score": 500,
                     "confidence": 0,
                     "factors": [
                         {
@@ -280,15 +228,9 @@ def batch_score(credit_histories):
                 }
             )
             continue
-
         prediction = predict_score(features)
-
-        # Calculate confidence (simple heuristic based on number of records)
-        confidence = min(0.5 + (len(history) * 0.05), 0.95)
-
-        # Calculate factors affecting the score
+        confidence = min(0.5 + len(history) * 0.05, 0.95)
         factors = calculate_score_factors(features, prediction)
-
         results.append(
             {
                 "score": prediction,
@@ -296,13 +238,10 @@ def batch_score(credit_histories):
                 "factors": factors,
             }
         )
-
     return results
 
 
-# For direct testing
 if __name__ == "__main__":
-    # Example credit history
     example_history = [
         {
             "timestamp": 1621500000,
@@ -323,12 +262,9 @@ if __name__ == "__main__":
             "scoreImpact": 3,
         },
     ]
-
-    # Test transformation and prediction
     features = transform_blockchain_data(example_history)
     score = predict_score(features)
     factors = calculate_score_factors(features, score)
-
     logger.info(f"Extracted features: {features}")
     logger.info(f"Predicted score: {score}")
     logger.info(f"Score factors: {factors}")

@@ -12,7 +12,6 @@ import re
 import time
 from functools import wraps
 from typing import Any, Dict, Optional
-
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -25,62 +24,46 @@ from services.audit_service import AuditService
 class SecurityMiddleware:
     """Comprehensive security middleware for financial applications"""
 
-    def __init__(self, app=None, redis_client=None):
+    def __init__(self, app: Any = None, redis_client: Any = None) -> Any:
         self.app = app
         self.redis_client = redis_client
         self.audit_service = None
-
-        # Security configuration
-        self.max_request_size = 10 * 1024 * 1024  # 10MB
+        self.max_request_size = 10 * 1024 * 1024
         self.allowed_file_types = {".pdf", ".jpg", ".jpeg", ".png", ".doc", ".docx"}
         self.blocked_ips = set()
         self.rate_limit_windows = {
-            "login": {"requests": 5, "window": 300},  # 5 requests per 5 minutes
-            "api": {"requests": 100, "window": 60},  # 100 requests per minute
-            "upload": {"requests": 10, "window": 300},  # 10 uploads per 5 minutes
+            "login": {"requests": 5, "window": 300},
+            "api": {"requests": 100, "window": 60},
+            "upload": {"requests": 10, "window": 300},
         }
-
-        # Initialize encryption
         self._init_encryption()
-
         if app:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Any) -> Any:
         """Initialize security middleware with Flask app"""
         self.app = app
         self.audit_service = AuditService(app.extensions.get("sqlalchemy").db)
-
-        # Register middleware
         app.before_request(self.before_request)
         app.after_request(self.after_request)
-
-        # Register error handlers
         app.errorhandler(413)(self.request_entity_too_large)
         app.errorhandler(429)(self.rate_limit_exceeded)
 
-    def _init_encryption(self):
+    def _init_encryption(self) -> Any:
         """Initialize encryption components"""
-        # Generate or load encryption key
         key = os.environ.get("ENCRYPTION_KEY")
         if not key:
-            # Generate a new key (in production, this should be stored securely)
             key = Fernet.generate_key()
             os.environ["ENCRYPTION_KEY"] = key.decode()
-
         if isinstance(key, str):
             key = key.encode()
-
         self.cipher_suite = Fernet(key)
 
-    def before_request(self):
+    def before_request(self) -> Any:
         """Security checks before processing request"""
         try:
-            # Set request start time and ID
             g.request_start_time = time.time()
             g.request_id = self._generate_request_id()
-
-            # Check request size
             if (
                 request.content_length
                 and request.content_length > self.max_request_size
@@ -90,35 +73,25 @@ class SecurityMiddleware:
                     "Request size exceeds maximum allowed limit",
                     413,
                 )
-
-            # Check IP blocking
             if self._is_ip_blocked(request.remote_addr):
                 return self._security_error(
                     "Access denied", "Your IP address has been blocked", 403
                 )
-
-            # Rate limiting
             if not self._check_rate_limit():
                 return self._security_error(
                     "Rate limit exceeded", "Too many requests from your IP address", 429
                 )
-
-            # Input validation
             if not self._validate_input():
                 return self._security_error(
                     "Invalid input",
                     "Request contains invalid or potentially malicious content",
                     400,
                 )
-
-            # CSRF protection for state-changing operations
             if request.method in ["POST", "PUT", "DELETE", "PATCH"]:
                 if not self._validate_csrf():
                     return self._security_error(
                         "CSRF validation failed", "Invalid or missing CSRF token", 403
                     )
-
-            # Log security event
             self._log_security_event(
                 "request_processed",
                 {
@@ -128,7 +101,6 @@ class SecurityMiddleware:
                     "user_agent": request.headers.get("User-Agent"),
                 },
             )
-
         except Exception as e:
             current_app.logger.error(f"Security middleware error: {e}")
             return self._security_error(
@@ -137,10 +109,9 @@ class SecurityMiddleware:
                 500,
             )
 
-    def after_request(self, response):
+    def after_request(self, response: Any) -> Any:
         """Security headers and logging after request processing"""
         try:
-            # Add security headers
             response.headers["X-Content-Type-Options"] = "nosniff"
             response.headers["X-Frame-Options"] = "DENY"
             response.headers["X-XSS-Protection"] = "1; mode=block"
@@ -154,11 +125,7 @@ class SecurityMiddleware:
             response.headers["Permissions-Policy"] = (
                 "geolocation=(), microphone=(), camera=()"
             )
-
-            # Remove server information
             response.headers.pop("Server", None)
-
-            # Log response
             if hasattr(g, "request_start_time"):
                 response_time = (time.time() - g.request_start_time) * 1000
                 self._log_security_event(
@@ -169,9 +136,7 @@ class SecurityMiddleware:
                         "content_length": response.content_length,
                     },
                 )
-
             return response
-
         except Exception as e:
             current_app.logger.error(f"After request security error: {e}")
             return response
@@ -185,18 +150,13 @@ class SecurityMiddleware:
     def _is_ip_blocked(self, ip_address: str) -> bool:
         """Check if IP address is blocked"""
         try:
-            # Check static blocked IPs
             if ip_address in self.blocked_ips:
                 return True
-
-            # Check Redis for dynamically blocked IPs
             if self.redis_client:
                 blocked_key = f"blocked_ip:{ip_address}"
                 if self.redis_client.exists(blocked_key):
                     return True
-
             return False
-
         except Exception as e:
             current_app.logger.error(f"IP blocking check error: {e}")
             return False
@@ -206,30 +166,21 @@ class SecurityMiddleware:
         try:
             if not self.redis_client:
                 return True
-
             ip_address = request.remote_addr
             endpoint = request.endpoint or "unknown"
-
-            # Determine rate limit type
             limit_type = "api"
             if "login" in endpoint:
                 limit_type = "login"
             elif "upload" in endpoint:
                 limit_type = "upload"
-
             config = self.rate_limit_windows[limit_type]
             key = f"rate_limit:{limit_type}:{ip_address}"
-
-            # Get current count
             current_count = self.redis_client.get(key)
             if current_count is None:
-                # First request in window
                 self.redis_client.setex(key, config["window"], 1)
                 return True
-
             current_count = int(current_count)
             if current_count >= config["requests"]:
-                # Rate limit exceeded
                 self._log_security_event(
                     "rate_limit_exceeded",
                     {
@@ -241,86 +192,61 @@ class SecurityMiddleware:
                     severity=AuditSeverity.HIGH,
                 )
                 return False
-
-            # Increment counter
             self.redis_client.incr(key)
             return True
-
         except Exception as e:
             current_app.logger.error(f"Rate limiting error: {e}")
-            return True  # Allow request if rate limiting fails
+            return True
 
     def _validate_input(self) -> bool:
         """Validate request input for security threats"""
         try:
-            # SQL injection patterns
             sql_patterns = [
-                r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)",
-                r"(\b(OR|AND)\s+\d+\s*=\s*\d+)",
-                r"(--|#|/\*|\*/)",
-                r"(\bxp_cmdshell\b|\bsp_executesql\b)",
+                "(\\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\\b)",
+                "(\\b(OR|AND)\\s+\\d+\\s*=\\s*\\d+)",
+                "(--|#|/\\*|\\*/)",
+                "(\\bxp_cmdshell\\b|\\bsp_executesql\\b)",
             ]
-
-            # XSS patterns
             xss_patterns = [
-                r"<script[^>]*>.*?</script>",
-                r"javascript:",
-                r"on\w+\s*=",
-                r"<iframe[^>]*>.*?</iframe>",
+                "<script[^>]*>.*?</script>",
+                "javascript:",
+                "on\\w+\\s*=",
+                "<iframe[^>]*>.*?</iframe>",
             ]
-
-            # Path traversal patterns
             path_patterns = [
-                r"\.\./",
-                r"\.\.\\",
-                r"/etc/passwd",
-                r"/proc/",
-                r"\\windows\\system32",
+                "\\.\\./",
+                "\\.\\.\\\\",
+                "/etc/passwd",
+                "/proc/",
+                "\\\\windows\\\\system32",
             ]
-
-            # Check request data
             data_to_check = []
-
-            # Check URL parameters
             for key, value in request.args.items():
                 data_to_check.append(f"{key}={value}")
-
-            # Check form data
             if request.form:
                 for key, value in request.form.items():
                     data_to_check.append(f"{key}={value}")
-
-            # Check JSON data
             if request.is_json and request.json:
                 data_to_check.append(json.dumps(request.json))
-
-            # Check headers
             for header, value in request.headers:
                 if header.lower() in ["user-agent", "referer", "x-forwarded-for"]:
                     data_to_check.append(value)
-
-            # Validate each piece of data
             for data in data_to_check:
                 if not isinstance(data, str):
                     continue
-
                 data_lower = data.lower()
-
-                # Check SQL injection
                 for pattern in sql_patterns:
                     if re.search(pattern, data_lower, re.IGNORECASE):
                         self._log_security_event(
                             "sql_injection_attempt",
                             {
                                 "pattern": pattern,
-                                "data": data[:100],  # Log first 100 chars
+                                "data": data[:100],
                                 "ip_address": request.remote_addr,
                             },
                             severity=AuditSeverity.CRITICAL,
                         )
                         return False
-
-                # Check XSS
                 for pattern in xss_patterns:
                     if re.search(pattern, data_lower, re.IGNORECASE):
                         self._log_security_event(
@@ -333,8 +259,6 @@ class SecurityMiddleware:
                             severity=AuditSeverity.HIGH,
                         )
                         return False
-
-                # Check path traversal
                 for pattern in path_patterns:
                     if re.search(pattern, data_lower, re.IGNORECASE):
                         self._log_security_event(
@@ -347,48 +271,38 @@ class SecurityMiddleware:
                             severity=AuditSeverity.HIGH,
                         )
                         return False
-
             return True
-
         except Exception as e:
             current_app.logger.error(f"Input validation error: {e}")
-            return True  # Allow request if validation fails
+            return True
 
     def _validate_csrf(self) -> bool:
         """Validate CSRF token for state-changing operations"""
         try:
-            # Skip CSRF for API endpoints with JWT authentication
             if request.path.startswith("/api/") and "Authorization" in request.headers:
                 return True
-
-            # Get CSRF token from header or form
             csrf_token = request.headers.get("X-CSRF-Token") or request.form.get(
                 "csrf_token"
             )
-
             if not csrf_token:
                 return False
-
-            # Validate CSRF token
             if self.redis_client:
                 session_id = request.cookies.get("session_id")
                 if session_id:
                     stored_token = self.redis_client.get(f"csrf_token:{session_id}")
                     if stored_token and stored_token.decode() == csrf_token:
                         return True
-
             return False
-
         except Exception as e:
             current_app.logger.error(f"CSRF validation error: {e}")
-            return True  # Allow request if CSRF validation fails
+            return True
 
     def _log_security_event(
         self,
         event_type: str,
         event_data: Dict[str, Any],
         severity: AuditSeverity = AuditSeverity.LOW,
-    ):
+    ) -> Any:
         """Log security event to audit service"""
         try:
             if self.audit_service:
@@ -412,7 +326,7 @@ class SecurityMiddleware:
         except:
             return None
 
-    def _security_error(self, error: str, message: str, status_code: int):
+    def _security_error(self, error: str, message: str, status_code: int) -> Any:
         """Return security error response"""
         return (
             jsonify(
@@ -426,13 +340,13 @@ class SecurityMiddleware:
             status_code,
         )
 
-    def request_entity_too_large(self, error):
+    def request_entity_too_large(self, error: Any) -> Any:
         """Handle request too large error"""
         return self._security_error(
             "Request too large", "Request size exceeds maximum allowed limit", 413
         )
 
-    def rate_limit_exceeded(self, error):
+    def rate_limit_exceeded(self, error: Any) -> Any:
         """Handle rate limit exceeded error"""
         return self._security_error(
             "Rate limit exceeded", "Too many requests. Please try again later.", 429
@@ -464,15 +378,11 @@ class SecurityMiddleware:
             salt = os.urandom(32)
         elif isinstance(salt, str):
             salt = salt.encode()
-
         kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,
+            algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100000
         )
         key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
-        return key.decode(), base64.urlsafe_b64encode(salt).decode()
+        return (key.decode(), base64.urlsafe_b64encode(salt).decode())
 
     def verify_password(self, password: str, hashed_password: str, salt: str) -> bool:
         """Verify password against hash"""
@@ -493,23 +403,21 @@ class SecurityMiddleware:
 
     def block_ip(
         self, ip_address: str, duration: int = 3600, reason: str = "Security violation"
-    ):
+    ) -> Any:
         """Block IP address for specified duration"""
         try:
             if self.redis_client:
                 self.redis_client.setex(f"blocked_ip:{ip_address}", duration, reason)
-
             self._log_security_event(
                 "ip_blocked",
                 {"ip_address": ip_address, "duration": duration, "reason": reason},
                 severity=AuditSeverity.HIGH,
             )
-
         except Exception as e:
             current_app.logger.error(f"IP blocking error: {e}")
 
 
-def require_api_key(f):
+def require_api_key(f: Any) -> Any:
     """Decorator to require API key authentication"""
 
     @wraps(f)
@@ -526,8 +434,6 @@ def require_api_key(f):
                 ),
                 401,
             )
-
-        # Validate API key (implement your validation logic)
         if not _validate_api_key(api_key):
             return (
                 jsonify(
@@ -539,18 +445,16 @@ def require_api_key(f):
                 ),
                 401,
             )
-
         return f(*args, **kwargs)
 
     return decorated_function
 
 
-def require_mfa(f):
+def require_mfa(f: Any) -> Any:
     """Decorator to require multi-factor authentication"""
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Check if MFA is required for this user
         user_id = get_jwt_identity()
         if not user_id:
             return (
@@ -563,8 +467,6 @@ def require_mfa(f):
                 ),
                 401,
             )
-
-        # Check MFA status
         mfa_verified = request.headers.get("X-MFA-Verified")
         if not mfa_verified or mfa_verified != "true":
             return (
@@ -577,7 +479,6 @@ def require_mfa(f):
                 ),
                 403,
             )
-
         return f(*args, **kwargs)
 
     return decorated_function
@@ -585,6 +486,5 @@ def require_mfa(f):
 
 def _validate_api_key(api_key: str) -> bool:
     """Validate API key (implement your validation logic)"""
-    # This is a placeholder - implement your actual API key validation
     valid_keys = os.environ.get("VALID_API_KEYS", "").split(",")
     return api_key in valid_keys

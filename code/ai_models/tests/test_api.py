@@ -4,7 +4,6 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import server
 
@@ -12,13 +11,10 @@ import server
 class TestModelAPI(unittest.TestCase):
     """Test cases for the model API server"""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up test fixtures"""
-        # Configure the Flask test client
         server.app.config["TESTING"] = True
         self.client = server.app.test_client()
-
-        # Sample credit history for testing
         self.sample_history = [
             {
                 "timestamp": 1621500000,
@@ -39,8 +35,6 @@ class TestModelAPI(unittest.TestCase):
                 "scoreImpact": 3,
             },
         ]
-
-        # Sample batch request
         self.batch_request = {
             "batch": [
                 {"userId": "user1", "creditHistory": self.sample_history},
@@ -48,11 +42,10 @@ class TestModelAPI(unittest.TestCase):
             ]
         }
 
-    def test_health_check(self):
+    def test_health_check(self) -> Any:
         """Test health check endpoint"""
         response = self.client.get("/health")
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["status"], "ok")
         self.assertIn("timestamp", data)
@@ -60,9 +53,10 @@ class TestModelAPI(unittest.TestCase):
     @patch("server.transform_blockchain_data")
     @patch("server.predict_score")
     @patch("server.calculate_score_factors")
-    def test_predict_endpoint(self, mock_factors, mock_predict, mock_transform):
+    def test_predict_endpoint(
+        self, mock_factors: Any, mock_predict: Any, mock_transform: Any
+    ) -> Any:
         """Test prediction endpoint"""
-        # Set up mocks
         mock_transform.return_value = {
             "payment_history": 0.9,
             "debt_ratio": 0.3,
@@ -80,47 +74,39 @@ class TestModelAPI(unittest.TestCase):
                 "description": "Generally repaying debts on time",
             }
         ]
-
-        # Test with valid data
         response = self.client.post(
             "/predict",
             data=json.dumps({"creditHistory": self.sample_history}),
             content_type="application/json",
         )
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["score"], 720)
         self.assertGreater(data["confidence"], 0)
         self.assertGreater(len(data["factors"]), 0)
-
-        # Test with empty credit history
         response = self.client.post(
             "/predict",
             data=json.dumps({"creditHistory": []}),
             content_type="application/json",
         )
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["score"], 500)  # Default score
+        self.assertEqual(data["score"], 500)
         self.assertEqual(data["confidence"], 0)
-
-        # Test with invalid data
         response = self.client.post(
             "/predict",
             data=json.dumps({"invalid": "data"}),
             content_type="application/json",
         )
-
         self.assertEqual(response.status_code, 400)
 
     @patch("server.transform_blockchain_data")
     @patch("server.predict_score")
     @patch("server.calculate_score_factors")
-    def test_batch_predict_endpoint(self, mock_factors, mock_predict, mock_transform):
+    def test_batch_predict_endpoint(
+        self, mock_factors: Any, mock_predict: Any, mock_transform: Any
+    ) -> Any:
         """Test batch prediction endpoint"""
-        # Set up mocks
         mock_transform.return_value = {
             "payment_history": 0.9,
             "debt_ratio": 0.3,
@@ -138,30 +124,24 @@ class TestModelAPI(unittest.TestCase):
                 "description": "Generally repaying debts on time",
             }
         ]
-
-        # Test with valid batch data
         response = self.client.post(
             "/batch-predict",
             data=json.dumps(self.batch_request),
             content_type="application/json",
         )
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertIn("results", data)
         self.assertEqual(len(data["results"]), 2)
         self.assertEqual(data["results"][0]["userId"], "user1")
         self.assertEqual(data["results"][0]["score"], 720)
         self.assertEqual(data["results"][1]["userId"], "user2")
-        self.assertEqual(data["results"][1]["score"], 500)  # Default score
-
-        # Test with invalid data
+        self.assertEqual(data["results"][1]["score"], 500)
         response = self.client.post(
             "/batch-predict",
             data=json.dumps({"invalid": "data"}),
             content_type="application/json",
         )
-
         self.assertEqual(response.status_code, 400)
 
 

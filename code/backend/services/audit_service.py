@@ -8,7 +8,6 @@ import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
-
 from flask import request
 from models.audit import AuditEventType, AuditLog, AuditSeverity
 
@@ -16,11 +15,9 @@ from models.audit import AuditEventType, AuditLog, AuditSeverity
 class AuditService:
     """Comprehensive audit service for financial compliance and security monitoring"""
 
-    def __init__(self, db):
+    def __init__(self, db: Any) -> Any:
         self.db = db
         self.logger = logging.getLogger(__name__)
-
-        # Audit configuration
         self.sensitive_fields = {
             "password",
             "token",
@@ -33,8 +30,6 @@ class AuditService:
             "routing_number",
             "pin",
         }
-
-        # Risk scoring thresholds
         self.risk_thresholds = {
             "low": 0.3,
             "medium": 0.6,
@@ -59,7 +54,6 @@ class AuditService:
     ) -> AuditLog:
         """Log a comprehensive audit event"""
         try:
-            # Create audit log entry
             audit_log = AuditLog(
                 id=str(uuid.uuid4()),
                 event_type=event_type,
@@ -77,20 +71,13 @@ class AuditService:
                 or self._calculate_risk_score(event_type, event_data),
                 event_timestamp=datetime.now(timezone.utc),
             )
-
-            # Set event data (sanitized)
             if event_data:
                 sanitized_data = self._sanitize_sensitive_data(event_data)
                 audit_log.set_event_data(sanitized_data)
-
             self.db.session.add(audit_log)
             self.db.session.commit()
-
-            # Check for security alerts
             self._check_security_patterns(audit_log)
-
             return audit_log
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to create audit log: {e}")
@@ -109,13 +96,8 @@ class AuditService:
     ) -> AuditLog:
         """Log API request for monitoring and compliance"""
         try:
-            # Determine event type based on endpoint
             event_type = self._determine_api_event_type(request_url, request_method)
-
-            # Determine severity based on response status
             severity = self._determine_response_severity(response_status)
-
-            # Create audit log
             audit_log = AuditLog(
                 id=str(uuid.uuid4()),
                 event_type=event_type,
@@ -135,25 +117,17 @@ class AuditService:
                 ),
                 event_timestamp=datetime.now(timezone.utc),
             )
-
-            # Set request headers (sanitized)
             if hasattr(request, "headers"):
                 audit_log.set_request_headers(dict(request.headers))
-
-            # Set request body (sanitized)
             if request_body:
                 sanitized_body = self._sanitize_sensitive_data(request_body)
                 audit_log.request_body = json.dumps(sanitized_body)
-
             self.db.session.add(audit_log)
             self.db.session.commit()
-
             return audit_log
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to log API request: {e}")
-            # Don't raise exception for API logging failures
             return None
 
     def log_data_change(
@@ -178,7 +152,6 @@ class AuditService:
                 event_type = AuditEventType.ADMIN_ACTION
             else:
                 event_description = f"Changed {resource_type}: {resource_id} ({action})"
-
             audit_log = AuditLog(
                 id=str(uuid.uuid4()),
                 event_type=event_type,
@@ -193,29 +166,21 @@ class AuditService:
                 compliance_relevant=True,
                 event_timestamp=datetime.now(timezone.utc),
             )
-
-            # Set before/after states (sanitized)
             if before_state:
                 sanitized_before = self._sanitize_sensitive_data(before_state)
                 audit_log.set_before_state(sanitized_before)
-
             if after_state:
                 sanitized_after = self._sanitize_sensitive_data(after_state)
                 audit_log.set_after_state(sanitized_after)
-
-            # Set event data
             event_data = {
                 "action": action,
                 "change_reason": change_reason,
                 "changed_fields": self._get_changed_fields(before_state, after_state),
             }
             audit_log.set_event_data(event_data)
-
             self.db.session.add(audit_log)
             self.db.session.commit()
-
             return audit_log
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to log data change: {e}")
@@ -239,7 +204,7 @@ class AuditService:
             ip_address=ip_address,
             event_data=event_data or {"security_event_type": event_type},
             compliance_relevant=True,
-            risk_score=0.8,  # High risk for security events
+            risk_score=0.8,
         )
 
     def log_compliance_event(
@@ -274,8 +239,6 @@ class AuditService:
     ) -> List[Dict[str, Any]]:
         """Get audit trail with filtering options"""
         query = AuditLog.query
-
-        # Apply filters
         if resource_type:
             query = query.filter(AuditLog.resource_type == resource_type)
         if resource_id:
@@ -286,10 +249,7 @@ class AuditService:
             query = query.filter(AuditLog.event_timestamp >= start_date)
         if end_date:
             query = query.filter(AuditLog.event_timestamp <= end_date)
-
-        # Order by timestamp and limit
         audit_logs = query.order_by(AuditLog.event_timestamp.desc()).limit(limit).all()
-
         return [log.to_dict() for log in audit_logs]
 
     def get_security_alerts(
@@ -302,12 +262,10 @@ class AuditService:
         query = AuditLog.query.filter(
             AuditLog.event_type == AuditEventType.SECURITY_ALERT
         )
-
         if severity:
             query = query.filter(AuditLog.severity == severity)
         if start_date:
             query = query.filter(AuditLog.event_timestamp >= start_date)
-
         alerts = query.order_by(AuditLog.event_timestamp.desc()).limit(limit).all()
         return [alert.to_dict() for alert in alerts]
 
@@ -323,33 +281,20 @@ class AuditService:
             AuditLog.event_timestamp >= start_date,
             AuditLog.event_timestamp <= end_date,
         )
-
         if compliance_types:
-            # Filter by compliance types in event data
-            # This is a simplified implementation
             pass
-
         logs = query.all()
-
-        # Generate report statistics
         total_events = len(logs)
         events_by_type = {}
         events_by_severity = {}
         events_by_user = {}
-
         for log in logs:
-            # Count by event type
             event_type = log.event_type.value
             events_by_type[event_type] = events_by_type.get(event_type, 0) + 1
-
-            # Count by severity
             severity = log.severity.value
             events_by_severity[severity] = events_by_severity.get(severity, 0) + 1
-
-            # Count by user
             if log.user_id:
                 events_by_user[log.user_id] = events_by_user.get(log.user_id, 0) + 1
-
         return {
             "report_period": {
                 "start_date": start_date.isoformat(),
@@ -368,15 +313,14 @@ class AuditService:
             "breakdown": {
                 "by_event_type": events_by_type,
                 "by_severity": events_by_severity,
-                "by_user": dict(list(events_by_user.items())[:10]),  # Top 10 users
+                "by_user": dict(list(events_by_user.items())[:10]),
             },
-            "recent_events": [log.to_dict() for log in logs[:20]],  # Recent 20 events
+            "recent_events": [log.to_dict() for log in logs[:20]],
         }
 
     def get_user_activity_summary(self, user_id: str, days: int = 30) -> Dict[str, Any]:
         """Get user activity summary"""
         start_date = datetime.now(timezone.utc) - timedelta(days=days)
-
         logs = (
             AuditLog.query.filter(
                 AuditLog.user_id == user_id, AuditLog.event_timestamp >= start_date
@@ -384,8 +328,6 @@ class AuditService:
             .order_by(AuditLog.event_timestamp.desc())
             .all()
         )
-
-        # Calculate statistics
         total_activities = len(logs)
         login_events = len(
             [l for l in logs if l.event_type == AuditEventType.USER_LOGIN]
@@ -394,16 +336,11 @@ class AuditService:
         security_events = len(
             [l for l in logs if l.event_type == AuditEventType.SECURITY_ALERT]
         )
-
-        # Get unique IP addresses
-        unique_ips = set(log.ip_address for log in logs if log.ip_address)
-
-        # Get activity by day
+        unique_ips = set((log.ip_address for log in logs if log.ip_address))
         activity_by_day = {}
         for log in logs:
             day = log.event_timestamp.date().isoformat()
             activity_by_day[day] = activity_by_day.get(day, 0) + 1
-
         return {
             "user_id": user_id,
             "period_days": days,
@@ -462,19 +399,14 @@ class AuditService:
             AuditEventType.COMPLIANCE_CHECK: 0.4,
             AuditEventType.BLOCKCHAIN_TRANSACTION: 0.3,
         }
-
         base_score = base_risk_scores.get(event_type, 0.2)
-
-        # Adjust based on event data
         if event_data:
-            # Add risk factors based on event data
             if event_data.get("failed_attempt"):
                 base_score += 0.2
             if event_data.get("suspicious_activity"):
                 base_score += 0.3
             if event_data.get("high_value_transaction"):
                 base_score += 0.2
-
         return min(1.0, base_score)
 
     def _determine_api_event_type(self, url: str, method: str) -> AuditEventType:
@@ -498,7 +430,6 @@ class AuditService:
                 return AuditEventType.PROFILE_UPDATE
             else:
                 return AuditEventType.DATA_ACCESS
-
         return AuditEventType.DATA_ACCESS
 
     def _determine_response_severity(self, status_code: int) -> AuditSeverity:
@@ -515,21 +446,17 @@ class AuditService:
     ) -> float:
         """Calculate risk score for API request"""
         base_score = 0.1
-
-        # Higher risk for write operations
         if method in ["POST", "PUT", "DELETE", "PATCH"]:
             base_score += 0.2
-
-        # Higher risk for sensitive endpoints
         if any(
-            endpoint in url for endpoint in ["/auth/", "/admin/", "/loans/", "/credit/"]
+            (
+                endpoint in url
+                for endpoint in ["/auth/", "/admin/", "/loans/", "/credit/"]
+            )
         ):
             base_score += 0.2
-
-        # Higher risk for error responses
         if status_code >= 400:
             base_score += 0.3
-
         return min(1.0, base_score)
 
     def _is_compliance_relevant_endpoint(self, url: str) -> bool:
@@ -544,19 +471,16 @@ class AuditService:
             "/compliance/",
             "/audit/",
         ]
-        return any(endpoint in url for endpoint in compliance_endpoints)
+        return any((endpoint in url for endpoint in compliance_endpoints))
 
     def _sanitize_sensitive_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Remove or mask sensitive data from audit logs"""
         if not isinstance(data, dict):
             return data
-
         sanitized = {}
         for key, value in data.items():
             key_lower = key.lower()
-
-            # Check if field contains sensitive data
-            if any(sensitive in key_lower for sensitive in self.sensitive_fields):
+            if any((sensitive in key_lower for sensitive in self.sensitive_fields)):
                 sanitized[key] = "[REDACTED]"
             elif isinstance(value, dict):
                 sanitized[key] = self._sanitize_sensitive_data(value)
@@ -571,7 +495,6 @@ class AuditService:
                 ]
             else:
                 sanitized[key] = value
-
         return sanitized
 
     def _get_changed_fields(
@@ -580,82 +503,64 @@ class AuditService:
         """Get list of fields that changed between states"""
         if not before_state or not after_state:
             return []
-
         changed_fields = []
         all_keys = set(before_state.keys()) | set(after_state.keys())
-
         for key in all_keys:
             before_value = before_state.get(key)
             after_value = after_state.get(key)
-
             if before_value != after_value:
                 changed_fields.append(key)
-
         return changed_fields
 
-    def _check_security_patterns(self, audit_log: AuditLog):
+    def _check_security_patterns(self, audit_log: AuditLog) -> Any:
         """Check for suspicious patterns in audit logs"""
         try:
-            # Check for multiple failed login attempts
             if (
                 audit_log.event_type == AuditEventType.USER_LOGIN
                 and audit_log.severity == AuditSeverity.MEDIUM
             ):
                 self._check_failed_login_pattern(audit_log)
-
-            # Check for unusual API access patterns
             if audit_log.event_category == "api_request":
                 self._check_api_access_pattern(audit_log)
-
-            # Check for high-risk score events
             if audit_log.risk_score and audit_log.risk_score > 0.8:
                 self._create_security_alert(audit_log, "High risk event detected")
-
         except Exception as e:
             self.logger.error(f"Failed to check security patterns: {e}")
 
-    def _check_failed_login_pattern(self, audit_log: AuditLog):
+    def _check_failed_login_pattern(self, audit_log: AuditLog) -> Any:
         """Check for suspicious failed login patterns"""
         if not audit_log.ip_address:
             return
-
-        # Check for multiple failed attempts from same IP in last hour
         cutoff_time = datetime.now(timezone.utc) - timedelta(hours=1)
-
         failed_attempts = AuditLog.query.filter(
             AuditLog.event_type == AuditEventType.USER_LOGIN,
             AuditLog.severity == AuditSeverity.MEDIUM,
             AuditLog.ip_address == audit_log.ip_address,
             AuditLog.event_timestamp >= cutoff_time,
         ).count()
-
         if failed_attempts >= 5:
             self._create_security_alert(
                 audit_log,
                 f"Multiple failed login attempts from IP: {audit_log.ip_address}",
             )
 
-    def _check_api_access_pattern(self, audit_log: AuditLog):
+    def _check_api_access_pattern(self, audit_log: AuditLog) -> Any:
         """Check for unusual API access patterns"""
         if not audit_log.ip_address:
             return
-
-        # Check for high frequency requests from same IP
         cutoff_time = datetime.now(timezone.utc) - timedelta(minutes=5)
-
         recent_requests = AuditLog.query.filter(
             AuditLog.event_category == "api_request",
             AuditLog.ip_address == audit_log.ip_address,
             AuditLog.event_timestamp >= cutoff_time,
         ).count()
-
-        if recent_requests >= 100:  # More than 100 requests in 5 minutes
+        if recent_requests >= 100:
             self._create_security_alert(
                 audit_log,
                 f"High frequency API requests from IP: {audit_log.ip_address}",
             )
 
-    def _create_security_alert(self, related_log: AuditLog, alert_message: str):
+    def _create_security_alert(self, related_log: AuditLog, alert_message: str) -> Any:
         """Create a security alert based on detected patterns"""
         try:
             alert = AuditLog(
@@ -671,7 +576,6 @@ class AuditService:
                 risk_score=0.9,
                 event_timestamp=datetime.now(timezone.utc),
             )
-
             alert.set_event_data(
                 {
                     "alert_type": "pattern_detection",
@@ -679,10 +583,8 @@ class AuditService:
                     "alert_message": alert_message,
                 }
             )
-
             self.db.session.add(alert)
             self.db.session.commit()
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to create security alert: {e}")

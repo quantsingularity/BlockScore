@@ -6,7 +6,6 @@ import enum
 import json
 import uuid
 from datetime import datetime, timezone
-
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
 
@@ -70,51 +69,32 @@ class AuditLog(db.Model):
     """Comprehensive audit log for all system activities"""
 
     __tablename__ = "audit_logs"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-
-    # Event Information
     event_type = db.Column(db.Enum(AuditEventType), nullable=False, index=True)
     event_category = db.Column(db.String(50), nullable=False, index=True)
     event_description = db.Column(db.Text, nullable=False)
     severity = db.Column(
         db.Enum(AuditSeverity), default=AuditSeverity.LOW, nullable=False
     )
-
-    # User and Session Information
     user_id = db.Column(db.String(36), nullable=True, index=True)
     session_id = db.Column(db.String(36), nullable=True, index=True)
     ip_address = db.Column(db.String(45), nullable=True)
     user_agent = db.Column(db.Text, nullable=True)
-
-    # Request Information
     request_method = db.Column(db.String(10), nullable=True)
     request_url = db.Column(db.Text, nullable=True)
-    request_headers = db.Column(db.Text, nullable=True)  # JSON
-    request_body = db.Column(db.Text, nullable=True)  # JSON (sensitive data excluded)
-
-    # Response Information
+    request_headers = db.Column(db.Text, nullable=True)
+    request_body = db.Column(db.Text, nullable=True)
     response_status = db.Column(db.Integer, nullable=True)
     response_time_ms = db.Column(db.Integer, nullable=True)
-
-    # Event Data
-    event_data = db.Column(db.Text, nullable=True)  # JSON with event-specific data
-    before_state = db.Column(db.Text, nullable=True)  # JSON with state before change
-    after_state = db.Column(db.Text, nullable=True)  # JSON with state after change
-
-    # Resource Information
+    event_data = db.Column(db.Text, nullable=True)
+    before_state = db.Column(db.Text, nullable=True)
+    after_state = db.Column(db.Text, nullable=True)
     resource_type = db.Column(db.String(50), nullable=True)
     resource_id = db.Column(db.String(36), nullable=True, index=True)
-
-    # Compliance and Risk
     compliance_relevant = db.Column(db.Boolean, default=False)
     risk_score = db.Column(db.Float, nullable=True)
-
-    # Blockchain Integration
     blockchain_hash = db.Column(db.String(66), nullable=True, index=True)
     blockchain_verified = db.Column(db.Boolean, default=False)
-
-    # Timestamps
     event_timestamp = db.Column(
         db.DateTime(timezone=True),
         default=datetime.now(timezone.utc),
@@ -125,7 +105,7 @@ class AuditLog(db.Model):
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
 
-    def get_event_data(self):
+    def get_event_data(self) -> Any:
         """Get parsed event data"""
         if self.event_data:
             try:
@@ -134,11 +114,11 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_event_data(self, data):
+    def set_event_data(self, data: Any) -> Any:
         """Set event data as JSON"""
         self.event_data = json.dumps(data) if data else None
 
-    def get_before_state(self):
+    def get_before_state(self) -> Any:
         """Get parsed before state"""
         if self.before_state:
             try:
@@ -147,11 +127,11 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_before_state(self, data):
+    def set_before_state(self, data: Any) -> Any:
         """Set before state as JSON"""
         self.before_state = json.dumps(data) if data else None
 
-    def get_after_state(self):
+    def get_after_state(self) -> Any:
         """Get parsed after state"""
         if self.after_state:
             try:
@@ -160,11 +140,11 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_after_state(self, data):
+    def set_after_state(self, data: Any) -> Any:
         """Set after state as JSON"""
         self.after_state = json.dumps(data) if data else None
 
-    def get_request_headers(self):
+    def get_request_headers(self) -> Any:
         """Get parsed request headers"""
         if self.request_headers:
             try:
@@ -173,10 +153,9 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_request_headers(self, headers):
+    def set_request_headers(self, headers: Any) -> Any:
         """Set request headers as JSON (excluding sensitive headers)"""
         if headers:
-            # Exclude sensitive headers
             safe_headers = {
                 k: v
                 for k, v in headers.items()
@@ -184,7 +163,7 @@ class AuditLog(db.Model):
             }
             self.request_headers = json.dumps(safe_headers)
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -215,51 +194,26 @@ class ComplianceRecord(db.Model):
     """Compliance tracking and reporting"""
 
     __tablename__ = "compliance_records"
-
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-
-    # Compliance Information
     compliance_type = db.Column(db.Enum(ComplianceType), nullable=False, index=True)
     regulation_name = db.Column(db.String(100), nullable=False)
     requirement_description = db.Column(db.Text, nullable=False)
-
-    # Entity Information
-    entity_type = db.Column(
-        db.String(50), nullable=False
-    )  # user, loan, transaction, etc.
+    entity_type = db.Column(db.String(50), nullable=False)
     entity_id = db.Column(db.String(36), nullable=False, index=True)
-
-    # Compliance Status
     status = db.Column(db.Enum(ComplianceStatus), nullable=False)
-    compliance_score = db.Column(db.Float, nullable=True)  # 0-100 compliance score
-
-    # Assessment Details
-    assessment_data = db.Column(db.Text, nullable=True)  # JSON with assessment details
-    violations = db.Column(db.Text, nullable=True)  # JSON array of violations
-    remediation_actions = db.Column(
-        db.Text, nullable=True
-    )  # JSON array of required actions
-
-    # Assessment Information
-    assessed_by = db.Column(db.String(36), nullable=True)  # User ID of assessor
-    assessment_method = db.Column(
-        db.String(50), nullable=True
-    )  # automated, manual, hybrid
-
-    # Validity and Review
+    compliance_score = db.Column(db.Float, nullable=True)
+    assessment_data = db.Column(db.Text, nullable=True)
+    violations = db.Column(db.Text, nullable=True)
+    remediation_actions = db.Column(db.Text, nullable=True)
+    assessed_by = db.Column(db.String(36), nullable=True)
+    assessment_method = db.Column(db.String(50), nullable=True)
     valid_from = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
     valid_until = db.Column(db.DateTime(timezone=True), nullable=True)
     next_review_date = db.Column(db.DateTime(timezone=True), nullable=True)
-
-    # Documentation
-    supporting_documents = db.Column(
-        db.Text, nullable=True
-    )  # JSON array of document references
+    supporting_documents = db.Column(db.Text, nullable=True)
     notes = db.Column(db.Text, nullable=True)
-
-    # Timestamps
     assessed_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -272,7 +226,7 @@ class ComplianceRecord(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_assessment_data(self):
+    def get_assessment_data(self) -> Any:
         """Get parsed assessment data"""
         if self.assessment_data:
             try:
@@ -281,11 +235,11 @@ class ComplianceRecord(db.Model):
                 return {}
         return {}
 
-    def set_assessment_data(self, data):
+    def set_assessment_data(self, data: Any) -> Any:
         """Set assessment data as JSON"""
         self.assessment_data = json.dumps(data) if data else None
 
-    def get_violations(self):
+    def get_violations(self) -> Any:
         """Get parsed violations"""
         if self.violations:
             try:
@@ -294,11 +248,11 @@ class ComplianceRecord(db.Model):
                 return []
         return []
 
-    def set_violations(self, violations):
+    def set_violations(self, violations: Any) -> Any:
         """Set violations as JSON"""
         self.violations = json.dumps(violations) if violations else None
 
-    def get_remediation_actions(self):
+    def get_remediation_actions(self) -> Any:
         """Get parsed remediation actions"""
         if self.remediation_actions:
             try:
@@ -307,24 +261,24 @@ class ComplianceRecord(db.Model):
                 return []
         return []
 
-    def set_remediation_actions(self, actions):
+    def set_remediation_actions(self, actions: Any) -> Any:
         """Set remediation actions as JSON"""
         self.remediation_actions = json.dumps(actions) if actions else None
 
-    def is_valid(self):
+    def is_valid(self) -> Any:
         """Check if compliance record is still valid"""
         now = datetime.now(timezone.utc)
         if self.valid_until:
             return now < self.valid_until
         return True
 
-    def needs_review(self):
+    def needs_review(self) -> Any:
         """Check if compliance record needs review"""
         if self.next_review_date:
             return datetime.now(timezone.utc) >= self.next_review_date
         return False
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -352,9 +306,6 @@ class ComplianceRecord(db.Model):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-
-
-# Marshmallow Schemas for serialization/validation
 
 
 class AuditLogSchema(Schema):

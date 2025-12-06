@@ -3,18 +3,14 @@ Pytest configuration and shared fixtures for BlockScore Backend tests
 """
 
 import os
-
-# Import application components
 import sys
 import tempfile
 from datetime import datetime, timezone
 from unittest.mock import Mock
-
 import pytest
 import redis
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from app import create_app
 from models import db as _db
 from models.audit import AuditLog
@@ -30,35 +26,30 @@ from utils.monitoring import PerformanceMonitor
 
 
 @pytest.fixture(scope="session")
-def app():
+def app() -> Any:
     """Create application for testing"""
-    # Create temporary database file
     db_fd, db_path = tempfile.mkstemp()
-
     config = {
         "TESTING": True,
         "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
         "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         "SECRET_KEY": "test-secret-key",
         "JWT_SECRET_KEY": "test-jwt-secret",
-        "REDIS_URL": "redis://localhost:6379/15",  # Use test database
+        "REDIS_URL": "redis://localhost:6379/15",
         "WTF_CSRF_ENABLED": False,
-        "BCRYPT_LOG_ROUNDS": 4,  # Faster for testing
+        "BCRYPT_LOG_ROUNDS": 4,
     }
-
     app = create_app(config)
-
     with app.app_context():
         _db.create_all()
         yield app
         _db.drop_all()
-
     os.close(db_fd)
     os.unlink(db_path)
 
 
 @pytest.fixture(scope="function")
-def db(app):
+def db(app: Any) -> Any:
     """Create database for testing"""
     with app.app_context():
         _db.create_all()
@@ -68,19 +59,19 @@ def db(app):
 
 
 @pytest.fixture(scope="function")
-def client(app):
+def client(app: Any) -> Any:
     """Create test client"""
     return app.test_client()
 
 
 @pytest.fixture(scope="function")
-def runner(app):
+def runner(app: Any) -> Any:
     """Create test CLI runner"""
     return app.test_cli_runner()
 
 
 @pytest.fixture
-def mock_redis():
+def mock_redis() -> Any:
     """Mock Redis client"""
     mock_client = Mock(spec=redis.Redis)
     mock_client.ping.return_value = True
@@ -98,19 +89,19 @@ def mock_redis():
 
 
 @pytest.fixture
-def cache_manager(mock_redis):
+def cache_manager(mock_redis: Any) -> Any:
     """Create cache manager with mock Redis"""
     return CacheManager(redis_client=mock_redis)
 
 
 @pytest.fixture
-def performance_monitor():
+def performance_monitor() -> Any:
     """Create performance monitor"""
     return PerformanceMonitor(retention_hours=1)
 
 
 @pytest.fixture
-def sample_user_data():
+def sample_user_data() -> Any:
     """Sample user data for testing"""
     return {
         "email": "test@example.com",
@@ -128,7 +119,7 @@ def sample_user_data():
 
 
 @pytest.fixture
-def sample_user(db, sample_user_data):
+def sample_user(db: Any, sample_user_data: Any) -> Any:
     """Create sample user in database"""
     user = User(
         email=sample_user_data["email"],
@@ -136,7 +127,6 @@ def sample_user(db, sample_user_data):
         is_active=True,
         email_verified=True,
     )
-
     profile = UserProfile(
         user=user,
         first_name=sample_user_data["first_name"],
@@ -151,16 +141,14 @@ def sample_user(db, sample_user_data):
         postal_code=sample_user_data["postal_code"],
         country=sample_user_data["country"],
     )
-
     db.session.add(user)
     db.session.add(profile)
     db.session.commit()
-
     return user
 
 
 @pytest.fixture
-def sample_credit_score(db, sample_user):
+def sample_credit_score(db: Any, sample_user: Any) -> Any:
     """Create sample credit score"""
     credit_score = CreditScore(
         user_id=sample_user.id,
@@ -170,55 +158,51 @@ def sample_credit_score(db, sample_user):
         factors_negative=["credit_age"],
         calculated_at=datetime.now(timezone.utc),
     )
-
     db.session.add(credit_score)
     db.session.commit()
-
     return credit_score
 
 
 @pytest.fixture
-def sample_loan_application(db, sample_user):
+def sample_loan_application(db: Any, sample_user: Any) -> Any:
     """Create sample loan application"""
     loan_app = LoanApplication(
         user_id=sample_user.id,
         loan_type="personal",
-        requested_amount=10000.00,
+        requested_amount=10000.0,
         requested_term_months=36,
         requested_rate=12.5,
         purpose="debt_consolidation",
         employment_status="employed",
-        annual_income=75000.00,
-        monthly_expenses=3000.00,
+        annual_income=75000.0,
+        monthly_expenses=3000.0,
     )
-
     db.session.add(loan_app)
     db.session.commit()
-
     return loan_app
 
 
 @pytest.fixture
-def auth_service(db):
+def auth_service(db: Any) -> Any:
     """Create authentication service"""
     return AuthenticationService(db)
 
 
 @pytest.fixture
-def credit_service(db, mock_redis):
+def credit_service(db: Any, mock_redis: Any) -> Any:
     """Create credit scoring service"""
     cache_manager = CacheManager(redis_client=mock_redis)
     return CreditScoringService(db, cache_manager)
 
 
 @pytest.fixture
-def compliance_service(db):
+def compliance_service(db: Any) -> Any:
     """Create compliance service"""
     return ComplianceService(db)
 
 
 @pytest.fixture
-def mock_blockchain_config():
+def mock_blockchain_config() -> Any:
     """Mock blockchain configuration"""
     return {
         "BLOCKCHAIN_PROVIDER_URL": "http://localhost:8545",
@@ -232,17 +216,17 @@ def mock_blockchain_config():
 
 
 @pytest.fixture
-def blockchain_service(mock_blockchain_config):
+def blockchain_service(mock_blockchain_config: Any) -> Any:
     """Create blockchain service with mock configuration"""
     service = BlockchainService(mock_blockchain_config)
-    # Mock Web3 connection
     service.web3 = Mock()
     service.is_connected_flag = True
     return service
 
 
-# Utility functions for tests
-def create_test_audit_log(db, user_id, event_type="user_login", severity="info"):
+def create_test_audit_log(
+    db: Any, user_id: Any, event_type: Any = "user_login", severity: Any = "info"
+) -> Any:
     """Create test audit log entry"""
     audit_log = AuditLog(
         user_id=user_id,
@@ -253,15 +237,12 @@ def create_test_audit_log(db, user_id, event_type="user_login", severity="info")
         user_agent="Test Agent",
         additional_data={"test": True},
     )
-
     db.session.add(audit_log)
     db.session.commit()
-
     return audit_log
 
 
-# Pytest configuration
-def pytest_configure(config):
+def pytest_configure(config: Any) -> Any:
     """Configure pytest"""
     config.addinivalue_line("markers", "unit: mark test as a unit test")
     config.addinivalue_line("markers", "integration: mark test as an integration test")

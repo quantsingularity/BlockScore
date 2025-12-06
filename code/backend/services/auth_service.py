@@ -11,14 +11,12 @@ import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
-
 import pyotp
 import qrcode
 import redis
 from flask_bcrypt import Bcrypt
 from models.audit import AuditEventType, AuditLog, AuditSeverity
 from models.user import KYCStatus, User, UserProfile, UserSession, UserStatus
-
 from core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -27,34 +25,29 @@ logger = get_logger(__name__)
 class AuthService:
     """Authentication service with enterprise security features"""
 
-    def __init__(self, db, bcrypt: Bcrypt, redis_client: Optional[redis.Redis] = None):
+    def __init__(
+        self, db: Any, bcrypt: Bcrypt, redis_client: Optional[redis.Redis] = None
+    ) -> Any:
         self.db = db
         self.bcrypt = bcrypt
         self.redis = redis_client
-
-        # Security configuration
         self.max_login_attempts = 5
         self.lockout_duration_minutes = 30
         self.password_min_length = 8
         self.session_timeout_hours = 24
-        self.mfa_window = 30  # seconds
+        self.mfa_window = 30
 
     def create_user(self, email: str, password: str, **kwargs) -> User:
         """Create a new user with security validations"""
         try:
-            # Validate password strength
             if not self._validate_password_strength(password):
                 raise ValueError("Password does not meet security requirements")
-
-            # Create user
             user = User(
                 id=str(uuid.uuid4()),
                 email=email.lower().strip(),
                 status=UserStatus.PENDING,
             )
             user.set_password(password)
-
-            # Create user profile
             profile = UserProfile(
                 id=str(uuid.uuid4()),
                 user_id=user.id,
@@ -62,13 +55,10 @@ class AuthService:
                 data_sharing_consent=kwargs.get("data_sharing_consent", False),
                 marketing_consent=kwargs.get("marketing_consent", False),
             )
-
             self.db.session.add(user)
             self.db.session.add(profile)
             self.db.session.commit()
-
             return user
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -83,35 +73,21 @@ class AuthService:
     ) -> Optional[User]:
         """Authenticate user with comprehensive security checks"""
         try:
-            # Find user by email
             user = User.query.filter_by(email=email.lower().strip()).first()
             if not user:
                 return None
-
-            # Check if account is locked
             if user.is_locked():
                 return None
-
-            # Check password
             if not user.check_password(password):
-                # Increment failed attempts
                 user.failed_login_attempts += 1
-
-                # Lock account if too many failures
                 if user.failed_login_attempts >= self.max_login_attempts:
                     user.lock_account(self.lockout_duration_minutes)
-
                 self.db.session.commit()
                 return None
-
-            # Check MFA if enabled
             if user.mfa_enabled:
                 if not mfa_code or not self._verify_mfa_code(user, mfa_code):
                     return None
-
-            # Check for suspicious login patterns
             if self._is_suspicious_login(user, ip_address, user_agent):
-                # Log security alert
                 self._log_security_alert(
                     user_id=user.id,
                     alert_type="suspicious_login",
@@ -121,16 +97,11 @@ class AuthService:
                         "reason": "Unusual login pattern detected",
                     },
                 )
-                # In production, might require additional verification
-
-            # Reset failed attempts on successful login
             user.failed_login_attempts = 0
             user.locked_until = None
             user.last_login = datetime.now(timezone.utc)
-
             self.db.session.commit()
             return user
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -145,10 +116,7 @@ class AuthService:
     ) -> UserSession:
         """Create a new user session with tracking"""
         try:
-            # Generate session token
             session_token = self._generate_session_token()
-
-            # Create session
             session = UserSession(
                 id=str(uuid.uuid4()),
                 user_id=user_id,
@@ -163,16 +131,11 @@ class AuthService:
                 + timedelta(hours=self.session_timeout_hours),
                 is_active=True,
             )
-
             self.db.session.add(session)
             self.db.session.commit()
-
-            # Cache session in Redis if available
             if self.redis:
                 self._cache_session(session)
-
             return session
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -181,28 +144,21 @@ class AuthService:
         """Revoke user session(s)"""
         try:
             if session_id:
-                # Revoke specific session
                 session = UserSession.query.filter_by(
                     user_id=user_id, id=session_id, is_active=True
                 ).first()
                 if session:
                     session.revoke()
             else:
-                # Revoke all active sessions for user
                 sessions = UserSession.query.filter_by(
                     user_id=user_id, is_active=True
                 ).all()
                 for session in sessions:
                     session.revoke()
-
             self.db.session.commit()
-
-            # Remove from Redis cache
             if self.redis:
                 self._remove_cached_sessions(user_id, session_id)
-
             return True
-
         except Exception:
             self.db.session.rollback()
             return False
@@ -213,39 +169,28 @@ class AuthService:
             user = User.query.get(user_id)
             if not user:
                 raise ValueError("User not found")
-
-            # Generate MFA secret
             secret = pyotp.random_base32()
             user.mfa_secret = secret
-
-            # Generate backup codes
             backup_codes = [secrets.token_hex(4).upper() for _ in range(10)]
             user.backup_codes = json.dumps(backup_codes)
-
             self.db.session.commit()
-
-            # Generate QR code
             totp = pyotp.TOTP(secret)
             provisioning_uri = totp.provisioning_uri(
                 name=user.email, issuer_name="BlockScore"
             )
-
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
             qr.add_data(provisioning_uri)
             qr.make(fit=True)
-
             qr_image = qr.make_image(fill_color="black", back_color="white")
             qr_buffer = io.BytesIO()
             qr_image.save(qr_buffer, format="PNG")
             qr_code_base64 = base64.b64encode(qr_buffer.getvalue()).decode()
-
             return {
                 "secret": secret,
                 "qr_code": f"data:image/png;base64,{qr_code_base64}",
                 "backup_codes": backup_codes,
                 "manual_entry_key": secret,
             }
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -256,15 +201,11 @@ class AuthService:
             user = User.query.get(user_id)
             if not user or not user.mfa_secret:
                 return False
-
-            # Verify the code
             if self._verify_mfa_code(user, verification_code):
                 user.mfa_enabled = True
                 self.db.session.commit()
                 return True
-
             return False
-
         except Exception:
             self.db.session.rollback()
             return False
@@ -277,24 +218,16 @@ class AuthService:
             user = User.query.get(user_id)
             if not user:
                 return False
-
-            # Verify password
             if not user.check_password(password):
                 return False
-
-            # If MFA is enabled, verify code
             if user.mfa_enabled and verification_code:
                 if not self._verify_mfa_code(user, verification_code):
                     return False
-
-            # Disable MFA
             user.mfa_enabled = False
             user.mfa_secret = None
             user.backup_codes = None
-
             self.db.session.commit()
             return True
-
         except Exception:
             self.db.session.rollback()
             return False
@@ -307,28 +240,16 @@ class AuthService:
             user = User.query.get(user_id)
             if not user:
                 return False
-
-            # Verify current password
             if not user.check_password(current_password):
                 return False
-
-            # Validate new password strength
             if not self._validate_password_strength(new_password):
                 raise ValueError("New password does not meet security requirements")
-
-            # Check password history (prevent reuse of recent passwords)
             if self._is_password_recently_used(user, new_password):
                 raise ValueError("Cannot reuse a recent password")
-
-            # Update password
             user.set_password(new_password)
-
-            # Revoke all existing sessions (force re-login)
             self.revoke_session(user_id)
-
             self.db.session.commit()
             return True
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -340,41 +261,31 @@ class AuthService:
             .order_by(UserSession.last_activity.desc())
             .all()
         )
-
         return [session.to_dict() for session in sessions]
 
     def _validate_password_strength(self, password: str) -> bool:
         """Validate password meets security requirements"""
         if len(password) < self.password_min_length:
             return False
-
-        # Check for required character types
-        has_upper = any(c.isupper() for c in password)
-        has_lower = any(c.islower() for c in password)
-        has_digit = any(c.isdigit() for c in password)
-        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)
-
+        has_upper = any((c.isupper() for c in password))
+        has_lower = any((c.islower() for c in password))
+        has_digit = any((c.isdigit() for c in password))
+        has_special = any((c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password))
         return has_upper and has_lower and has_digit and has_special
 
     def _verify_mfa_code(self, user: User, code: str) -> bool:
         """Verify MFA code (TOTP or backup code)"""
         if not user.mfa_secret:
             return False
-
-        # Try TOTP verification
         totp = pyotp.TOTP(user.mfa_secret)
         if totp.verify(code, valid_window=self.mfa_window):
             return True
-
-        # Try backup codes
         if user.backup_codes:
             backup_codes = json.loads(user.backup_codes)
             if code.upper() in backup_codes:
-                # Remove used backup code
                 backup_codes.remove(code.upper())
                 user.backup_codes = json.dumps(backup_codes)
                 return True
-
         return False
 
     def _is_suspicious_login(
@@ -383,8 +294,6 @@ class AuthService:
         """Detect suspicious login patterns"""
         if not ip_address:
             return False
-
-        # Check recent login locations
         recent_sessions = (
             UserSession.query.filter_by(user_id=user.id)
             .filter(
@@ -394,24 +303,18 @@ class AuthService:
             .limit(10)
             .all()
         )
-
         if not recent_sessions:
             return False
-
-        # Check for new IP address
         recent_ips = {
             session.ip_address for session in recent_sessions if session.ip_address
         }
         if ip_address not in recent_ips and len(recent_ips) > 0:
             return True
-
-        # Check for unusual user agent
         recent_agents = {
             session.user_agent for session in recent_sessions if session.user_agent
         }
-        if user_agent and user_agent not in recent_agents and len(recent_agents) > 0:
+        if user_agent and user_agent not in recent_agents and (len(recent_agents) > 0):
             return True
-
         return False
 
     def _generate_session_token(self) -> str:
@@ -427,55 +330,45 @@ class AuthService:
         )
         return hashlib.sha256(fingerprint_data.encode()).hexdigest()[:16]
 
-    def _cache_session(self, session: UserSession):
+    def _cache_session(self, session: UserSession) -> Any:
         """Cache session in Redis"""
         if not self.redis:
             return
-
         try:
             session_data = {
                 "user_id": session.user_id,
                 "expires_at": session.expires_at.isoformat(),
                 "is_active": session.is_active,
             }
-
-            # Cache for session timeout duration
             self.redis.setex(
                 f"session:{session.session_token}",
                 int(timedelta(hours=self.session_timeout_hours).total_seconds()),
                 json.dumps(session_data),
             )
         except Exception as e:
-            # Log error but don't fail the operation
             logger.info(f"Failed to cache session: {e}")
 
-    def _remove_cached_sessions(self, user_id: str, session_id: str = None):
+    def _remove_cached_sessions(self, user_id: str, session_id: str = None) -> Any:
         """Remove cached sessions from Redis"""
         if not self.redis:
             return
-
         try:
             if session_id:
-                # Remove specific session
                 session = UserSession.query.get(session_id)
                 if session:
                     self.redis.delete(f"session:{session.session_token}")
             else:
-                # Remove all sessions for user (would need to track session tokens)
-                # This is a simplified implementation
                 pass
         except Exception as e:
             logger.info(f"Failed to remove cached sessions: {e}")
 
     def _is_password_recently_used(self, user: User, new_password: str) -> bool:
         """Check if password was recently used (simplified implementation)"""
-        # In production, you would maintain a password history table
-        # For now, just check against current password
         return user.check_password(new_password)
 
     def _log_security_alert(
         self, user_id: str, alert_type: str, details: Dict[str, Any]
-    ):
+    ) -> Any:
         """Log security alerts"""
         try:
             audit_log = AuditLog(
@@ -490,10 +383,8 @@ class AuthService:
                 compliance_relevant=True,
             )
             audit_log.set_event_data(details)
-
             self.db.session.add(audit_log)
             self.db.session.commit()
-
         except Exception as e:
             logger.info(f"Failed to log security alert: {e}")
 
@@ -502,11 +393,9 @@ class AuthService:
         user = User.query.get(user_id)
         if not user:
             return {}
-
         active_sessions = UserSession.query.filter_by(
             user_id=user_id, is_active=True
         ).count()
-
         recent_logins = (
             UserSession.query.filter_by(user_id=user_id)
             .filter(
@@ -514,7 +403,6 @@ class AuthService:
             )
             .count()
         )
-
         return {
             "mfa_enabled": user.mfa_enabled,
             "last_login": user.last_login.isoformat() if user.last_login else None,

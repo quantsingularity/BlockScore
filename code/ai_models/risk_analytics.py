@@ -9,19 +9,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List
-
-# Visualization
 import numpy as np
 import pandas as pd
-
-# Statistical and ML libraries
 import scipy.stats as stats
-
-# Risk modeling
 from scipy.stats import norm
-
-# Financial libraries
-
 
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO)
@@ -86,20 +77,16 @@ class RiskAnalytics:
     Comprehensive risk analytics for financial institutions
     """
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.risk_models = {}
         self.portfolio_data = None
         self.market_data = None
         self.credit_data = None
         self.risk_factors = {}
         self.stress_scenarios = {}
-
-        # Risk parameters
         self.confidence_levels = [0.95, 0.99, 0.999]
-        self.time_horizons = [1, 5, 10, 22, 252]  # Days
-        self.lookback_periods = [252, 504, 1260]  # 1, 2, 5 years
-
-        # Regulatory parameters
+        self.time_horizons = [1, 5, 10, 22, 252]
+        self.lookback_periods = [252, 504, 1260]
         self.basel_parameters = {
             "risk_weight_corporate": 1.0,
             "risk_weight_retail": 0.75,
@@ -109,12 +96,10 @@ class RiskAnalytics:
             "systemic_buffer": 0.0,
         }
 
-    def load_portfolio_data(self, portfolio_df: pd.DataFrame):
+    def load_portfolio_data(self, portfolio_df: pd.DataFrame) -> Any:
         """Load portfolio data for risk analysis"""
         self.portfolio_data = portfolio_df.copy()
         logger.info(f"Loaded portfolio data with {len(portfolio_df)} positions")
-
-        # Validate required columns
         required_cols = [
             "asset_id",
             "position_size",
@@ -126,16 +111,14 @@ class RiskAnalytics:
         if missing_cols:
             logger.warning(f"Missing required columns: {missing_cols}")
 
-    def load_market_data(self, market_df: pd.DataFrame):
+    def load_market_data(self, market_df: pd.DataFrame) -> Any:
         """Load market data for risk calculations"""
         self.market_data = market_df.copy()
         logger.info(f"Loaded market data with {len(market_df)} observations")
-
-        # Calculate returns if not present
         if "returns" not in market_df.columns and "price" in market_df.columns:
             self.market_data["returns"] = market_df["price"].pct_change()
 
-    def load_credit_data(self, credit_df: pd.DataFrame):
+    def load_credit_data(self, credit_df: pd.DataFrame) -> Any:
         """Load credit data for credit risk analysis"""
         self.credit_data = credit_df.copy()
         logger.info(f"Loaded credit data with {len(credit_df)} borrowers")
@@ -175,10 +158,7 @@ class RiskAnalytics:
         """Calculate Monte Carlo VaR"""
         mean_return = returns.mean()
         std_return = returns.std()
-
-        # Generate random scenarios
         simulated_returns = np.random.normal(mean_return, std_return, n_simulations)
-
         return np.percentile(simulated_returns, (1 - confidence_level) * 100)
 
     def calculate_expected_shortfall(
@@ -192,34 +172,22 @@ class RiskAnalytics:
         self, returns: pd.DataFrame, benchmark_returns: pd.Series = None
     ) -> RiskMetrics:
         """Calculate comprehensive risk metrics for portfolio"""
-
-        # Portfolio returns (assuming equal weights if not specified)
         if "portfolio" not in returns.columns:
             portfolio_returns = returns.mean(axis=1)
         else:
             portfolio_returns = returns["portfolio"]
-
-        # Basic risk metrics
         var_95 = self.calculate_var(portfolio_returns, 0.95)
         var_99 = self.calculate_var(portfolio_returns, 0.99)
         es_95 = self.calculate_expected_shortfall(portfolio_returns, 0.95)
         es_99 = self.calculate_expected_shortfall(portfolio_returns, 0.99)
-
-        # Maximum drawdown
         cumulative_returns = (1 + portfolio_returns).cumprod()
         running_max = cumulative_returns.expanding().max()
         drawdown = (cumulative_returns - running_max) / running_max
         max_drawdown = drawdown.min()
-
-        # Risk-adjusted returns
-        volatility = portfolio_returns.std() * np.sqrt(252)  # Annualized
-        mean_return = portfolio_returns.mean() * 252  # Annualized
-
-        # Sharpe ratio (assuming risk-free rate of 2%)
+        volatility = portfolio_returns.std() * np.sqrt(252)
+        mean_return = portfolio_returns.mean() * 252
         risk_free_rate = 0.02
         sharpe_ratio = (mean_return - risk_free_rate) / volatility
-
-        # Sortino ratio (downside deviation)
         downside_returns = portfolio_returns[portfolio_returns < 0]
         downside_deviation = downside_returns.std() * np.sqrt(252)
         sortino_ratio = (
@@ -227,16 +195,10 @@ class RiskAnalytics:
             if downside_deviation > 0
             else np.inf
         )
-
-        # Calmar ratio
         calmar_ratio = mean_return / abs(max_drawdown) if max_drawdown != 0 else np.inf
-
-        # Higher moments
         skewness = portfolio_returns.skew()
         kurtosis = portfolio_returns.kurtosis()
-
-        # Beta and alpha (if benchmark provided)
-        beta, alpha = None, None
+        beta, alpha = (None, None)
         if benchmark_returns is not None:
             covariance = np.cov(portfolio_returns.dropna(), benchmark_returns.dropna())[
                 0, 1
@@ -244,7 +206,6 @@ class RiskAnalytics:
             benchmark_variance = benchmark_returns.var()
             beta = covariance / benchmark_variance
             alpha = mean_return - beta * (benchmark_returns.mean() * 252)
-
         return RiskMetrics(
             var_95=var_95,
             var_99=var_99,
@@ -263,24 +224,14 @@ class RiskAnalytics:
 
     def analyze_concentration_risk(self, portfolio_df: pd.DataFrame) -> Dict[str, Any]:
         """Analyze concentration risk in portfolio"""
-
-        # Position concentration
         total_value = portfolio_df["market_value"].sum()
         position_weights = portfolio_df["market_value"] / total_value
-
-        # Herfindahl-Hirschman Index for concentration
         hhi = (position_weights**2).sum()
-
-        # Top 10 concentration
         top_10_concentration = position_weights.nlargest(10).sum()
-
-        # Sector concentration
         sector_concentration = (
             portfolio_df.groupby("sector")["market_value"].sum() / total_value
         )
         sector_hhi = (sector_concentration**2).sum()
-
-        # Geographic concentration (if available)
         geographic_concentration = {}
         if "country" in portfolio_df.columns:
             geographic_concentration = (
@@ -289,13 +240,10 @@ class RiskAnalytics:
             geo_hhi = (geographic_concentration**2).sum()
         else:
             geo_hhi = None
-
-        # Asset class concentration
         asset_class_concentration = (
             portfolio_df.groupby("asset_class")["market_value"].sum() / total_value
         )
         asset_class_hhi = (asset_class_concentration**2).sum()
-
         return {
             "position_hhi": hhi,
             "sector_hhi": sector_hhi,
@@ -312,25 +260,16 @@ class RiskAnalytics:
 
     def calculate_credit_risk_metrics(self, credit_df: pd.DataFrame) -> Dict[str, Any]:
         """Calculate credit risk metrics"""
-
-        # Probability of Default (PD) analysis
         if "default_flag" in credit_df.columns:
             overall_pd = credit_df["default_flag"].mean()
+        elif "credit_score" in credit_df.columns:
+            overall_pd = self._estimate_pd_from_score(credit_df["credit_score"])
         else:
-            # Estimate PD based on credit scores
-            if "credit_score" in credit_df.columns:
-                # Simple PD model based on credit score
-                overall_pd = self._estimate_pd_from_score(credit_df["credit_score"])
-            else:
-                overall_pd = 0.02  # Default assumption
-
-        # Loss Given Default (LGD)
+            overall_pd = 0.02
         if "recovery_rate" in credit_df.columns:
             lgd = 1 - credit_df["recovery_rate"].mean()
         else:
-            lgd = 0.45  # Basel II default for unsecured exposures
-
-        # Exposure at Default (EAD)
+            lgd = 0.45
         if "exposure" in credit_df.columns:
             total_exposure = credit_df["exposure"].sum()
             avg_exposure = credit_df["exposure"].mean()
@@ -345,17 +284,10 @@ class RiskAnalytics:
                 if "loan_amount" in credit_df.columns
                 else 0
             )
-
-        # Expected Loss (EL)
         expected_loss = overall_pd * lgd * total_exposure
-
-        # Credit VaR (simplified)
-        # Using single-factor model approximation
         credit_var_99 = self._calculate_credit_var(
             overall_pd, lgd, total_exposure, 0.99
         )
-
-        # Portfolio credit metrics
         credit_metrics = {
             "total_exposure": total_exposure,
             "average_exposure": avg_exposure,
@@ -368,141 +300,97 @@ class RiskAnalytics:
             "credit_var_99": credit_var_99,
             "unexpected_loss": credit_var_99 - expected_loss,
         }
-
-        # Rating distribution analysis
         if "rating" in credit_df.columns:
             rating_distribution = (
                 credit_df["rating"].value_counts(normalize=True).to_dict()
             )
             credit_metrics["rating_distribution"] = rating_distribution
-
-        # Sector analysis
         if "sector" in credit_df.columns:
             sector_exposure = credit_df.groupby("sector")[
                 "exposure" if "exposure" in credit_df.columns else "loan_amount"
             ].sum()
             sector_exposure_pct = sector_exposure / sector_exposure.sum()
             credit_metrics["sector_exposure"] = sector_exposure_pct.to_dict()
-
         return credit_metrics
 
     def _estimate_pd_from_score(self, credit_scores: pd.Series) -> float:
         """Estimate PD from credit scores using logistic transformation"""
-        # Normalize scores to 0-1 range
-        min_score, max_score = credit_scores.min(), credit_scores.max()
+        min_score, max_score = (credit_scores.min(), credit_scores.max())
         normalized_scores = (credit_scores - min_score) / (max_score - min_score)
-
-        # Transform to PD using logistic function
-        # Higher scores = lower PD
         pd_estimates = 1 / (1 + np.exp(10 * (normalized_scores - 0.5)))
-
         return pd_estimates.mean()
 
     def _calculate_credit_var(
         self, pd: float, lgd: float, exposure: float, confidence_level: float
     ) -> float:
         """Calculate Credit VaR using single-factor model"""
-        # Simplified credit VaR calculation
-        # In practice, you would use more sophisticated models like CreditMetrics or KMV
-
-        # Asset correlation (Basel II approximation)
         correlation = 0.12 * (1 - np.exp(-50 * pd)) / (1 - np.exp(-50)) + 0.24 * (
             1 - (1 - np.exp(-50 * pd)) / (1 - np.exp(-50))
         )
-
-        # Conditional PD
         z_alpha = norm.ppf(confidence_level)
         conditional_pd = norm.cdf(
             (norm.ppf(pd) + np.sqrt(correlation) * z_alpha) / np.sqrt(1 - correlation)
         )
-
-        # Credit VaR
         credit_var = conditional_pd * lgd * exposure
-
         return credit_var
 
     def perform_stress_testing(
         self, scenarios: Dict[str, Dict[str, float]]
     ) -> Dict[str, Any]:
         """Perform stress testing on portfolio"""
-
         stress_results = {}
-
         for scenario_name, scenario_params in scenarios.items():
             logger.info(f"Running stress test: {scenario_name}")
-
             scenario_result = {
                 "scenario_name": scenario_name,
                 "parameters": scenario_params,
                 "results": {},
             }
-
-            # Market stress
             if "market_shock" in scenario_params:
                 market_shock = scenario_params["market_shock"]
                 stressed_portfolio_value = self._apply_market_stress(market_shock)
                 scenario_result["results"][
                     "portfolio_value_change"
                 ] = stressed_portfolio_value
-
-            # Credit stress
             if "pd_multiplier" in scenario_params:
                 pd_multiplier = scenario_params["pd_multiplier"]
                 stressed_credit_loss = self._apply_credit_stress(pd_multiplier)
                 scenario_result["results"]["credit_loss_change"] = stressed_credit_loss
-
-            # Interest rate stress
             if "interest_rate_shock" in scenario_params:
                 ir_shock = scenario_params["interest_rate_shock"]
                 duration_impact = self._apply_interest_rate_stress(ir_shock)
                 scenario_result["results"]["duration_impact"] = duration_impact
-
             stress_results[scenario_name] = scenario_result
-
         return stress_results
 
     def _apply_market_stress(self, market_shock: float) -> float:
         """Apply market stress scenario"""
         if self.portfolio_data is None:
             return 0.0
-
-        # Simple linear stress (in practice, use more sophisticated models)
         current_value = self.portfolio_data["market_value"].sum()
         stressed_value = current_value * (1 + market_shock)
-
         return stressed_value - current_value
 
     def _apply_credit_stress(self, pd_multiplier: float) -> float:
         """Apply credit stress scenario"""
         if self.credit_data is None:
             return 0.0
-
-        # Increase PD by multiplier
-        base_pd = 0.02  # Base assumption
+        base_pd = 0.02
         stressed_pd = base_pd * pd_multiplier
-
-        # Calculate additional expected loss
         lgd = 0.45
         total_exposure = (
             self.credit_data["loan_amount"].sum()
             if "loan_amount" in self.credit_data.columns
             else 0
         )
-
         base_el = base_pd * lgd * total_exposure
         stressed_el = stressed_pd * lgd * total_exposure
-
         return stressed_el - base_el
 
     def _apply_interest_rate_stress(self, ir_shock: float) -> float:
         """Apply interest rate stress scenario"""
-        # Simplified duration-based calculation
-        # In practice, use full yield curve modeling
-
         if self.portfolio_data is None:
             return 0.0
-
-        # Assume average duration of 5 years for fixed income positions
         avg_duration = 5.0
         fixed_income_value = (
             self.portfolio_data[self.portfolio_data["asset_class"] == "Fixed Income"][
@@ -511,20 +399,14 @@ class RiskAnalytics:
             if "asset_class" in self.portfolio_data.columns
             else 0
         )
-
-        # Duration impact: -Duration × ΔYield × Portfolio Value
         duration_impact = -avg_duration * ir_shock * fixed_income_value
-
         return duration_impact
 
     def calculate_regulatory_capital(self, credit_df: pd.DataFrame) -> Dict[str, float]:
         """Calculate regulatory capital requirements (Basel III)"""
-
-        # Risk-weighted assets calculation
         rwa_corporate = 0
         rwa_retail = 0
         rwa_sovereign = 0
-
         if "exposure_type" in credit_df.columns and "exposure" in credit_df.columns:
             corporate_exposure = credit_df[credit_df["exposure_type"] == "corporate"][
                 "exposure"
@@ -535,7 +417,6 @@ class RiskAnalytics:
             sovereign_exposure = credit_df[credit_df["exposure_type"] == "sovereign"][
                 "exposure"
             ].sum()
-
             rwa_corporate = (
                 corporate_exposure * self.basel_parameters["risk_weight_corporate"]
             )
@@ -543,14 +424,9 @@ class RiskAnalytics:
             rwa_sovereign = (
                 sovereign_exposure * self.basel_parameters["risk_weight_sovereign"]
             )
-
         total_rwa = rwa_corporate + rwa_retail + rwa_sovereign
-
-        # Minimum capital requirements
-        minimum_capital_ratio = 0.08  # 8% minimum
+        minimum_capital_ratio = 0.08
         minimum_capital = total_rwa * minimum_capital_ratio
-
-        # Capital buffers
         conservation_buffer = (
             total_rwa * self.basel_parameters["capital_conservation_buffer"]
         )
@@ -558,14 +434,12 @@ class RiskAnalytics:
             total_rwa * self.basel_parameters["countercyclical_buffer"]
         )
         systemic_buffer = total_rwa * self.basel_parameters["systemic_buffer"]
-
         total_capital_requirement = (
             minimum_capital
             + conservation_buffer
             + countercyclical_buffer
             + systemic_buffer
         )
-
         return {
             "total_rwa": total_rwa,
             "rwa_corporate": rwa_corporate,
@@ -583,18 +457,11 @@ class RiskAnalytics:
 
     def detect_risk_anomalies(self, returns_df: pd.DataFrame) -> Dict[str, Any]:
         """Detect anomalies in risk patterns"""
-
         anomalies = {}
-
-        # Statistical anomaly detection
         for column in returns_df.select_dtypes(include=[np.number]).columns:
             series = returns_df[column].dropna()
-
-            # Z-score based anomalies
             z_scores = np.abs(stats.zscore(series))
             z_anomalies = series[z_scores > 3].index.tolist()
-
-            # IQR based anomalies
             Q1 = series.quantile(0.25)
             Q3 = series.quantile(0.75)
             IQR = Q3 - Q1
@@ -603,28 +470,19 @@ class RiskAnalytics:
             iqr_anomalies = series[
                 (series < lower_bound) | (series > upper_bound)
             ].index.tolist()
-
             anomalies[column] = {
                 "z_score_anomalies": z_anomalies,
                 "iqr_anomalies": iqr_anomalies,
                 "anomaly_count": len(set(z_anomalies + iqr_anomalies)),
             }
-
-        # Multivariate anomaly detection using Isolation Forest
         try:
             from sklearn.ensemble import IsolationForest
 
-            # Prepare data
             numeric_data = returns_df.select_dtypes(include=[np.number]).fillna(0)
-
             if len(numeric_data.columns) > 1:
-                # Fit Isolation Forest
                 iso_forest = IsolationForest(contamination=0.1, random_state=42)
                 anomaly_labels = iso_forest.fit_predict(numeric_data)
-
-                # Get anomaly indices
                 anomaly_indices = numeric_data.index[anomaly_labels == -1].tolist()
-
                 anomalies["multivariate"] = {
                     "anomaly_indices": anomaly_indices,
                     "anomaly_count": len(anomaly_indices),
@@ -632,17 +490,14 @@ class RiskAnalytics:
                         numeric_data
                     ).tolist(),
                 }
-
         except ImportError:
             logger.warning(
                 "Scikit-learn not available for multivariate anomaly detection"
             )
-
         return anomalies
 
     def generate_risk_dashboard_data(self) -> Dict[str, Any]:
         """Generate data for risk dashboard"""
-
         dashboard_data = {
             "timestamp": datetime.now().isoformat(),
             "summary_metrics": {},
@@ -650,12 +505,9 @@ class RiskAnalytics:
             "alerts": [],
             "trends": {},
         }
-
-        # Portfolio summary
         if self.portfolio_data is not None:
             total_value = self.portfolio_data["market_value"].sum()
             position_count = len(self.portfolio_data)
-
             dashboard_data["summary_metrics"] = {
                 "total_portfolio_value": total_value,
                 "position_count": position_count,
@@ -663,21 +515,13 @@ class RiskAnalytics:
                     total_value / position_count if position_count > 0 else 0
                 ),
             }
-
-            # Concentration analysis
             concentration_metrics = self.analyze_concentration_risk(self.portfolio_data)
             dashboard_data["risk_breakdown"]["concentration"] = concentration_metrics
-
-        # Credit risk summary
         if self.credit_data is not None:
             credit_metrics = self.calculate_credit_risk_metrics(self.credit_data)
             dashboard_data["risk_breakdown"]["credit"] = credit_metrics
-
-            # Regulatory capital
             regulatory_capital = self.calculate_regulatory_capital(self.credit_data)
             dashboard_data["risk_breakdown"]["regulatory"] = regulatory_capital
-
-        # Market risk summary
         if self.market_data is not None:
             market_metrics = self.calculate_portfolio_risk_metrics(
                 self.market_data[["returns"]]
@@ -691,20 +535,14 @@ class RiskAnalytics:
                 "volatility": market_metrics.volatility,
                 "sharpe_ratio": market_metrics.sharpe_ratio,
             }
-
-        # Generate alerts
         dashboard_data["alerts"] = self._generate_risk_alerts()
-
         return dashboard_data
 
     def _generate_risk_alerts(self) -> List[Dict[str, Any]]:
         """Generate risk alerts based on thresholds"""
         alerts = []
-
-        # Concentration alerts
         if self.portfolio_data is not None:
             concentration = self.analyze_concentration_risk(self.portfolio_data)
-
             if concentration["top_10_concentration"] > 0.5:
                 alerts.append(
                     {
@@ -714,7 +552,6 @@ class RiskAnalytics:
                         "timestamp": datetime.now().isoformat(),
                     }
                 )
-
             if concentration["largest_position"] > 0.1:
                 alerts.append(
                     {
@@ -724,11 +561,8 @@ class RiskAnalytics:
                         "timestamp": datetime.now().isoformat(),
                     }
                 )
-
-        # Credit risk alerts
         if self.credit_data is not None:
             credit_metrics = self.calculate_credit_risk_metrics(self.credit_data)
-
             if credit_metrics["expected_loss_rate"] > 0.05:
                 alerts.append(
                     {
@@ -738,12 +572,10 @@ class RiskAnalytics:
                         "timestamp": datetime.now().isoformat(),
                     }
                 )
-
         return alerts
 
-    def export_risk_report(self, output_path: str):
+    def export_risk_report(self, output_path: str) -> Any:
         """Export comprehensive risk report"""
-
         report_data = {
             "report_date": datetime.now().isoformat(),
             "executive_summary": {},
@@ -751,13 +583,10 @@ class RiskAnalytics:
             "regulatory_compliance": {},
             "recommendations": [],
         }
-
-        # Generate all risk metrics
         if self.portfolio_data is not None:
             report_data["detailed_analysis"]["concentration"] = (
                 self.analyze_concentration_risk(self.portfolio_data)
             )
-
         if self.credit_data is not None:
             report_data["detailed_analysis"]["credit"] = (
                 self.calculate_credit_risk_metrics(self.credit_data)
@@ -765,7 +594,6 @@ class RiskAnalytics:
             report_data["regulatory_compliance"]["basel_iii"] = (
                 self.calculate_regulatory_capital(self.credit_data)
             )
-
         if self.market_data is not None:
             market_metrics = self.calculate_portfolio_risk_metrics(
                 self.market_data[["returns"]]
@@ -781,56 +609,39 @@ class RiskAnalytics:
                 "sharpe_ratio": market_metrics.sharpe_ratio,
                 "volatility": market_metrics.volatility,
             }
-
-        # Generate recommendations
         report_data["recommendations"] = self._generate_recommendations()
-
-        # Save report
         import json
 
         with open(output_path, "w") as f:
             json.dump(report_data, f, indent=2, default=str)
-
         logger.info(f"Risk report exported to {output_path}")
 
     def _generate_recommendations(self) -> List[str]:
         """Generate risk management recommendations"""
         recommendations = []
-
         if self.portfolio_data is not None:
             concentration = self.analyze_concentration_risk(self.portfolio_data)
-
             if concentration["top_10_concentration"] > 0.4:
                 recommendations.append(
                     "Consider diversifying portfolio to reduce concentration risk"
                 )
-
             if concentration["sector_hhi"] > 0.25:
                 recommendations.append(
                     "Reduce sector concentration to improve diversification"
                 )
-
         if self.credit_data is not None:
             credit_metrics = self.calculate_credit_risk_metrics(self.credit_data)
-
             if credit_metrics["expected_loss_rate"] > 0.03:
                 recommendations.append(
                     "Review credit underwriting standards to reduce expected losses"
                 )
-
         return recommendations
 
 
-def main():
+def main() -> Any:
     """Example usage of RiskAnalytics"""
-
-    # Initialize risk analytics
     risk_analyzer = RiskAnalytics()
-
-    # Generate sample data
     np.random.seed(42)
-
-    # Sample portfolio data
     portfolio_data = pd.DataFrame(
         {
             "asset_id": [f"ASSET_{i:03d}" for i in range(100)],
@@ -845,17 +656,10 @@ def main():
             "country": np.random.choice(["US", "EU", "Asia", "Other"], 100),
         }
     )
-
-    # Sample market data
     dates = pd.date_range("2020-01-01", "2023-12-31", freq="D")
     market_data = pd.DataFrame(
-        {
-            "date": dates,
-            "returns": np.random.normal(0.0005, 0.02, len(dates)),  # Daily returns
-        }
+        {"date": dates, "returns": np.random.normal(0.0005, 0.02, len(dates))}
     )
-
-    # Sample credit data
     credit_data = pd.DataFrame(
         {
             "borrower_id": [f"BORROWER_{i:04d}" for i in range(1000)],
@@ -874,58 +678,38 @@ def main():
             ),
         }
     )
-
-    # Load data
     risk_analyzer.load_portfolio_data(portfolio_data)
     risk_analyzer.load_market_data(market_data)
     risk_analyzer.load_credit_data(credit_data)
-
-    # Perform risk analysis
     logger.info("Performing comprehensive risk analysis...")
-
-    # Market risk analysis
     market_metrics = risk_analyzer.calculate_portfolio_risk_metrics(
         market_data[["returns"]]
     )
     logger.info(f"Portfolio VaR (95%): {market_metrics.var_95:.4f}")
     logger.info(f"Portfolio Sharpe Ratio: {market_metrics.sharpe_ratio:.2f}")
-
-    # Concentration risk analysis
     concentration_metrics = risk_analyzer.analyze_concentration_risk(portfolio_data)
     logger.info(f"Portfolio HHI: {concentration_metrics['position_hhi']:.4f}")
     logger.info(
         f"Top 10 concentration: {concentration_metrics['top_10_concentration']:.2%}"
     )
-
-    # Credit risk analysis
     credit_metrics = risk_analyzer.calculate_credit_risk_metrics(credit_data)
     logger.info(f"Expected Loss Rate: {credit_metrics['expected_loss_rate']:.2%}")
     logger.info(f"Credit VaR (99%): {credit_metrics['credit_var_99']:,.0f}")
-
-    # Regulatory capital
     regulatory_capital = risk_analyzer.calculate_regulatory_capital(credit_data)
     logger.info(f"Total RWA: {regulatory_capital['total_rwa']:,.0f}")
     logger.info(
         f"Capital Requirement: {regulatory_capital['total_capital_requirement']:,.0f}"
     )
-
-    # Stress testing
     stress_scenarios = {
         "market_crash": {"market_shock": -0.3, "pd_multiplier": 2.0},
         "interest_rate_shock": {"interest_rate_shock": 0.02, "pd_multiplier": 1.5},
         "credit_crisis": {"pd_multiplier": 3.0, "market_shock": -0.2},
     }
-
     risk_analyzer.perform_stress_testing(stress_scenarios)
     logger.info("Stress testing completed")
-
-    # Generate dashboard data
     dashboard_data = risk_analyzer.generate_risk_dashboard_data()
     logger.info(f"Generated dashboard with {len(dashboard_data['alerts'])} alerts")
-
-    # Export risk report
     risk_analyzer.export_risk_report("risk_report.json")
-
     logger.info("Risk analysis completed successfully!")
 
 

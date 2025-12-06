@@ -7,7 +7,6 @@ import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
-
 import joblib
 import pandas as pd
 from models.blockchain import BlockchainTransaction
@@ -25,33 +24,25 @@ from models.user import User
 class CreditScoringService:
     """Advanced credit scoring service with AI models and blockchain integration"""
 
-    def __init__(self, db):
+    def __init__(self, db: Any) -> Any:
         self.db = db
         self.logger = logging.getLogger(__name__)
-
-        # Load AI models
         self.model = None
         self.model_version = "1.0"
         self.model_name = "BlockScore_v1.0"
-
-        # Credit scoring configuration
         self.min_score = 300
         self.max_score = 850
         self.default_score = 300
-
-        # Factor weights for scoring algorithm
         self.factor_weights = {
             CreditFactorType.PAYMENT_HISTORY: 0.35,
-            CreditFactorType.CREDIT_UTILIZATION: 0.30,
+            CreditFactorType.CREDIT_UTILIZATION: 0.3,
             CreditFactorType.LENGTH_OF_HISTORY: 0.15,
-            CreditFactorType.CREDIT_MIX: 0.10,
-            CreditFactorType.NEW_CREDIT: 0.10,
+            CreditFactorType.CREDIT_MIX: 0.1,
+            CreditFactorType.NEW_CREDIT: 0.1,
             CreditFactorType.INCOME_STABILITY: 0.05,
             CreditFactorType.DEBT_TO_INCOME: 0.05,
-            CreditFactorType.BLOCKCHAIN_ACTIVITY: 0.10,
+            CreditFactorType.BLOCKCHAIN_ACTIVITY: 0.1,
         }
-
-        # Load model if available
         self._load_model()
 
     def calculate_credit_score(
@@ -65,40 +56,26 @@ class CreditScoringService:
             user = User.query.get(user_id)
             if not user:
                 raise ValueError("User not found")
-
-            # Check if recent score exists and is valid
             if not force_recalculation:
                 recent_score = self._get_recent_valid_score(user_id)
                 if recent_score:
                     return self._format_score_response(recent_score)
-
-            # Gather data for scoring
             scoring_data = self._gather_scoring_data(user, wallet_address)
-
-            # Calculate individual factor scores
             factors = self._calculate_factor_scores(scoring_data)
-
-            # Calculate overall score
             overall_score = self._calculate_overall_score(factors)
-
-            # Create credit score record
             credit_score = self._create_credit_score_record(
                 user_id=user_id,
                 score=overall_score,
                 factors=factors,
                 scoring_data=scoring_data,
             )
-
-            # Create credit history event
             self._create_credit_history_event(
                 user_id=user_id,
                 credit_score_id=credit_score.id,
                 event_type=CreditEventType.SCORE_RECALCULATION,
                 score_after=overall_score,
             )
-
             return self._format_score_response(credit_score)
-
         except Exception as e:
             self.logger.error(
                 f"Credit score calculation failed for user {user_id}: {e}"
@@ -113,7 +90,6 @@ class CreditScoringService:
             .limit(limit)
             .all()
         )
-
         return [event.to_dict() for event in history]
 
     def get_credit_factors(self, credit_score_id: str) -> List[Dict[str, Any]]:
@@ -126,21 +102,13 @@ class CreditScoringService:
     ) -> Dict[str, Any]:
         """Simulate impact of changes on credit score"""
         try:
-            # Get current score
             current_score = self._get_recent_valid_score(user_id)
             if not current_score:
                 raise ValueError("No current credit score found")
-
-            # Apply scenario changes
             modified_data = self._apply_scenario_changes(user_id, scenario)
-
-            # Calculate new score with modifications
             factors = self._calculate_factor_scores(modified_data)
             new_score = self._calculate_overall_score(factors)
-
-            # Calculate impact
             score_change = new_score - current_score.score
-
             return {
                 "current_score": current_score.score,
                 "projected_score": new_score,
@@ -148,7 +116,6 @@ class CreditScoringService:
                 "impact_analysis": self._analyze_score_impact(factors, scenario),
                 "recommendations": self._generate_recommendations(factors),
             }
-
         except Exception as e:
             self.logger.error(f"Score simulation failed for user {user_id}: {e}")
             raise e
@@ -158,7 +125,6 @@ class CreditScoringService:
     ) -> bool:
         """Update credit profile with new event"""
         try:
-            # Create credit history event
             event = CreditHistory(
                 id=str(uuid.uuid4()),
                 user_id=user_id,
@@ -175,16 +141,11 @@ class CreditScoringService:
                 blockchain_hash=event_data.get("blockchain_hash"),
             )
             event.set_event_data(event_data)
-
             self.db.session.add(event)
             self.db.session.commit()
-
-            # Trigger score recalculation if significant event
             if self._is_significant_event(event_type):
                 self.calculate_credit_score(user_id, force_recalculation=True)
-
             return True
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to update credit event for user {user_id}: {e}")
@@ -195,9 +156,7 @@ class CreditScoringService:
         credit_score = CreditScore.query.get(credit_score_id)
         if not credit_score:
             raise ValueError("Credit score not found")
-
         factors = CreditFactor.query.filter_by(credit_score_id=credit_score_id).all()
-
         return {
             "score": credit_score.score,
             "score_range": f"{self.min_score}-{self.max_score}",
@@ -225,10 +184,9 @@ class CreditScoringService:
         """Check if AI model is loaded"""
         return self.model is not None
 
-    def _load_model(self):
+    def _load_model(self) -> Any:
         """Load AI model for credit scoring"""
         try:
-            # Try to load pre-trained model
             model_path = "../ai_models/credit_scoring_model.pkl"
             self.model = joblib.load(model_path)
             self.logger.info("Credit scoring model loaded successfully")
@@ -241,7 +199,6 @@ class CreditScoringService:
     def _get_recent_valid_score(self, user_id: str) -> Optional[CreditScore]:
         """Get recent valid credit score for user"""
         cutoff_date = datetime.now(timezone.utc) - timedelta(days=30)
-
         return (
             CreditScore.query.filter_by(user_id=user_id)
             .filter(CreditScore.calculated_at > cutoff_date)
@@ -263,8 +220,6 @@ class CreditScoringService:
             "blockchain_data": {},
             "financial_data": {},
         }
-
-        # Gather profile data
         if user.profile:
             data["profile_data"] = {
                 "annual_income": (
@@ -276,15 +231,12 @@ class CreditScoringService:
                 "kyc_status": user.profile.kyc_status.value,
                 "account_age_days": (datetime.now(timezone.utc) - user.created_at).days,
             }
-
-        # Gather credit history
         credit_events = (
             CreditHistory.query.filter_by(user_id=user.id)
             .order_by(CreditHistory.event_date.desc())
             .limit(100)
             .all()
         )
-
         data["credit_history"] = [
             {
                 "event_type": event.event_type.value,
@@ -294,16 +246,12 @@ class CreditScoringService:
             }
             for event in credit_events
         ]
-
-        # Gather blockchain data
         if data["wallet_address"]:
             data["blockchain_data"] = self._get_blockchain_data(data["wallet_address"])
-
         return data
 
     def _get_blockchain_data(self, wallet_address: str) -> Dict[str, Any]:
         """Get blockchain transaction data for wallet"""
-        # Get blockchain transactions
         transactions = (
             BlockchainTransaction.query.filter(
                 (BlockchainTransaction.from_address == wallet_address)
@@ -313,8 +261,6 @@ class CreditScoringService:
             .limit(100)
             .all()
         )
-
-        # Analyze transactions
         if not transactions:
             return {
                 "total_transactions": 0,
@@ -325,18 +271,14 @@ class CreditScoringService:
                 "transaction_frequency": 0.0,
                 "recent_activity_days": 0,
             }
-
-        total_volume = sum(float(tx.value) for tx in transactions if tx.value)
+        total_volume = sum((float(tx.value) for tx in transactions if tx.value))
         successful_txs = [tx for tx in transactions if tx.status.value == "confirmed"]
-
-        # Calculate transaction frequency
         first_tx_date = transactions[-1].submitted_at.replace(tzinfo=timezone.utc)
         last_tx_date = transactions[0].submitted_at.replace(tzinfo=timezone.utc)
         time_span = (last_tx_date - first_tx_date).days
         transaction_frequency = (
             len(transactions) / time_span if time_span > 0 else len(transactions)
         )
-
         return {
             "total_transactions": len(transactions),
             "total_volume": total_volume,
@@ -354,64 +296,41 @@ class CreditScoringService:
     def _calculate_factor_scores(self, data: Dict[str, Any]) -> List[CreditFactor]:
         """Calculate individual credit factor scores"""
         factors = []
-
-        # Payment History Factor
         payment_factor = self._calculate_payment_history_factor(data)
         factors.append(payment_factor)
-
-        # Credit Utilization Factor
         utilization_factor = self._calculate_credit_utilization_factor(data)
         factors.append(utilization_factor)
-
-        # Length of History Factor
         history_factor = self._calculate_length_of_history_factor(data)
         factors.append(history_factor)
-
-        # Credit Mix Factor
         mix_factor = self._calculate_credit_mix_factor(data)
         factors.append(mix_factor)
-
-        # New Credit Factor
         new_credit_factor = self._calculate_new_credit_factor(data)
         factors.append(new_credit_factor)
-
-        # Income Stability Factor
         income_factor = self._calculate_income_stability_factor(data)
         factors.append(income_factor)
-
-        # Debt to Income Factor
         dti_factor = self._calculate_debt_to_income_factor(data)
         factors.append(dti_factor)
-
-        # Blockchain Activity Factor
         blockchain_factor = self._calculate_blockchain_activity_factor(data)
         factors.append(blockchain_factor)
-
         return factors
 
     def _calculate_payment_history_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate payment history factor score"""
         credit_history = data.get("credit_history", [])
         blockchain_data = data.get("blockchain_data", {})
-
-        # Calculate payment performance
         if credit_history:
             payment_events = [e for e in credit_history if "payment" in e["event_type"]]
             if payment_events:
                 positive_events = [e for e in payment_events if e["score_change"] >= 0]
                 payment_ratio = len(positive_events) / len(payment_events)
             else:
-                payment_ratio = 0.5  # Neutral for no payment history
+                payment_ratio = 0.5
         else:
-            # Use blockchain data
             payment_ratio = blockchain_data.get("repayment_ratio", 0.5)
-
-        # Convert to score (0-100)
         raw_score = payment_ratio * 100
         normalized_score = payment_ratio
         weight = self.factor_weights[CreditFactorType.PAYMENT_HISTORY]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.PAYMENT_HISTORY,
@@ -429,34 +348,25 @@ class CreditScoringService:
         self, data: Dict[str, Any]
     ) -> CreditFactor:
         """Calculate credit utilization factor score"""
-        # Calculate utilization based on outstanding loan balances and estimated credit limit
         credit_history = data.get("credit_history", [])
         profile_data = data.get("profile_data", {})
-        annual_income = (
-            profile_data.get("annual_income") or 50000
-        )  # Default income for estimation
-
-        # Estimate total outstanding debt (simplified: sum of all loan amounts)
+        annual_income = profile_data.get("annual_income") or 50000
         outstanding_debt = sum(
-            e["amount"]
-            for e in credit_history
-            if e["event_type"] in ["loan_approval", "loan_disbursement"]
+            (
+                e["amount"]
+                for e in credit_history
+                if e["event_type"] in ["loan_approval", "loan_disbursement"]
+            )
         )
-
-        # Estimate total available credit limit (simplified: 2x annual income)
         total_credit_limit = annual_income * 2
-
         if total_credit_limit > 0:
             utilization_ratio = min(1.0, outstanding_debt / total_credit_limit)
         else:
-            utilization_ratio = 0.5  # Neutral if no limit can be estimated
-
-        # Convert to score (lower utilization is better)
-        raw_score = max(0, 100 - (utilization_ratio * 100))
+            utilization_ratio = 0.5
+        raw_score = max(0, 100 - utilization_ratio * 100)
         normalized_score = 1 - utilization_ratio
         weight = self.factor_weights[CreditFactorType.CREDIT_UTILIZATION]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.CREDIT_UTILIZATION,
@@ -474,16 +384,12 @@ class CreditScoringService:
         """Calculate length of credit history factor"""
         profile_data = data.get("profile_data", {})
         account_age_days = profile_data.get("account_age_days", 0)
-
-        # Score based on account age (longer is better)
-        max_age_for_full_score = 365 * 7  # 7 years
+        max_age_for_full_score = 365 * 7
         age_ratio = min(1.0, account_age_days / max_age_for_full_score)
-
         raw_score = age_ratio * 100
         normalized_score = age_ratio
         weight = self.factor_weights[CreditFactorType.LENGTH_OF_HISTORY]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.LENGTH_OF_HISTORY,
@@ -500,15 +406,11 @@ class CreditScoringService:
     def _calculate_credit_mix_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate credit mix factor score"""
         credit_history = data.get("credit_history", [])
-
-        # Count different types of credit events
-        event_types = set(e["event_type"] for e in credit_history)
-        mix_score = min(100, len(event_types) * 20)  # Max 5 types for full score
-
+        event_types = set((e["event_type"] for e in credit_history))
+        mix_score = min(100, len(event_types) * 20)
         normalized_score = mix_score / 100
         weight = self.factor_weights[CreditFactorType.CREDIT_MIX]
         contribution = mix_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.CREDIT_MIX,
@@ -525,23 +427,17 @@ class CreditScoringService:
     def _calculate_new_credit_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate new credit factor score"""
         credit_history = data.get("credit_history", [])
-
-        # Count recent credit applications (last 6 months)
         cutoff_date = datetime.now(timezone.utc) - timedelta(days=180)
         recent_applications = [
             e
             for e in credit_history
             if e["event_type"] == "loan_application" and e["event_date"] > cutoff_date
         ]
-
-        # Score inversely related to number of recent applications
         num_applications = len(recent_applications)
-        raw_score = max(0, 100 - (num_applications * 20))
-
+        raw_score = max(0, 100 - num_applications * 20)
         normalized_score = raw_score / 100
         weight = self.factor_weights[CreditFactorType.NEW_CREDIT]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.NEW_CREDIT,
@@ -558,8 +454,6 @@ class CreditScoringService:
     def _calculate_income_stability_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate income stability factor score"""
         profile_data = data.get("profile_data", {})
-
-        # Score based on employment status
         employment_status = profile_data.get("employment_status", "unknown")
         employment_scores = {
             "employed": 100,
@@ -569,12 +463,10 @@ class CreditScoringService:
             "retired": 70,
             "unknown": 50,
         }
-
         raw_score = employment_scores.get(employment_status, 50)
         normalized_score = raw_score / 100
         weight = self.factor_weights[CreditFactorType.INCOME_STABILITY]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.INCOME_STABILITY,
@@ -590,34 +482,26 @@ class CreditScoringService:
 
     def _calculate_debt_to_income_factor(self, data: Dict[str, Any]) -> CreditFactor:
         """Calculate debt-to-income factor score"""
-        # Calculate DTI based on estimated monthly debt payments and annual income
         profile_data = data.get("profile_data", {})
         credit_history = data.get("credit_history", [])
-        annual_income = (
-            profile_data.get("annual_income") or 50000
-        )  # Default income for estimation
+        annual_income = profile_data.get("annual_income") or 50000
         monthly_income = annual_income / 12
-
-        # Estimate total monthly debt payments (simplified: 1/12 of outstanding debt)
-        # Outstanding debt is calculated as sum of all loan amounts
         outstanding_debt = sum(
-            e["amount"]
-            for e in credit_history
-            if e["event_type"] in ["loan_approval", "loan_disbursement"]
+            (
+                e["amount"]
+                for e in credit_history
+                if e["event_type"] in ["loan_approval", "loan_disbursement"]
+            )
         )
         estimated_monthly_debt = outstanding_debt / 12
-
         if monthly_income > 0:
             estimated_dti = min(1.0, estimated_monthly_debt / monthly_income)
         else:
-            estimated_dti = 0.5  # Neutral if income is zero or unknown
-
-        # Score inversely related to DTI (lower is better)
-        raw_score = max(0, 100 - (estimated_dti * 200))  # 50% DTI = 0 score
+            estimated_dti = 0.5
+        raw_score = max(0, 100 - estimated_dti * 200)
         normalized_score = raw_score / 100
         weight = self.factor_weights[CreditFactorType.DEBT_TO_INCOME]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.DEBT_TO_INCOME,
@@ -636,35 +520,21 @@ class CreditScoringService:
     ) -> CreditFactor:
         """Calculate blockchain activity factor score"""
         blockchain_data = data.get("blockchain_data", {})
-
         if not blockchain_data:
-            raw_score = 50  # Neutral score for no blockchain activity
+            raw_score = 50
         else:
-            # Score based on blockchain metrics
             success_rate = blockchain_data.get("success_rate", 0.5)
             transaction_count = blockchain_data.get("total_transactions", 0)
             total_volume = blockchain_data.get("total_volume", 0)
-
-            # 1. Activity Score (30%): Max at 50 transactions
             activity_score = min(100, transaction_count * 2)
-
-            # 2. Reliability Score (50%): Based on success rate
             reliability_score = success_rate * 100
-
-            # 3. Volume Score (20%): Max at $100,000 volume
             volume_score = min(100, total_volume / 1000)
-
-            # Combine metrics with new weights
             raw_score = (
-                (activity_score * 0.3)
-                + (reliability_score * 0.5)
-                + (volume_score * 0.2)
+                activity_score * 0.3 + reliability_score * 0.5 + volume_score * 0.2
             )
-
         normalized_score = raw_score / 100
         weight = self.factor_weights[CreditFactorType.BLOCKCHAIN_ACTIVITY]
         contribution = raw_score * weight
-
         return CreditFactor(
             id=str(uuid.uuid4()),
             factor_type=CreditFactorType.BLOCKCHAIN_ACTIVITY,
@@ -681,38 +551,25 @@ class CreditScoringService:
     def _calculate_overall_score(self, factors: List[CreditFactor]) -> int:
         """Calculate overall credit score from factors"""
         if self.model:
-            # Use AI model if available
             return self._calculate_score_with_model(factors)
         else:
-            # Use weighted sum approach
-            total_contribution = sum(factor.contribution for factor in factors)
-
-            # Scale to credit score range
-            score = self.min_score + (total_contribution / 100) * (
+            total_contribution = sum((factor.contribution for factor in factors))
+            score = self.min_score + total_contribution / 100 * (
                 self.max_score - self.min_score
             )
-
-            # Ensure within bounds
             return max(self.min_score, min(self.max_score, int(score)))
 
     def _calculate_score_with_model(self, factors: List[CreditFactor]) -> int:
         """Calculate score using AI model"""
         try:
-            # Prepare features for model
             feature_dict = {
                 factor.factor_type.value: factor.normalized_value for factor in factors
             }
             features_df = pd.DataFrame([feature_dict])
-
-            # Predict score
             predicted_score = self.model.predict(features_df)[0]
-
-            # Ensure within bounds
             return max(self.min_score, min(self.max_score, int(predicted_score)))
-
         except Exception as e:
             self.logger.error(f"Model prediction failed: {e}")
-            # Fallback to weighted sum
             return self._calculate_overall_score(factors)
 
     def _create_credit_score_record(
@@ -731,13 +588,11 @@ class CreditScoringService:
                 score_version=self.model_version,
                 status=CreditScoreStatus.ACTIVE,
                 model_name=self.model_name,
-                model_confidence=0.85,  # Default confidence
+                model_confidence=0.85,
                 calculated_at=datetime.now(timezone.utc),
                 expires_at=datetime.now(timezone.utc) + timedelta(days=30),
                 valid_until=datetime.now(timezone.utc) + timedelta(days=90),
             )
-
-            # Set factor scores
             for factor in factors:
                 if factor.factor_type == CreditFactorType.PAYMENT_HISTORY:
                     credit_score.payment_history_score = int(factor.raw_value)
@@ -755,18 +610,13 @@ class CreditScoringService:
                     credit_score.debt_to_income_score = int(factor.raw_value)
                 elif factor.factor_type == CreditFactorType.BLOCKCHAIN_ACTIVITY:
                     credit_score.blockchain_activity_score = int(factor.raw_value)
-
             self.db.session.add(credit_score)
-            self.db.session.flush()  # Get ID
-
-            # Add factors to database
+            self.db.session.flush()
             for factor in factors:
                 factor.credit_score_id = credit_score.id
                 self.db.session.add(factor)
-
             self.db.session.commit()
             return credit_score
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -777,7 +627,7 @@ class CreditScoringService:
         credit_score_id: str,
         event_type: CreditEventType,
         score_after: int,
-    ):
+    ) -> Any:
         """Create credit history event"""
         try:
             event = CreditHistory(
@@ -790,10 +640,8 @@ class CreditScoringService:
                 score_after=score_after,
                 event_date=datetime.now(timezone.utc),
             )
-
             self.db.session.add(event)
             self.db.session.commit()
-
         except Exception as e:
             self.db.session.rollback()
             self.logger.error(f"Failed to create credit history event: {e}")
@@ -847,18 +695,11 @@ class CreditScoringService:
         user = User.query.get(user_id)
         if not user:
             raise ValueError("User not found")
-
-        # 1. Gather original data
         modified_data = self._gather_scoring_data(user)
-
-        # 2. Apply profile data changes (e.g., annual_income)
         if "profile_data" in scenario:
             modified_data["profile_data"].update(scenario["profile_data"])
-
-        # 3. Simulate new credit events (e.g., new loan application)
         if "new_loan" in scenario:
             loan_data = scenario["new_loan"]
-            # Simulate a loan approval event
             modified_data["credit_history"].append(
                 {
                     "event_type": "loan_approval",
@@ -867,7 +708,6 @@ class CreditScoringService:
                     "score_change": 0,
                 }
             )
-            # Simulate a new credit inquiry
             modified_data["credit_history"].append(
                 {
                     "event_type": "credit_inquiry",
@@ -876,23 +716,16 @@ class CreditScoringService:
                     "score_change": 0,
                 }
             )
-
-        # 4. Simulate payment events (e.g., making a payment)
         if "payment_made" in scenario:
             payment_data = scenario["payment_made"]
-            # Simulate a positive payment event
             modified_data["credit_history"].append(
                 {
                     "event_type": "payment_made",
                     "amount": payment_data.get("amount", 0),
                     "event_date": datetime.now(timezone.utc),
-                    "score_change": 10,  # Simulate a positive score change impact
+                    "score_change": 10,
                 }
             )
-
-        # Note: Blockchain data simulation is complex and left as a future enhancement.
-        # The current factor calculation logic will use the modified credit_history and profile_data.
-
         return modified_data
 
     def _analyze_score_impact(
@@ -908,10 +741,8 @@ class CreditScoringService:
     def _generate_recommendations(self, factors: List[CreditFactor]) -> List[str]:
         """Generate recommendations for improving credit score"""
         recommendations = []
-
-        # Analyze factors and generate recommendations
         for factor in factors:
-            if factor.normalized_value < 0.6:  # Below 60%
+            if factor.normalized_value < 0.6:
                 if factor.factor_type == CreditFactorType.PAYMENT_HISTORY:
                     recommendations.append(
                         "Make all payments on time to improve payment history"
@@ -922,11 +753,9 @@ class CreditScoringService:
                     recommendations.append(
                         "Increase blockchain transaction activity and reliability"
                     )
-
         if not recommendations:
             recommendations.append("Continue maintaining good credit habits")
-
-        return recommendations[:5]  # Limit to top 5 recommendations
+        return recommendations[:5]
 
     def _is_significant_event(self, event_type: CreditEventType) -> bool:
         """Check if event type should trigger score recalculation"""

@@ -9,10 +9,8 @@ import logging
 import os
 import sys
 from datetime import datetime
-
 from flask import Flask, jsonify, request
 
-# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from model_integration import (
     calculate_score_factors,
@@ -20,18 +18,15 @@ from model_integration import (
     transform_blockchain_data,
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-# Initialize Flask app
 app = Flask(__name__)
 
 
 @app.route("/health", methods=["GET"])
-def health_check():
+def health_check() -> Any:
     """Health check endpoint"""
     return jsonify(
         {
@@ -43,7 +38,7 @@ def health_check():
 
 
 @app.route("/predict", methods=["POST"])
-def predict():
+def predict() -> Any:
     """
     Endpoint for credit score prediction
 
@@ -66,7 +61,6 @@ def predict():
     try:
         data = request.get_json()
         logger.info(f"Received prediction request: {data}")
-
         if not data or "creditHistory" not in data:
             logger.warning("Invalid input data: missing creditHistory field")
             return (
@@ -75,15 +69,12 @@ def predict():
                 ),
                 400,
             )
-
         credit_history = data["creditHistory"]
-
-        # Handle empty credit history
         if not credit_history:
             logger.info("Empty credit history, returning default score")
             return jsonify(
                 {
-                    "score": 500,  # Default score for no history
+                    "score": 500,
                     "confidence": 0,
                     "factors": [
                         {
@@ -94,39 +85,27 @@ def predict():
                     ],
                 }
             )
-
-        # Transform blockchain data to features
         features = transform_blockchain_data(credit_history)
-
         if features is None:
             logger.warning("Failed to process credit history data")
-            return jsonify({"error": "Failed to process credit history data"}), 400
-
-        # Make prediction
+            return (jsonify({"error": "Failed to process credit history data"}), 400)
         prediction = predict_score(features)
-
-        # Calculate confidence (simple heuristic based on number of records)
-        confidence = min(0.5 + (len(credit_history) * 0.05), 0.95)
-
-        # Calculate factors affecting the score
+        confidence = min(0.5 + len(credit_history) * 0.05, 0.95)
         factors = calculate_score_factors(features, prediction)
-
         result = {
             "score": prediction,
             "confidence": round(confidence, 2),
             "factors": factors,
         }
-
         logger.info(f"Prediction result: {result}")
         return jsonify(result)
-
     except Exception as e:
         logger.error(f"Prediction failed: {str(e)}", exc_info=True)
-        return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
+        return (jsonify({"error": f"Prediction failed: {str(e)}"}), 500)
 
 
 @app.route("/batch-predict", methods=["POST"])
-def batch_predict():
+def batch_predict() -> Any:
     """
     Endpoint for batch credit score prediction
 
@@ -149,27 +128,22 @@ def batch_predict():
         logger.info(
             f"Received batch prediction request with {len(data.get('batch', []))} items"
         )
-
         if not data or "batch" not in data:
             logger.warning("Invalid input data: missing batch field")
             return (
                 jsonify({"error": 'Invalid input data. Expected "batch" field.'}),
                 400,
             )
-
         batch = data["batch"]
         results = []
-
         for item in batch:
             user_id = item.get("userId", "unknown")
             credit_history = item.get("creditHistory", [])
-
-            # Handle empty credit history
             if not credit_history:
                 results.append(
                     {
                         "userId": user_id,
-                        "score": 500,  # Default score for no history
+                        "score": 500,
                         "confidence": 0,
                         "factors": [
                             {
@@ -181,10 +155,7 @@ def batch_predict():
                     }
                 )
                 continue
-
-            # Transform blockchain data to features
             features = transform_blockchain_data(credit_history)
-
             if features is None:
                 results.append(
                     {
@@ -193,16 +164,9 @@ def batch_predict():
                     }
                 )
                 continue
-
-            # Make prediction
             prediction = predict_score(features)
-
-            # Calculate confidence (simple heuristic based on number of records)
-            confidence = min(0.5 + (len(credit_history) * 0.05), 0.95)
-
-            # Calculate factors affecting the score
+            confidence = min(0.5 + len(credit_history) * 0.05, 0.95)
             factors = calculate_score_factors(features, prediction)
-
             results.append(
                 {
                     "userId": user_id,
@@ -211,18 +175,15 @@ def batch_predict():
                     "factors": factors,
                 }
             )
-
         logger.info(f"Batch prediction completed for {len(results)} users")
         return jsonify({"results": results})
-
     except Exception as e:
         logger.error(f"Batch prediction failed: {str(e)}", exc_info=True)
-        return jsonify({"error": f"Batch prediction failed: {str(e)}"}), 500
+        return (jsonify({"error": f"Batch prediction failed: {str(e)}"}), 500)
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_ENV") == "development"
-
     logger.info(f"Starting BlockScore Model API on port {port}")
     app.run(host="0.0.0.0", port=port, debug=debug)

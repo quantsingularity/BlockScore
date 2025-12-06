@@ -9,7 +9,6 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Dict, List
-
 from models.audit import ComplianceRecord, ComplianceStatus, ComplianceType
 from models.credit import CreditHistory
 from models.loan import LoanApplication
@@ -19,11 +18,9 @@ from models.user import KYCStatus, User, UserProfile
 class ComplianceService:
     """Comprehensive compliance service for financial regulations"""
 
-    def __init__(self, db):
+    def __init__(self, db: Any) -> Any:
         self.db = db
         self.logger = logging.getLogger(__name__)
-
-        # Compliance configuration
         self.kyc_requirements = {
             "basic": ["full_name", "date_of_birth", "address"],
             "enhanced": [
@@ -43,29 +40,23 @@ class ComplianceService:
                 "bank_statements",
             ],
         }
-
-        # AML thresholds and rules
         self.aml_thresholds = {
-            "transaction_reporting": Decimal("10000"),  # $10,000 USD
-            "suspicious_activity": Decimal("5000"),  # $5,000 USD
-            "daily_limit": Decimal("25000"),  # $25,000 USD
-            "monthly_limit": Decimal("100000"),  # $100,000 USD
+            "transaction_reporting": Decimal("10000"),
+            "suspicious_activity": Decimal("5000"),
+            "daily_limit": Decimal("25000"),
+            "monthly_limit": Decimal("100000"),
         }
-
-        # Sanctions and watchlist patterns
         self.sanctions_patterns = [
-            r"\b(OFAC|SDN|SANCTIONS)\b",
-            r"\b(TERRORIST|TERRORISM)\b",
-            r"\b(MONEY\s*LAUNDERING)\b",
+            "\\b(OFAC|SDN|SANCTIONS)\\b",
+            "\\b(TERRORIST|TERRORISM)\\b",
+            "\\b(MONEY\\s*LAUNDERING)\\b",
         ]
-
-        # Risk scoring weights
         self.risk_weights = {
             "geographic_risk": 0.25,
-            "transaction_risk": 0.30,
-            "behavioral_risk": 0.20,
+            "transaction_risk": 0.3,
+            "behavioral_risk": 0.2,
             "identity_risk": 0.15,
-            "regulatory_risk": 0.10,
+            "regulatory_risk": 0.1,
         }
 
     def perform_kyc_assessment(
@@ -76,24 +67,15 @@ class ComplianceService:
             user = User.query.get(user_id)
             if not user or not user.profile:
                 raise ValueError("User or profile not found")
-
             profile = user.profile
-
-            # Check KYC requirements
             requirements = self.kyc_requirements.get(
                 kyc_level, self.kyc_requirements["basic"]
             )
             assessment_results = self._assess_kyc_requirements(profile, requirements)
-
-            # Calculate compliance score
             compliance_score = self._calculate_kyc_score(assessment_results)
-
-            # Determine KYC status
             kyc_status = self._determine_kyc_status(
                 compliance_score, assessment_results
             )
-
-            # Create compliance record
             compliance_record = self._create_compliance_record(
                 compliance_type=ComplianceType.KYC,
                 entity_type="user",
@@ -108,8 +90,6 @@ class ComplianceService:
                 regulation_name=f"KYC Level {kyc_level.title()}",
                 requirement_description=f"Know Your Customer verification at {kyc_level} level",
             )
-
-            # Update user profile KYC status
             if kyc_status != profile.kyc_status:
                 profile.kyc_status = kyc_status
                 profile.kyc_completed_at = (
@@ -118,7 +98,6 @@ class ComplianceService:
                     else None
                 )
                 self.db.session.commit()
-
             return {
                 "compliance_record_id": compliance_record.id,
                 "kyc_status": kyc_status.value,
@@ -131,7 +110,6 @@ class ComplianceService:
                     else None
                 ),
             }
-
         except Exception as e:
             self.logger.error(f"KYC assessment failed for user {user_id}: {e}")
             raise e
@@ -144,8 +122,6 @@ class ComplianceService:
             user = User.query.get(user_id)
             if not user:
                 raise ValueError("User not found")
-
-            # Perform various AML checks
             screening_results = {
                 "sanctions_check": self._check_sanctions_list(user),
                 "pep_check": self._check_politically_exposed_person(user),
@@ -155,29 +131,19 @@ class ComplianceService:
                 "geographic_risk": self._assess_geographic_risk(user),
                 "behavioral_analysis": self._analyze_user_behavior(user_id),
             }
-
-            # Calculate overall AML risk score
             risk_score = self._calculate_aml_risk_score(screening_results)
-
-            # Determine compliance status
             status = self._determine_aml_status(risk_score, screening_results)
-
-            # Create compliance record
             compliance_record = self._create_compliance_record(
                 compliance_type=ComplianceType.AML,
                 entity_type="user",
                 entity_id=user_id,
                 status=status,
-                compliance_score=100
-                - risk_score,  # Invert risk score for compliance score
+                compliance_score=100 - risk_score,
                 assessment_data=screening_results,
                 regulation_name="Anti-Money Laundering (AML)",
                 requirement_description="Anti-money laundering screening and monitoring",
             )
-
-            # Check if suspicious activity report (SAR) is needed
             sar_required = self._check_sar_requirements(risk_score, screening_results)
-
             return {
                 "compliance_record_id": compliance_record.id,
                 "aml_status": status.value,
@@ -188,7 +154,6 @@ class ComplianceService:
                     screening_results, risk_score
                 ),
             }
-
         except Exception as e:
             self.logger.error(f"AML screening failed for user {user_id}: {e}")
             raise e
@@ -199,8 +164,6 @@ class ComplianceService:
             loan_app = LoanApplication.query.get(loan_application_id)
             if not loan_app:
                 raise ValueError("Loan application not found")
-
-            # Perform compliance checks
             compliance_checks = {
                 "fair_lending": self._check_fair_lending_compliance(loan_app),
                 "truth_in_lending": self._check_truth_in_lending(loan_app),
@@ -208,18 +171,12 @@ class ComplianceService:
                 "consumer_protection": self._check_consumer_protection(loan_app),
                 "usury_laws": self._check_usury_compliance(loan_app),
             }
-
-            # Calculate overall compliance score
             compliance_score = self._calculate_loan_compliance_score(compliance_checks)
-
-            # Determine compliance status
             status = (
                 ComplianceStatus.COMPLIANT
                 if compliance_score >= 85
                 else ComplianceStatus.NON_COMPLIANT
             )
-
-            # Create compliance record
             compliance_record = self._create_compliance_record(
                 compliance_type=ComplianceType.FAIR_CREDIT,
                 entity_type="loan_application",
@@ -230,7 +187,6 @@ class ComplianceService:
                 regulation_name="Fair Credit Reporting Act (FCRA)",
                 requirement_description="Fair lending and credit reporting compliance",
             )
-
             return {
                 "compliance_record_id": compliance_record.id,
                 "compliance_status": status.value,
@@ -241,7 +197,6 @@ class ComplianceService:
                     compliance_checks
                 ),
             }
-
         except Exception as e:
             self.logger.error(
                 f"Loan compliance assessment failed for application {loan_application_id}: {e}"
@@ -253,7 +208,6 @@ class ComplianceService:
     ) -> Dict[str, Any]:
         """Monitor ongoing compliance for entities"""
         try:
-            # Get existing compliance records
             records = (
                 ComplianceRecord.query.filter_by(
                     entity_type=entity_type, entity_id=entity_id
@@ -261,8 +215,6 @@ class ComplianceService:
                 .order_by(ComplianceRecord.assessed_at.desc())
                 .all()
             )
-
-            # Check for expired or soon-to-expire records
             now = datetime.now(timezone.utc)
             expired_records = [
                 r for r in records if r.valid_until and r.valid_until < now
@@ -272,11 +224,8 @@ class ComplianceService:
                 for r in records
                 if r.next_review_date and r.next_review_date < now + timedelta(days=30)
             ]
-
-            # Calculate overall compliance health
             active_records = [r for r in records if r.is_valid()]
             compliance_health = self._calculate_compliance_health(active_records)
-
             return {
                 "entity_type": entity_type,
                 "entity_id": entity_id,
@@ -287,7 +236,6 @@ class ComplianceService:
                 "required_reviews": [r.to_dict() for r in expiring_records],
                 "compliance_summary": self._generate_compliance_summary(active_records),
             }
-
         except Exception as e:
             self.logger.error(
                 f"Compliance monitoring failed for {entity_type} {entity_id}: {e}"
@@ -306,15 +254,11 @@ class ComplianceService:
                 ComplianceRecord.assessed_at >= start_date,
                 ComplianceRecord.assessed_at <= end_date,
             )
-
             if compliance_types:
                 query = query.filter(
                     ComplianceRecord.compliance_type.in_(compliance_types)
                 )
-
             records = query.all()
-
-            # Generate report statistics
             report = {
                 "report_period": {
                     "start_date": start_date.isoformat(),
@@ -340,7 +284,7 @@ class ComplianceService:
                         ]
                     ),
                     "average_score": (
-                        sum(r.compliance_score or 0 for r in records) / len(records)
+                        sum((r.compliance_score or 0 for r in records)) / len(records)
                         if records
                         else 0
                     ),
@@ -351,9 +295,7 @@ class ComplianceService:
                 "trends": self._analyze_compliance_trends(records),
                 "recommendations": self._generate_compliance_recommendations(records),
             }
-
             return report
-
         except Exception as e:
             self.logger.error(f"Compliance report generation failed: {e}")
             raise e
@@ -363,15 +305,14 @@ class ComplianceService:
     ) -> Dict[str, Any]:
         """Assess KYC requirements for user profile"""
         results = {}
-
         for requirement in requirements:
             if requirement == "full_name":
                 results["full_name"] = {
                     "satisfied": bool(profile.first_name and profile.last_name),
-                    "score": 100 if (profile.first_name and profile.last_name) else 0,
+                    "score": 100 if profile.first_name and profile.last_name else 0,
                     "details": (
                         "Full name provided"
-                        if (profile.first_name and profile.last_name)
+                        if profile.first_name and profile.last_name
                         else "Full name missing"
                     ),
                 }
@@ -414,13 +355,11 @@ class ComplianceService:
                         profile.annual_income and profile.employment_status
                     ),
                     "score": (
-                        80
-                        if (profile.annual_income and profile.employment_status)
-                        else 0
+                        80 if profile.annual_income and profile.employment_status else 0
                     ),
                     "details": (
                         "Income information provided"
-                        if (profile.annual_income and profile.employment_status)
+                        if profile.annual_income and profile.employment_status
                         else "Income verification missing"
                     ),
                 }
@@ -430,18 +369,15 @@ class ComplianceService:
                     "score": 0,
                     "details": f"{requirement} not implemented",
                 }
-
         return results
 
     def _calculate_kyc_score(self, assessment_results: Dict[str, Any]) -> float:
         """Calculate overall KYC compliance score"""
         if not assessment_results:
             return 0
-
-        total_score = sum(result["score"] for result in assessment_results.values())
+        total_score = sum((result["score"] for result in assessment_results.values()))
         max_score = len(assessment_results) * 100
-
-        return (total_score / max_score) * 100 if max_score > 0 else 0
+        return total_score / max_score * 100 if max_score > 0 else 0
 
     def _determine_kyc_status(
         self, compliance_score: float, assessment_results: Dict[str, Any]
@@ -458,25 +394,19 @@ class ComplianceService:
 
     def _check_sanctions_list(self, user: User) -> Dict[str, Any]:
         """Check user against sanctions lists"""
-        # Simplified implementation - in production would integrate with OFAC/sanctions APIs
         profile = user.profile
         if not profile:
             return {"risk_level": "unknown", "matches": [], "score": 50}
-
-        # Check name against patterns
         full_name = (
             f"{profile.first_name or ''} {profile.last_name or ''}".strip().upper()
         )
-
         matches = []
         for pattern in self.sanctions_patterns:
             if re.search(pattern, full_name, re.IGNORECASE):
                 matches.append(
                     {"type": "name_pattern", "pattern": pattern, "confidence": 0.3}
                 )
-
         risk_score = min(100, len(matches) * 30)
-
         return {
             "risk_level": (
                 "high" if risk_score > 70 else "medium" if risk_score > 30 else "low"
@@ -488,7 +418,6 @@ class ComplianceService:
 
     def _check_politically_exposed_person(self, user: User) -> Dict[str, Any]:
         """Check if user is a politically exposed person (PEP)"""
-        # Simplified implementation - in production would integrate with PEP databases
         return {
             "is_pep": False,
             "risk_level": "low",
@@ -501,7 +430,6 @@ class ComplianceService:
         self, user_id: str, transaction_data: Dict[str, Any] = None
     ) -> Dict[str, Any]:
         """Monitor transaction patterns for suspicious activity"""
-        # Get recent credit history (proxy for transactions)
         recent_history = (
             CreditHistory.query.filter_by(user_id=user_id)
             .filter(
@@ -510,30 +438,21 @@ class ComplianceService:
             )
             .all()
         )
-
-        # Analyze patterns
-        total_amount = sum(float(h.amount) for h in recent_history if h.amount)
+        total_amount = sum((float(h.amount) for h in recent_history if h.amount))
         transaction_count = len(recent_history)
-
-        # Check against thresholds
         suspicious_indicators = []
         risk_score = 0
-
         if total_amount > float(self.aml_thresholds["monthly_limit"]):
             suspicious_indicators.append("High monthly volume")
             risk_score += 30
-
-        if transaction_count > 50:  # More than 50 transactions in 30 days
+        if transaction_count > 50:
             suspicious_indicators.append("High transaction frequency")
             risk_score += 20
-
-        # Check for unusual patterns
         if transaction_data:
             amount = transaction_data.get("amount", 0)
             if amount > float(self.aml_thresholds["suspicious_activity"]):
                 suspicious_indicators.append("Large single transaction")
                 risk_score += 25
-
         return {
             "risk_score": min(100, risk_score),
             "suspicious_indicators": suspicious_indicators,
@@ -547,13 +466,9 @@ class ComplianceService:
         profile = user.profile
         if not profile or not profile.country:
             return {"risk_level": "unknown", "score": 50}
-
-        # Simplified risk assessment by country
-        high_risk_countries = ["AF", "IR", "KP", "SY"]  # Example high-risk countries
-        medium_risk_countries = ["PK", "BD", "NG"]  # Example medium-risk countries
-
+        high_risk_countries = ["AF", "IR", "KP", "SY"]
+        medium_risk_countries = ["PK", "BD", "NG"]
         country = profile.country.upper()
-
         if country in high_risk_countries:
             risk_level = "high"
             score = 80
@@ -563,7 +478,6 @@ class ComplianceService:
         else:
             risk_level = "low"
             score = 10
-
         return {
             "risk_level": risk_level,
             "score": score,
@@ -573,22 +487,16 @@ class ComplianceService:
 
     def _analyze_user_behavior(self, user_id: str) -> Dict[str, Any]:
         """Analyze user behavior patterns"""
-        # Get user activity from credit history
         history = (
             CreditHistory.query.filter_by(user_id=user_id)
             .order_by(CreditHistory.event_date.desc())
             .limit(100)
             .all()
         )
-
         if not history:
             return {"risk_score": 0, "patterns": [], "analysis": "Insufficient data"}
-
-        # Analyze patterns
         patterns = []
         risk_score = 0
-
-        # Check for rapid succession of events
         recent_events = [
             h
             for h in history
@@ -597,13 +505,10 @@ class ComplianceService:
         if len(recent_events) > 10:
             patterns.append("High activity in short period")
             risk_score += 20
-
-        # Check for unusual event types
-        event_types = set(h.event_type.value for h in history)
+        event_types = set((h.event_type.value for h in history))
         if len(event_types) > 5:
             patterns.append("Diverse activity types")
             risk_score += 10
-
         return {
             "risk_score": min(100, risk_score),
             "patterns": patterns,
@@ -615,13 +520,10 @@ class ComplianceService:
     def _calculate_aml_risk_score(self, screening_results: Dict[str, Any]) -> float:
         """Calculate overall AML risk score"""
         total_score = 0
-
-        # Weight different risk factors
         total_score += screening_results["sanctions_check"]["score"] * 0.3
         total_score += screening_results["transaction_monitoring"]["risk_score"] * 0.3
         total_score += screening_results["geographic_risk"]["score"] * 0.2
         total_score += screening_results["behavioral_analysis"]["risk_score"] * 0.2
-
         return min(100, total_score)
 
     def _determine_aml_status(
@@ -641,7 +543,6 @@ class ComplianceService:
         self, loan_app: LoanApplication
     ) -> Dict[str, Any]:
         """Check fair lending compliance"""
-        # Simplified implementation
         return {
             "compliant": True,
             "score": 95,
@@ -694,12 +595,9 @@ class ComplianceService:
 
     def _check_usury_compliance(self, loan_app: LoanApplication) -> Dict[str, Any]:
         """Check usury law compliance"""
-        # Check if interest rate is within legal limits
-        max_rate = 36.0  # Example maximum APR
+        max_rate = 36.0
         current_rate = float(loan_app.requested_rate or 0)
-
         compliant = current_rate <= max_rate
-
         return {
             "compliant": compliant,
             "score": 100 if compliant else 0,
@@ -750,14 +648,10 @@ class ComplianceService:
                 next_review_date=datetime.now(timezone.utc) + timedelta(days=90),
                 assessed_at=datetime.now(timezone.utc),
             )
-
             record.set_assessment_data(assessment_data)
-
             self.db.session.add(record)
             self.db.session.commit()
-
             return record
-
         except Exception as e:
             self.db.session.rollback()
             raise e
@@ -777,20 +671,16 @@ class ComplianceService:
     ) -> List[str]:
         """Get recommended actions for AML compliance"""
         actions = []
-
         if risk_score > 70:
             actions.append("Enhanced due diligence required")
             actions.append("Senior management approval needed")
         elif risk_score > 50:
             actions.append("Additional documentation required")
             actions.append("Periodic monitoring recommended")
-
         if screening_results["sanctions_check"]["score"] > 50:
             actions.append("Manual sanctions review required")
-
         if screening_results["transaction_monitoring"]["risk_score"] > 60:
             actions.append("Transaction pattern analysis needed")
-
         return actions
 
     def _check_sar_requirements(
@@ -840,19 +730,12 @@ class ComplianceService:
         """Calculate overall compliance health score"""
         if not records:
             return {"score": 0, "status": "unknown"}
-
-        # Calculate average compliance score
-        avg_score = sum(r.compliance_score or 0 for r in records) / len(records)
-
-        # Count compliant vs non-compliant
+        avg_score = sum((r.compliance_score or 0 for r in records)) / len(records)
         compliant_count = len(
             [r for r in records if r.status == ComplianceStatus.COMPLIANT]
         )
         compliance_ratio = compliant_count / len(records)
-
-        # Overall health score
-        health_score = (avg_score * 0.7) + (compliance_ratio * 100 * 0.3)
-
+        health_score = avg_score * 0.7 + compliance_ratio * 100 * 0.3
         if health_score >= 90:
             status = "excellent"
         elif health_score >= 80:
@@ -861,7 +744,6 @@ class ComplianceService:
             status = "fair"
         else:
             status = "poor"
-
         return {
             "score": health_score,
             "status": status,
@@ -875,25 +757,19 @@ class ComplianceService:
     ) -> Dict[str, Any]:
         """Generate compliance summary from records"""
         summary = {}
-
         for record in records:
             comp_type = record.compliance_type.value
             if comp_type not in summary:
                 summary[comp_type] = {"count": 0, "avg_score": 0, "status_counts": {}}
-
             summary[comp_type]["count"] += 1
             summary[comp_type]["avg_score"] += record.compliance_score or 0
-
             status = record.status.value
             summary[comp_type]["status_counts"][status] = (
                 summary[comp_type]["status_counts"].get(status, 0) + 1
             )
-
-        # Calculate averages
         for comp_type in summary:
             if summary[comp_type]["count"] > 0:
                 summary[comp_type]["avg_score"] /= summary[comp_type]["count"]
-
         return summary
 
     def _group_by_compliance_type(
@@ -922,15 +798,12 @@ class ComplianceService:
         """Summarize violations from records"""
         total_violations = 0
         violation_types = {}
-
         for record in records:
             violations = record.get_violations()
             total_violations += len(violations)
-
             for violation in violations:
                 v_type = violation.get("type", "unknown")
                 violation_types[v_type] = violation_types.get(v_type, 0) + 1
-
         return {
             "total_violations": total_violations,
             "violation_types": violation_types,
@@ -941,25 +814,18 @@ class ComplianceService:
         self, records: List[ComplianceRecord]
     ) -> Dict[str, Any]:
         """Analyze compliance trends over time"""
-        # Simplified trend analysis
         if len(records) < 2:
             return {"trend": "insufficient_data"}
-
-        # Sort by date
         sorted_records = sorted(records, key=lambda r: r.assessed_at)
-
-        # Calculate trend in compliance scores
         recent_scores = [r.compliance_score or 0 for r in sorted_records[-10:]]
         older_scores = (
             [r.compliance_score or 0 for r in sorted_records[:-10]]
             if len(sorted_records) > 10
             else []
         )
-
         if older_scores:
             recent_avg = sum(recent_scores) / len(recent_scores)
             older_avg = sum(older_scores) / len(older_scores)
-
             if recent_avg > older_avg + 5:
                 trend = "improving"
             elif recent_avg < older_avg - 5:
@@ -968,7 +834,6 @@ class ComplianceService:
                 trend = "stable"
         else:
             trend = "insufficient_data"
-
         return {
             "trend": trend,
             "recent_average": (
@@ -984,30 +849,22 @@ class ComplianceService:
     ) -> List[str]:
         """Generate compliance recommendations"""
         recommendations = []
-
-        # Analyze common issues
         non_compliant = [r for r in records if r.status != ComplianceStatus.COMPLIANT]
-
-        if len(non_compliant) > len(records) * 0.2:  # More than 20% non-compliant
+        if len(non_compliant) > len(records) * 0.2:
             recommendations.append("Implement enhanced compliance monitoring")
             recommendations.append(
                 "Provide additional staff training on compliance requirements"
             )
-
-        # Check for specific compliance types with issues
         kyc_issues = [
             r for r in non_compliant if r.compliance_type == ComplianceType.KYC
         ]
         if kyc_issues:
             recommendations.append("Improve KYC data collection processes")
-
         aml_issues = [
             r for r in non_compliant if r.compliance_type == ComplianceType.AML
         ]
         if aml_issues:
             recommendations.append("Enhance AML screening procedures")
-
         if not recommendations:
             recommendations.append("Continue current compliance practices")
-
         return recommendations
