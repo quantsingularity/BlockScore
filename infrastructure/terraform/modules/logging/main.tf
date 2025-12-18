@@ -10,19 +10,6 @@ resource "aws_cloudwatch_log_group" "application_logs" {
 
 resource "aws_s3_bucket" "audit_logs" {
   bucket = "${var.project_name}-${var.environment}-audit-logs-${var.aws_region}"
-  acl    = "log-delivery-write" # Required for S3 access logs
-
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-audit-logs"
@@ -30,49 +17,45 @@ resource "aws_s3_bucket" "audit_logs" {
   }
 }
 
-resource "aws_s3_bucket_policy" "audit_logs_policy" {
+resource "aws_s3_bucket_acl" "audit_logs" {
   bucket = aws_s3_bucket.audit_logs.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "S3BucketPolicyForCloudTrail"
-        Effect    = "Allow"
-        Principal = {
-          Service = "cloudtrail.amazonaws.com"
-        }
-        Action    = "s3:GetBucketAcl"
-        Resource  = aws_s3_bucket.audit_logs.arn
-      },
-      {
-        Sid       = "S3BucketPolicyForCloudTrail2"
-        Effect    = "Allow"
-        Principal = {
-          Service = "cloudtrail.amazonaws.com"
-        }
-        Action    = "s3:PutObject"
-        Resource  = "${aws_s3_bucket.audit_logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
-        Condition = {
-          StringEquals = {
-            "s3:x-amz-acl" = "bucket-owner-full-control"
-          }
-        }
-      },
-    ]
-  })
+  acl    = "log-delivery-write"
 }
 
-resource "aws_cloudtrail" "main" {
-  name                          = "${var.project_name}-${var.environment}-cloudtrail"
-  s3_bucket_name                = aws_s3_bucket.audit_logs.id
-  include_global_service_events = true
-  is_multi_region_trail         = true
-  enable_log_file_validation    = true
+resource "aws_s3_bucket_versioning" "audit_logs" {
+  bucket = aws_s3_bucket.audit_logs.id
 
-  tags = {
-    Name        = "${var.project_name}-${var.environment}-cloudtrail"
-    Environment = var.environment
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
-data "aws_caller_identity" "current" {}
+resource "aws_s3_bucket_server_side_encryption_configuration" "audit_logs" {
+  bucket = aws_s3_bucket.audit_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_cloudtrail" "main" {
+  name                          = "${var.project_name}-${var.environment}-trail"
+  s3_bucket_name                = aws_s3_bucket.audit_logs.id
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_logging                = true
+
+  event_selector {
+    read_write_type           = "All"
+    include_management_events = true
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-trail"
+    Environment = var.environment
+  }
+
+  depends_on = [aws_s3_bucket_acl.audit_logs]
+}

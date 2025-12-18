@@ -1,7 +1,16 @@
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
+variable "environment" {
+  description = "Environment name"
   type        = string
-  default     = "10.0.0.0/16"
+}
+
+variable "project_name" {
+  description = "Project name"
+  type        = string
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for VPC"
+  type        = string
 }
 
 variable "availability_zones" {
@@ -10,16 +19,11 @@ variable "availability_zones" {
 }
 
 variable "public_subnet_cidrs" {
-  description = "CIDR blocks for public subnets"
+  description = "List of public subnet CIDR blocks"
   type        = list(string)
 }
 
 variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
+  description = "List of private subnet CIDR blocks"
   type        = list(string)
-}
-
-variable "environment" {
-  description = "Environment name (dev, staging, prod)"
-  type        = string
 }

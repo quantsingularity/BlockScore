@@ -13,7 +13,7 @@ key_name      = "dev-key"
 db_instance_class = "db.t3.micro"
 db_name           = "appdb"
 db_username       = "admin"
-db_password       = "Password123!" # Use AWS Secrets Manager in production
+db_password       = "CHANGE_ME_USE_SECRETS_MANAGER" # TODO: Use AWS Secrets Manager or TF_VAR_db_password
 
 default_tags = {
   Terraform   = "true"

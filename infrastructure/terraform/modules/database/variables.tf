@@ -1,15 +1,20 @@
 variable "environment" {
-  description = "Environment name (dev, staging, prod)"
+  description = "Environment name"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name"
   type        = string
 }
 
 variable "vpc_id" {
-  description = "ID of the VPC"
+  description = "VPC ID"
   type        = string
 }
 
 variable "private_subnet_ids" {
-  description = "IDs of the private subnets"
+  description = "List of private subnet IDs"
   type        = list(string)
 }
 
@@ -25,13 +30,13 @@ variable "db_name" {
 }
 
 variable "db_username" {
-  description = "Database username"
+  description = "Database master username"
   type        = string
   sensitive   = true
 }
 
 variable "db_password" {
-  description = "Database password"
+  description = "Database master password"
   type        = string
   sensitive   = true
 }
@@ -42,37 +47,25 @@ variable "security_group_ids" {
 }
 
 variable "kms_key_arn" {
-  description = "The ARN of the KMS key for database encryption."
+  description = "KMS key ARN for encryption"
   type        = string
+  default     = null
 }
 
-variable "db_security_group_id" {
-  description = "The ID of the security group for the database."
+variable "monitoring_role_arn" {
+  description = "IAM role ARN for enhanced monitoring"
   type        = string
+  default     = null
 }
 
-variable "db_subnet_group_name" {
-  description = "The name of the DB subnet group."
-  type        = string
+variable "allocated_storage" {
+  description = "Allocated storage in GB"
+  type        = number
+  default     = 20
 }
 
-variable "project_name" {
-  description = "The name of the project."
-  type        = string
-}
-
-variable "environment" {
-  description = "The deployment environment (dev, staging, prod)."
-  type        = string
-}
-
-variable "db_username" {
-  description = "Database username."
-  type        = string
-}
-
-variable "db_password" {
-  description = "Database password."
-  type        = string
-  sensitive   = true
+variable "backup_retention_period" {
+  description = "Backup retention period in days"
+  type        = number
+  default     = 7
 }

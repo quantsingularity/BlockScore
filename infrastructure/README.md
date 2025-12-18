@@ -293,39 +293,4 @@ aws ec2 describe-security-groups
 kubectl get networkpolicies
 ```
 
-## 📚 Additional Resources
-
-### Documentation
-
-- [Architecture Design Document](docs/architecture_design.md)
-- [Security Best Practices](docs/security_best_practices.md)
-- [Compliance Guidelines](docs/compliance_guidelines.md)
-
-### External References
-
-- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
-- [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/)
-- [Terraform Best Practices](https://www.terraform.io/docs/cloud/guides/recommended-practices/)
-
-## 🤝 Contributing
-
-### Development Workflow
-
-1. Create feature branch from `develop`
-2. Make infrastructure changes
-3. Run security and compliance tests
-4. Submit pull request with detailed description
-5. Undergo security review and approval
-
-### Code Standards
-
-- Follow Terraform naming conventions
-- Use consistent tagging across all resources
-- Document all security configurations
-- Include compliance justifications for changes
-
 ---
-
-**Last Updated**: $(date)
-**Version**: 2.0.0 (Enhanced)
-**Maintainer**: DevOps Team

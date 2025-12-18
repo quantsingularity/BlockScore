@@ -1,0 +1,16 @@
+---
+skip_list:
+  - yaml[line-length]
+  - name[casing]
+  
+warn_list:
+  - experimental
+  - jinja[spacing]
+
+exclude_paths:
+  - .cache/
+  - .github/
+  
+kinds:
+  - yaml: "*.yaml"
+  - yaml: "*.yml"
