@@ -7,6 +7,7 @@ from decimal import Decimal
 from unittest.mock import patch
 from models.credit import CreditEventType, CreditHistory, CreditScore
 from models.user import User, UserProfile
+from typing import Any
 
 
 class TestCreditScoringService:

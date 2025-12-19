@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 from models.audit import AuditLog
 from models.user import User, UserSession
+from typing import Any
 
 
 class TestAuthenticationService:

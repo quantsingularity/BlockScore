@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
+from typing import Any
 
 db = SQLAlchemy()
 

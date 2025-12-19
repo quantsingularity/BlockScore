@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, ValidationError, fields, validate
+from typing import Any
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()

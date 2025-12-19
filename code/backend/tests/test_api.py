@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 import jwt
 import pytest
+from typing import Any
+import threading
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import create_app
@@ -613,7 +615,6 @@ class TestAPIPerformance:
 
     def test_concurrent_requests(self, client: Any, auth_headers: Any) -> Any:
         """Test handling of concurrent requests"""
-        import threading
 
         results = []
 

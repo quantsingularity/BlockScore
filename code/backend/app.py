@@ -32,6 +32,8 @@ from services.blockchain_service import BlockchainService
 from services.compliance_service import ComplianceService
 from services.credit_service import CreditScoringService
 from core.logging import get_logger
+from typing import Any
+import uuid
 
 logger = get_logger(__name__)
 
@@ -645,6 +647,7 @@ def create_app(config_name: Any = "default") -> Any:
     @jwt_required()
     def get_profile():
         """Get user profile endpoint"""
+
         try:
             user_id = get_jwt_identity()
             user = User.query.get(user_id)

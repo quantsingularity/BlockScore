@@ -23,6 +23,7 @@ from services.compliance_service import ComplianceService
 from services.credit_service import CreditScoringService
 from utils.cache import CacheManager
 from utils.monitoring import PerformanceMonitor
+from typing import Any
 
 
 @pytest.fixture(scope="session")

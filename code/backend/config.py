@@ -4,6 +4,7 @@ Configuration management for BlockScore Backend
 
 import os
 from datetime import timedelta
+from typing import Any
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,6 +30,9 @@ class Config:
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     BLOCKCHAIN_PROVIDER = os.getenv("BLOCKCHAIN_PROVIDER", "http://localhost:8545")
+    BLOCKCHAIN_PROVIDER_URL = os.getenv(
+        "BLOCKCHAIN_PROVIDER_URL", "http://localhost:8545"
+    )
     CONTRACT_ADDRESS = os.getenv(
         "CONTRACT_ADDRESS", "0x0000000000000000000000000000000000000000"
     )
