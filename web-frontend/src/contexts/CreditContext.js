@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getCreditScore } from '../utils/api';
+import { getCreditScore, getCreditHistory, calculateCreditScore } from '../utils/api';
 import { useAuth } from './AuthContext';
 import { useWeb3 } from './Web3Context';
 
@@ -27,12 +27,41 @@ export const CreditProvider = ({ children }) => {
                 throw new Error('No wallet address available');
             }
 
-            const data = await getCreditScore(address);
-            setCreditData(data);
-            return data;
+            // Try to get credit score from blockchain first
+            let data;
+            try {
+                data = await getCreditScore(address);
+            } catch (apiError) {
+                // If blockchain call fails, try calculating with AI
+                console.log('Blockchain call failed, trying AI calculation...');
+                data = await calculateCreditScore(address);
+            }
+
+            // Get credit history
+            let history = [];
+            try {
+                history = await getCreditHistory(address);
+            } catch (historyError) {
+                console.log('Could not fetch credit history:', historyError.message);
+            }
+
+            const creditInfo = {
+                address: data.address || address,
+                score: data.score || data.calculatedScore || 0,
+                features: data.features || {
+                    total_loans: 0,
+                    total_amount: 0,
+                    repaid_ratio: 0,
+                    avg_loan_amount: 0,
+                },
+                history: history.length > 0 ? history : data.history || [],
+            };
+
+            setCreditData(creditInfo);
+            return creditInfo;
         } catch (err) {
             console.error('Error fetching credit score:', err);
-            setError('Failed to load credit score data. Please try again later.');
+            setError('Failed to load credit score data. Using demo data.');
 
             // For demo purposes, set mock data if API fails
             const mockData = {
@@ -64,11 +93,21 @@ export const CreditProvider = ({ children }) => {
         }
     };
 
+    // Refresh credit data
+    const refreshCreditData = async () => {
+        const walletAddress = accounts[0] || user?.address;
+        if (walletAddress) {
+            return await fetchCreditScore(walletAddress);
+        }
+    };
+
     // Fetch credit score on component mount or when wallet/user changes
     useEffect(() => {
         const walletAddress = accounts[0] || user?.address;
         if (walletAddress) {
             fetchCreditScore(walletAddress);
+        } else {
+            setLoading(false);
         }
     }, [accounts, user]);
 
@@ -79,6 +118,7 @@ export const CreditProvider = ({ children }) => {
                 loading,
                 error,
                 fetchCreditScore,
+                refreshCreditData,
             }}
         >
             {children}
@@ -88,3 +128,5 @@ export const CreditProvider = ({ children }) => {
 
 // Custom hook to use the credit context
 export const useCredit = () => useContext(CreditContext);
+
+export default CreditContext;
