@@ -4,7 +4,7 @@ Configuration management for BlockScore Backend
 
 import os
 from datetime import timedelta
-from typing import Any
+from typing import Type
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -101,7 +101,7 @@ config = {
 }
 
 
-def get_config() -> Any:
+def get_config() -> Type[Config]:
     """Get configuration based on environment"""
     env = os.getenv("FLASK_ENV", "development")
     return config.get(env, config["default"])

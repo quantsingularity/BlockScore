@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, ValidationError, fields, validate
-from typing import Any
+from typing import Any, Dict
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -67,34 +67,34 @@ class User(db.Model):
         "UserSession", backref="user", cascade="all, delete-orphan"
     )
 
-    def set_password(self, password: Any) -> Any:
+    def set_password(self, password: Any) -> None:
         """Set password hash"""
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
         self.password_changed_at = datetime.now(timezone.utc)
 
-    def check_password(self, password: Any) -> Any:
+    def check_password(self, password: Any) -> bool:
         """Check password against hash"""
         return bcrypt.check_password_hash(self.password_hash, password)
 
-    def is_locked(self) -> Any:
+    def is_locked(self) -> bool:
         """Check if account is locked"""
         if self.locked_until:
             return datetime.now(timezone.utc) < self.locked_until
         return False
 
-    def lock_account(self, duration_minutes: Any = 30) -> Any:
+    def lock_account(self, duration_minutes: Any = 30) -> None:
         """Lock account for specified duration"""
         self.locked_until = datetime.now(timezone.utc) + timedelta(
             minutes=duration_minutes
         )
         self.failed_login_attempts += 1
 
-    def unlock_account(self) -> Any:
+    def unlock_account(self) -> None:
         """Unlock account and reset failed attempts"""
         self.locked_until = None
         self.failed_login_attempts = 0
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -147,7 +147,7 @@ class UserProfile(db.Model):
             return f"{self.first_name} {self.last_name}"
         return self.first_name or self.last_name or "Unknown"
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -201,15 +201,15 @@ class UserSession(db.Model):
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
 
-    def is_expired(self) -> Any:
+    def is_expired(self) -> bool:
         """Check if session is expired"""
         return datetime.now(timezone.utc) > self.expires_at
 
-    def revoke(self) -> Any:
+    def revoke(self) -> None:
         """Revoke session"""
         self.is_active = False
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,

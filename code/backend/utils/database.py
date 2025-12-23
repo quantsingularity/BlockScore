@@ -319,7 +319,9 @@ class DatabaseOptimizer:
             self.logger.error(f"Connection monitoring failed: {e}")
             return {"error": str(e)}
 
-    def _get_query_plan(self, query: str, params: Dict = None) -> Optional[List[Dict]]:
+    def _get_query_plan(
+        self, query: str, params: Optional[Dict] = None
+    ) -> Optional[List[Dict]]:
         """Get query execution plan"""
         try:
             with self.engine.connect() as conn:

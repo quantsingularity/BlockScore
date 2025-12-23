@@ -458,7 +458,7 @@ class PerformanceMonitor:
         monitor_thread = threading.Thread(target=monitor_system, daemon=True)
         monitor_thread.start()
 
-    def stop_monitoring(self) -> Any:
+    def stop_monitoring(self) -> None:
         """Stop system monitoring"""
         self.system_metrics_enabled = False
 

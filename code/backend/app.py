@@ -24,7 +24,7 @@ from flask_limiter.util import get_remote_address
 from models import db, ma
 from models.audit import AuditEventType, AuditSeverity
 from models.credit import CreditHistory, CreditScore
-from models.loan import LoanApplication, LoanApplicationSchema
+from models.loan import LoanApplication, LoanApplicationSchema, LoanStatus
 from models.user import User, UserLoginSchema, UserRegistrationSchema
 from services.audit_service import AuditService
 from services.auth_service import AuthService
@@ -32,13 +32,13 @@ from services.blockchain_service import BlockchainService
 from services.compliance_service import ComplianceService
 from services.credit_service import CreditScoringService
 from core.logging import get_logger
-from typing import Any
+from typing import Any, Dict, Tuple
 import uuid
 
 logger = get_logger(__name__)
 
 
-def create_app(config_name: Any = "default") -> Any:
+def create_app(config_name: str = "default") -> Flask:
     """Application factory pattern"""
     app = Flask(__name__)
     config_class = get_config()
@@ -68,11 +68,13 @@ def create_app(config_name: Any = "default") -> Any:
     blacklisted_tokens = set()
 
     @jwt.token_in_blocklist_loader
-    def check_if_token_revoked(jwt_header, jwt_payload):
+    def check_if_token_revoked(
+        jwt_header: Dict[str, Any], jwt_payload: Dict[str, Any]
+    ) -> bool:
         return jwt_payload["jti"] in blacklisted_tokens
 
     @app.before_request
-    def before_request():
+    def before_request() -> None:
         g.start_time = datetime.now(timezone.utc)
         g.request_id = str(uuid.uuid4())[:8]
         app.logger.info(
@@ -80,7 +82,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.after_request
-    def after_request(response):
+    def after_request(response: Any) -> Any:
         if hasattr(g, "start_time"):
             response_time = (
                 datetime.now(timezone.utc) - g.start_time
@@ -108,7 +110,7 @@ def create_app(config_name: Any = "default") -> Any:
         return response
 
     @app.errorhandler(400)
-    def bad_request(error):
+    def bad_request(error: Any) -> Tuple[Any, int]:
         return (
             jsonify(
                 {
@@ -122,7 +124,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.errorhandler(401)
-    def unauthorized(error):
+    def unauthorized(error: Any) -> Tuple[Any, int]:
         return (
             jsonify(
                 {
@@ -136,7 +138,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.errorhandler(403)
-    def forbidden(error):
+    def forbidden(error: Any) -> Tuple[Any, int]:
         return (
             jsonify(
                 {
@@ -150,7 +152,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.errorhandler(404)
-    def not_found(error):
+    def not_found(error: Any) -> Tuple[Any, int]:
         return (
             jsonify(
                 {
@@ -164,7 +166,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.errorhandler(429)
-    def rate_limit_exceeded(error):
+    def rate_limit_exceeded(error: Any) -> Tuple[Any, int]:
         return (
             jsonify(
                 {
@@ -178,7 +180,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.errorhandler(500)
-    def internal_error(error):
+    def internal_error(error: Any) -> Tuple[Any, int]:
         app.logger.error(f"Internal server error: {error}")
         app.logger.error(traceback.format_exc())
         return (
@@ -194,7 +196,7 @@ def create_app(config_name: Any = "default") -> Any:
         )
 
     @app.route("/api/health", methods=["GET"])
-    def health_check():
+    def health_check() -> Tuple[Any, int]:
         """Comprehensive health check endpoint"""
         try:
             db.session.execute("SELECT 1")
@@ -238,7 +240,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/auth/register", methods=["POST"])
     @limiter.limit("5 per minute")
-    def register():
+    def register() -> Tuple[Any, int]:
         """User registration endpoint"""
         try:
             schema = UserRegistrationSchema()
@@ -290,7 +292,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/auth/login", methods=["POST"])
     @limiter.limit(app.config["RATELIMIT_LOGIN"])
-    def login():
+    def login() -> Tuple[Any, int]:
         """User login endpoint"""
         try:
             schema = UserLoginSchema()
@@ -379,7 +381,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/auth/logout", methods=["POST"])
     @jwt_required()
-    def logout():
+    def logout() -> Tuple[Any, int]:
         """User logout endpoint"""
         try:
             user_id = get_jwt_identity()
@@ -410,7 +412,7 @@ def create_app(config_name: Any = "default") -> Any:
     @app.route("/api/credit/calculate-score", methods=["POST"])
     @jwt_required()
     @limiter.limit("10 per minute")
-    def calculate_credit_score():
+    def calculate_credit_score() -> Tuple[Any, int]:
         """Calculate credit score endpoint"""
         try:
             user_id = get_jwt_identity()
@@ -464,7 +466,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/credit/history", methods=["GET"])
     @jwt_required()
-    def get_credit_history():
+    def get_credit_history() -> Tuple[Any, int]:
         """Get credit history endpoint"""
         try:
             user_id = get_jwt_identity()
@@ -510,7 +512,7 @@ def create_app(config_name: Any = "default") -> Any:
     @app.route("/api/loans/apply", methods=["POST"])
     @jwt_required()
     @limiter.limit("3 per hour")
-    def apply_for_loan():
+    def apply_for_loan() -> Tuple[Any, int]:
         """Loan application endpoint"""
         try:
             user_id = get_jwt_identity()
@@ -579,7 +581,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/loans/calculate", methods=["POST"])
     @jwt_required()
-    def calculate_loan_terms():
+    def calculate_loan_terms() -> Tuple[Any, int]:
         """Calculate loan terms endpoint"""
         try:
             user_id = get_jwt_identity()
@@ -645,7 +647,7 @@ def create_app(config_name: Any = "default") -> Any:
 
     @app.route("/api/profile", methods=["GET"])
     @jwt_required()
-    def get_profile():
+    def get_profile() -> Tuple[Any, int]:
         """Get user profile endpoint"""
 
         try:

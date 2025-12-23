@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any
+from typing import Any, Dict
 
 db = SQLAlchemy()
 
@@ -96,13 +96,13 @@ class CreditScore(db.Model):
         "CreditHistory", backref="credit_score", cascade="all, delete-orphan"
     )
 
-    def is_valid(self) -> Any:
+    def is_valid(self) -> bool:
         """Check if credit score is still valid"""
         if self.valid_until:
             return datetime.now(timezone.utc) < self.valid_until
         return True
 
-    def is_expired(self) -> Any:
+    def is_expired(self) -> bool:
         """Check if credit score is expired"""
         if self.expires_at:
             return datetime.now(timezone.utc) > self.expires_at
@@ -122,7 +122,7 @@ class CreditScore(db.Model):
             "blockchain_activity": self.blockchain_activity_score,
         }
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -172,7 +172,7 @@ class CreditFactor(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -236,11 +236,11 @@ class CreditHistory(db.Model):
                 return {}
         return {}
 
-    def set_event_data(self, data: Any) -> Any:
+    def set_event_data(self, data: Any) -> None:
         """Set event data as JSON"""
         self.event_data = json.dumps(data) if data else None
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,

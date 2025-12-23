@@ -6,7 +6,7 @@ Celery-based background job processing for scalability
 import logging
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from celery import Celery, Task
 from celery.result import AsyncResult
 
@@ -305,7 +305,9 @@ class BaseTask(Task):
 @Celery.task(
     bind=True, base=BaseTask, name="blockscore_jobs.credit_scoring.calculate_score"
 )
-def calculate_credit_score_async(self, user_id: str, wallet_address: str = None) -> Any:
+def calculate_credit_score_async(
+    self, user_id: str, wallet_address: Optional[str] = None
+) -> Any:
     """Asynchronous credit score calculation"""
     try:
         from models import db

@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any
+from typing import Any, Dict
 
 db = SQLAlchemy()
 
@@ -122,7 +122,7 @@ class LoanApplication(db.Model):
                 return {}
         return {}
 
-    def set_application_data(self, data: Any) -> Any:
+    def set_application_data(self, data: Any) -> None:
         """Set application data as JSON"""
         self.application_data = json.dumps(data) if data else None
 
@@ -135,17 +135,17 @@ class LoanApplication(db.Model):
                 return {}
         return {}
 
-    def set_risk_assessment(self, data: Any) -> Any:
+    def set_risk_assessment(self, data: Any) -> None:
         """Set risk assessment as JSON"""
         self.risk_assessment = json.dumps(data) if data else None
 
-    def is_expired(self) -> Any:
+    def is_expired(self) -> bool:
         """Check if application is expired"""
         if self.expires_at:
             return datetime.now(timezone.utc) > self.expires_at
         return False
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -248,19 +248,19 @@ class Loan(db.Model):
         )
         return float(self.principal_amount) - total_payments - float(self.late_fees)
 
-    def is_current(self) -> Any:
+    def is_current(self) -> bool:
         """Check if loan is current (not past due)"""
         return self.days_past_due == 0
 
-    def is_delinquent(self) -> Any:
+    def is_delinquent(self) -> bool:
         """Check if loan is delinquent (30+ days past due)"""
         return self.days_past_due >= 30
 
-    def is_in_default(self) -> Any:
+    def is_in_default(self) -> bool:
         """Check if loan is in default (90+ days past due)"""
         return self.days_past_due >= 90
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -336,7 +336,7 @@ class LoanPayment(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def is_late(self) -> Any:
+    def is_late(self) -> bool:
         """Check if payment is late"""
         if self.status == PaymentStatus.COMPLETED:
             return False
@@ -357,11 +357,11 @@ class LoanPayment(db.Model):
                 return {}
         return {}
 
-    def set_processor_response(self, data: Any) -> Any:
+    def set_processor_response(self, data: Any) -> None:
         """Set processor response as JSON"""
         self.processor_response = json.dumps(data) if data else None
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,

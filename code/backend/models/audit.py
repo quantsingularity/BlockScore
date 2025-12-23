@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any
+from typing import Any, Dict
 
 db = SQLAlchemy()
 
@@ -115,7 +115,7 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_event_data(self, data: Any) -> Any:
+    def set_event_data(self, data: Any) -> None:
         """Set event data as JSON"""
         self.event_data = json.dumps(data) if data else None
 
@@ -128,7 +128,7 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_before_state(self, data: Any) -> Any:
+    def set_before_state(self, data: Any) -> None:
         """Set before state as JSON"""
         self.before_state = json.dumps(data) if data else None
 
@@ -141,7 +141,7 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_after_state(self, data: Any) -> Any:
+    def set_after_state(self, data: Any) -> None:
         """Set after state as JSON"""
         self.after_state = json.dumps(data) if data else None
 
@@ -154,7 +154,7 @@ class AuditLog(db.Model):
                 return {}
         return {}
 
-    def set_request_headers(self, headers: Any) -> Any:
+    def set_request_headers(self, headers: Any) -> None:
         """Set request headers as JSON (excluding sensitive headers)"""
         if headers:
             safe_headers = {
@@ -164,7 +164,7 @@ class AuditLog(db.Model):
             }
             self.request_headers = json.dumps(safe_headers)
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -236,7 +236,7 @@ class ComplianceRecord(db.Model):
                 return {}
         return {}
 
-    def set_assessment_data(self, data: Any) -> Any:
+    def set_assessment_data(self, data: Any) -> None:
         """Set assessment data as JSON"""
         self.assessment_data = json.dumps(data) if data else None
 
@@ -249,7 +249,7 @@ class ComplianceRecord(db.Model):
                 return []
         return []
 
-    def set_violations(self, violations: Any) -> Any:
+    def set_violations(self, violations: Any) -> None:
         """Set violations as JSON"""
         self.violations = json.dumps(violations) if violations else None
 
@@ -262,11 +262,11 @@ class ComplianceRecord(db.Model):
                 return []
         return []
 
-    def set_remediation_actions(self, actions: Any) -> Any:
+    def set_remediation_actions(self, actions: Any) -> None:
         """Set remediation actions as JSON"""
         self.remediation_actions = json.dumps(actions) if actions else None
 
-    def is_valid(self) -> Any:
+    def is_valid(self) -> bool:
         """Check if compliance record is still valid"""
         now = datetime.now(timezone.utc)
         if self.valid_until:
@@ -279,7 +279,7 @@ class ComplianceRecord(db.Model):
             return datetime.now(timezone.utc) >= self.next_review_date
         return False
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,

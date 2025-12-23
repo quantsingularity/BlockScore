@@ -48,7 +48,7 @@ class CreditScoringService:
     def calculate_credit_score(
         self,
         user_id: str,
-        wallet_address: str = None,
+        wallet_address: Optional[str] = None,
         force_recalculation: bool = False,
     ) -> Dict[str, Any]:
         """Calculate comprehensive credit score for user"""
@@ -208,7 +208,7 @@ class CreditScoringService:
         )
 
     def _gather_scoring_data(
-        self, user: User, wallet_address: str = None
+        self, user: User, wallet_address: Optional[str] = None
     ) -> Dict[str, Any]:
         """Gather all data needed for credit scoring"""
         data = {

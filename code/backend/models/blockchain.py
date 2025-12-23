@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any
+from typing import Any, Dict
 
 db = SQLAlchemy()
 
@@ -110,7 +110,7 @@ class BlockchainTransaction(db.Model):
                 return {}
         return {}
 
-    def set_input_data(self, data: Any) -> Any:
+    def set_input_data(self, data: Any) -> None:
         """Set input data as JSON"""
         self.input_data = json.dumps(data) if data else None
 
@@ -123,7 +123,7 @@ class BlockchainTransaction(db.Model):
                 return {}
         return {}
 
-    def set_output_data(self, data: Any) -> Any:
+    def set_output_data(self, data: Any) -> None:
         """Set output data as JSON"""
         self.output_data = json.dumps(data) if data else None
 
@@ -136,11 +136,11 @@ class BlockchainTransaction(db.Model):
                 return []
         return []
 
-    def set_token_transfers(self, transfers: Any) -> Any:
+    def set_token_transfers(self, transfers: Any) -> None:
         """Set token transfers as JSON"""
         self.token_transfers = json.dumps(transfers) if transfers else None
 
-    def is_confirmed(self) -> Any:
+    def is_confirmed(self) -> bool:
         """Check if transaction is confirmed"""
         return (
             self.status == TransactionStatus.CONFIRMED
@@ -153,7 +153,7 @@ class BlockchainTransaction(db.Model):
             return float(self.transaction_fee) * eth_price_usd
         return None
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,
@@ -246,7 +246,7 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_abi(self, abi: Any) -> Any:
+    def set_abi(self, abi: Any) -> None:
         """Set ABI as JSON"""
         self.abi = json.dumps(abi) if abi else None
 
@@ -259,7 +259,7 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_constructor_args(self, args: Any) -> Any:
+    def set_constructor_args(self, args: Any) -> None:
         """Set constructor arguments as JSON"""
         self.constructor_args = json.dumps(args) if args else None
 
@@ -272,7 +272,7 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_audit_reports(self, reports: Any) -> Any:
+    def set_audit_reports(self, reports: Any) -> None:
         """Set audit reports as JSON"""
         self.audit_reports = json.dumps(reports) if reports else None
 
@@ -285,17 +285,17 @@ class SmartContract(db.Model):
                 return []
         return []
 
-    def set_known_vulnerabilities(self, vulnerabilities: Any) -> Any:
+    def set_known_vulnerabilities(self, vulnerabilities: Any) -> None:
         """Set known vulnerabilities as JSON"""
         self.known_vulnerabilities = (
             json.dumps(vulnerabilities) if vulnerabilities else None
         )
 
-    def is_active(self) -> Any:
+    def is_active(self) -> bool:
         """Check if contract is active"""
         return self.status == ContractStatus.ACTIVE
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         return {
             "id": self.id,

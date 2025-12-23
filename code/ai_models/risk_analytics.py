@@ -96,7 +96,7 @@ class RiskAnalytics:
             "systemic_buffer": 0.0,
         }
 
-    def load_portfolio_data(self, portfolio_df: pd.DataFrame) -> Any:
+    def load_portfolio_data(self, portfolio_df: pd.DataFrame) -> None:
         """Load portfolio data for risk analysis"""
         self.portfolio_data = portfolio_df.copy()
         logger.info(f"Loaded portfolio data with {len(portfolio_df)} positions")
@@ -111,14 +111,14 @@ class RiskAnalytics:
         if missing_cols:
             logger.warning(f"Missing required columns: {missing_cols}")
 
-    def load_market_data(self, market_df: pd.DataFrame) -> Any:
+    def load_market_data(self, market_df: pd.DataFrame) -> None:
         """Load market data for risk calculations"""
         self.market_data = market_df.copy()
         logger.info(f"Loaded market data with {len(market_df)} observations")
         if "returns" not in market_df.columns and "price" in market_df.columns:
             self.market_data["returns"] = market_df["price"].pct_change()
 
-    def load_credit_data(self, credit_df: pd.DataFrame) -> Any:
+    def load_credit_data(self, credit_df: pd.DataFrame) -> None:
         """Load credit data for credit risk analysis"""
         self.credit_data = credit_df.copy()
         logger.info(f"Loaded credit data with {len(credit_df)} borrowers")

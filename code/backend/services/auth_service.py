@@ -140,7 +140,7 @@ class AuthService:
             self.db.session.rollback()
             raise e
 
-    def revoke_session(self, user_id: str, session_id: str = None) -> bool:
+    def revoke_session(self, user_id: str, session_id: Optional[str] = None) -> bool:
         """Revoke user session(s)"""
         try:
             if session_id:
@@ -348,7 +348,9 @@ class AuthService:
         except Exception as e:
             logger.info(f"Failed to cache session: {e}")
 
-    def _remove_cached_sessions(self, user_id: str, session_id: str = None) -> Any:
+    def _remove_cached_sessions(
+        self, user_id: str, session_id: Optional[str] = None
+    ) -> Any:
         """Remove cached sessions from Redis"""
         if not self.redis:
             return
