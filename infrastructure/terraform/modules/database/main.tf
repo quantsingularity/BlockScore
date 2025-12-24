@@ -34,7 +34,7 @@ resource "aws_db_instance" "main" {
   backup_window          = "03:00-04:00"
   maintenance_window     = "Mon:04:00-Mon:05:00"
 
-  # Enhanced monitoring
+  # Monitoring
   enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
   monitoring_interval             = 60
   monitoring_role_arn            = var.monitoring_role_arn

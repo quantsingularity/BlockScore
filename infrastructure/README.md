@@ -1,4 +1,4 @@
-# BlockScore Enhanced Infrastructure Directory
+# BlockScore Infrastructure Directory
 
 ## Overview
 
@@ -6,12 +6,12 @@ This infrastructure directory provides a comprehensive, robust, and secure found
 
 ## 🚀 Key Features
 
-### Security Enhancements
+### Security Features
 
 - **Web Application Firewall (WAF)** with managed rule sets for OWASP Top 10 protection
 - **DDoS Protection** through cloud-native services
 - **Secrets Management** using AWS Secrets Manager with encryption
-- **Enhanced IAM** with role-based access control and least privilege principles
+- **IAM** with role-based access control and least privilege principles
 - **Network Security** with comprehensive security groups and network policies
 - **Encryption** at rest and in transit for all data
 - **Pod Security Policies** for Kubernetes workloads
@@ -37,7 +37,6 @@ This infrastructure directory provides a comprehensive, robust, and secure found
 ```
 infrastructure/
 ├── README.md                          # Original documentation
-├── ENHANCED_README.md                  # This enhanced documentation
 ├── docs/                              # Architecture and design documentation
 │   └── architecture_design.md         # Detailed architecture design
 ├── terraform/                         # Infrastructure as Code
@@ -49,7 +48,7 @@ infrastructure/
 │   │   ├── staging/terraform.tfvars # Staging environment
 │   │   └── prod/terraform.tfvars    # Production environment
 │   └── modules/                      # Reusable Terraform modules
-│       ├── compute/                  # Enhanced compute with auto-scaling
+│       ├── compute/                  # Compute with auto-scaling
 │       ├── database/                 # Encrypted database with security
 │       ├── network/                  # VPC and networking components
 │       ├── security/                 # Security groups and IAM roles
@@ -62,7 +61,7 @@ infrastructure/
 │   ├── base/                         # Base Kubernetes manifests
 │   │   ├── app-configmap.yaml       # Application configuration
 │   │   ├── app-secrets.yaml         # Application secrets
-│   │   ├── backend-deployment.yaml  # Enhanced backend deployment
+│   │   ├── backend-deployment.yaml  # Backend deployment
 │   │   ├── frontend-deployment.yaml # Frontend deployment
 │   │   ├── database-statefulset.yaml# Database StatefulSet
 │   │   ├── redis-deployment.yaml    # Redis cache deployment

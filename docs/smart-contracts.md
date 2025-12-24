@@ -237,9 +237,3 @@ describe('CreditScore', function () {
 1. Gas costs for batch operations
 2. Block time dependencies
 3. Oracle reliance for external data
-
-## Future Improvements
-
-1. Layer 2 integration
-2. Cross-chain compatibility
-3. Enhanced privacy features

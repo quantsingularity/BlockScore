@@ -1,5 +1,5 @@
 """
-Enhanced Security Middleware for Financial Services
+Security Middleware for Financial Services
 Implements comprehensive security controls for financial applications
 """
 
