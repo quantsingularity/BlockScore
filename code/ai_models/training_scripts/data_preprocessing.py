@@ -7,6 +7,7 @@ and applies necessary transformations (scaling, encoding) to prepare it for
 machine learning model training.
 """
 
+from typing import Any
 import logging
 import os
 import joblib

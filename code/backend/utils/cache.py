@@ -21,7 +21,7 @@ class CacheManager:
         redis_client: Optional[redis.Redis] = None,
         default_ttl: int = 3600,
         key_prefix: str = "blockscore",
-    ) -> Any:
+    ) -> None:
         self.redis = redis_client
         self.default_ttl = default_ttl
         self.key_prefix = key_prefix
@@ -354,7 +354,7 @@ def cache_invalidate(cache_manager: CacheManager, patterns: List[str]) -> Any:
 class CacheWarmer:
     """Utility for warming up cache with frequently accessed data"""
 
-    def __init__(self, cache_manager: CacheManager) -> Any:
+    def __init__(self, cache_manager: CacheManager) -> None:
         self.cache = cache_manager
         self.logger = logging.getLogger(__name__)
 

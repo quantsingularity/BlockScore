@@ -5,6 +5,7 @@ This module provides a Flask API server for the BlockScore credit scoring model.
 It exposes endpoints for health checks and credit score prediction.
 """
 
+from typing import Any, Dict
 import logging
 import os
 import sys
@@ -38,7 +39,7 @@ def health_check() -> Any:
 
 
 @app.route("/predict", methods=["POST"])
-def predict() -> Any:
+def predict() -> Dict[str, Any]:
     """
     Endpoint for credit score prediction
 
@@ -105,7 +106,7 @@ def predict() -> Any:
 
 
 @app.route("/batch-predict", methods=["POST"])
-def batch_predict() -> Any:
+def batch_predict() -> Dict[str, Any]:
     """
     Endpoint for batch credit score prediction
 

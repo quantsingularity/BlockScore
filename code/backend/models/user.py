@@ -52,6 +52,10 @@ class User(db.Model):
     mfa_enabled = db.Column(db.Boolean, default=False)
     mfa_secret = db.Column(db.String(32), nullable=True)
     backup_codes = db.Column(db.Text, nullable=True)
+    # MFA-related fields
+    totp_secret = db.Column(db.String(255), nullable=True)
+    sms_verification_code = db.Column(db.String(255), nullable=True)
+    mfa_methods = db.Column(db.Text, nullable=True)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -132,6 +136,10 @@ class UserProfile(db.Model):
     wallet_verified = db.Column(db.Boolean, default=False)
     data_sharing_consent = db.Column(db.Boolean, default=False)
     marketing_consent = db.Column(db.Boolean, default=False)
+    # MFA-related fields
+    totp_secret = db.Column(db.String(255), nullable=True)
+    sms_verification_code = db.Column(db.String(255), nullable=True)
+    mfa_methods = db.Column(db.Text, nullable=True)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -141,7 +149,7 @@ class UserProfile(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_full_name(self) -> Any:
+    def get_full_name(self) -> str:
         """Get full name"""
         if self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"

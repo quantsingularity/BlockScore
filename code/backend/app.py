@@ -199,7 +199,7 @@ def create_app(config_name: str = "default") -> Flask:
     def health_check() -> Tuple[Any, int]:
         """Comprehensive health check endpoint"""
         try:
-            db.session.execute("SELECT 1")
+            db.session.execute(db.text("SELECT 1"))
             db_status = True
         except Exception as e:
             db_status = False

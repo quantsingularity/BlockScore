@@ -15,7 +15,7 @@ from sqlalchemy.engine import Engine
 class DatabaseOptimizer:
     """Database performance optimization and monitoring"""
 
-    def __init__(self, db: Any, engine: Engine) -> Any:
+    def __init__(self, db: Any, engine: Engine) -> None:
         self.db = db
         self.engine = engine
         self.logger = logging.getLogger(__name__)

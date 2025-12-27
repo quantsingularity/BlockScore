@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 db = SQLAlchemy()
 
@@ -101,7 +101,7 @@ class BlockchainTransaction(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_input_data(self) -> Any:
+    def get_input_data(self) -> Dict[str, Any]:
         """Get parsed input data"""
         if self.input_data:
             try:
@@ -114,7 +114,7 @@ class BlockchainTransaction(db.Model):
         """Set input data as JSON"""
         self.input_data = json.dumps(data) if data else None
 
-    def get_output_data(self) -> Any:
+    def get_output_data(self) -> Dict[str, Any]:
         """Get parsed output data"""
         if self.output_data:
             try:
@@ -127,7 +127,7 @@ class BlockchainTransaction(db.Model):
         """Set output data as JSON"""
         self.output_data = json.dumps(data) if data else None
 
-    def get_token_transfers(self) -> Any:
+    def get_token_transfers(self) -> List[Any]:
         """Get parsed token transfers"""
         if self.token_transfers:
             try:
@@ -147,7 +147,7 @@ class BlockchainTransaction(db.Model):
             and self.confirmation_count >= self.required_confirmations
         )
 
-    def calculate_transaction_fee_usd(self, eth_price_usd: Any = None) -> Any:
+    def calculate_transaction_fee_usd(self, eth_price_usd: Any = None) -> float:
         """Calculate transaction fee in USD"""
         if self.transaction_fee and eth_price_usd:
             return float(self.transaction_fee) * eth_price_usd
@@ -237,7 +237,7 @@ class SmartContract(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_abi(self) -> Any:
+    def get_abi(self) -> List[Any]:
         """Get parsed ABI"""
         if self.abi:
             try:
@@ -250,7 +250,7 @@ class SmartContract(db.Model):
         """Set ABI as JSON"""
         self.abi = json.dumps(abi) if abi else None
 
-    def get_constructor_args(self) -> Any:
+    def get_constructor_args(self) -> List[Any]:
         """Get parsed constructor arguments"""
         if self.constructor_args:
             try:
@@ -263,7 +263,7 @@ class SmartContract(db.Model):
         """Set constructor arguments as JSON"""
         self.constructor_args = json.dumps(args) if args else None
 
-    def get_audit_reports(self) -> Any:
+    def get_audit_reports(self) -> List[Any]:
         """Get parsed audit reports"""
         if self.audit_reports:
             try:
@@ -276,7 +276,7 @@ class SmartContract(db.Model):
         """Set audit reports as JSON"""
         self.audit_reports = json.dumps(reports) if reports else None
 
-    def get_known_vulnerabilities(self) -> Any:
+    def get_known_vulnerabilities(self) -> List[Any]:
         """Get parsed known vulnerabilities"""
         if self.known_vulnerabilities:
             try:

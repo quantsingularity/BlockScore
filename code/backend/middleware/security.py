@@ -24,7 +24,7 @@ from services.audit_service import AuditService
 class SecurityMiddleware:
     """Comprehensive security middleware for financial applications"""
 
-    def __init__(self, app: Any = None, redis_client: Any = None) -> Any:
+    def __init__(self, app: Any = None, redis_client: Any = None) -> None:
         self.app = app
         self.redis_client = redis_client
         self.audit_service = None

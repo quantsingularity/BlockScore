@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 db = SQLAlchemy()
 
@@ -106,7 +106,7 @@ class AuditLog(db.Model):
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
 
-    def get_event_data(self) -> Any:
+    def get_event_data(self) -> Dict[str, Any]:
         """Get parsed event data"""
         if self.event_data:
             try:
@@ -119,7 +119,7 @@ class AuditLog(db.Model):
         """Set event data as JSON"""
         self.event_data = json.dumps(data) if data else None
 
-    def get_before_state(self) -> Any:
+    def get_before_state(self) -> Dict[str, Any]:
         """Get parsed before state"""
         if self.before_state:
             try:
@@ -132,7 +132,7 @@ class AuditLog(db.Model):
         """Set before state as JSON"""
         self.before_state = json.dumps(data) if data else None
 
-    def get_after_state(self) -> Any:
+    def get_after_state(self) -> Dict[str, Any]:
         """Get parsed after state"""
         if self.after_state:
             try:
@@ -145,7 +145,7 @@ class AuditLog(db.Model):
         """Set after state as JSON"""
         self.after_state = json.dumps(data) if data else None
 
-    def get_request_headers(self) -> Any:
+    def get_request_headers(self) -> Dict[str, Any]:
         """Get parsed request headers"""
         if self.request_headers:
             try:
@@ -227,7 +227,7 @@ class ComplianceRecord(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_assessment_data(self) -> Any:
+    def get_assessment_data(self) -> Dict[str, Any]:
         """Get parsed assessment data"""
         if self.assessment_data:
             try:
@@ -240,7 +240,7 @@ class ComplianceRecord(db.Model):
         """Set assessment data as JSON"""
         self.assessment_data = json.dumps(data) if data else None
 
-    def get_violations(self) -> Any:
+    def get_violations(self) -> List[Any]:
         """Get parsed violations"""
         if self.violations:
             try:
@@ -253,7 +253,7 @@ class ComplianceRecord(db.Model):
         """Set violations as JSON"""
         self.violations = json.dumps(violations) if violations else None
 
-    def get_remediation_actions(self) -> Any:
+    def get_remediation_actions(self) -> List[Any]:
         """Get parsed remediation actions"""
         if self.remediation_actions:
             try:
@@ -273,7 +273,7 @@ class ComplianceRecord(db.Model):
             return now < self.valid_until
         return True
 
-    def needs_review(self) -> Any:
+    def needs_review(self) -> bool:
         """Check if compliance record needs review"""
         if self.next_review_date:
             return datetime.now(timezone.utc) >= self.next_review_date

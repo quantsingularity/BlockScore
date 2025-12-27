@@ -108,7 +108,7 @@ class CreditScore(db.Model):
             return datetime.now(timezone.utc) > self.expires_at
         return False
 
-    def get_score_breakdown(self) -> Any:
+    def get_score_breakdown(self) -> Dict[str, Any]:
         """Get detailed score breakdown"""
         return {
             "total_score": self.score,
@@ -227,7 +227,7 @@ class CreditHistory(db.Model):
         onupdate=datetime.now(timezone.utc),
     )
 
-    def get_event_data(self) -> Any:
+    def get_event_data(self) -> Dict[str, Any]:
         """Get parsed event data"""
         if self.event_data:
             try:

@@ -77,7 +77,7 @@ class RiskAnalytics:
     Comprehensive risk analytics for financial institutions
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.risk_models = {}
         self.portfolio_data = None
         self.market_data = None

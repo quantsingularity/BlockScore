@@ -24,7 +24,7 @@ from web3.exceptions import TransactionNotFound
 class BlockchainService:
     """Comprehensive blockchain service for smart contract integration"""
 
-    def __init__(self, config: Any) -> Any:
+    def __init__(self, config: Any) -> None:
         self.config = config
         self.logger = logging.getLogger(__name__)
         self.web3 = None

@@ -1,3 +1,4 @@
+from typing import Any, Dict
 import os
 import sys
 import unittest
@@ -68,7 +69,7 @@ class TestModelIntegration(unittest.TestCase):
         self.assertEqual(no_repay_features["payment_history"], 0.0)
 
     @patch("model_integration.model")
-    def test_predict_score(self, mock_model: Any) -> Any:
+    def test_predict_score(self, mock_model: Any) -> Dict[str, Any]:
         """Test credit score prediction"""
         mock_model.predict.return_value = [720]
         features = transform_blockchain_data(self.sample_history)
@@ -83,7 +84,7 @@ class TestModelIntegration(unittest.TestCase):
         score = predict_score(features)
         self.assertEqual(score, 850)
 
-    def test_calculate_score_factors(self) -> Any:
+    def test_calculate_score_factors(self) -> float:
         """Test calculation of score factors"""
         features = {
             "payment_history": 0.95,
@@ -126,7 +127,7 @@ class TestModelIntegration(unittest.TestCase):
     @patch("model_integration.calculate_score_factors")
     def test_batch_score(
         self, mock_factors: Any, mock_predict: Any, mock_transform: Any
-    ) -> Any:
+    ) -> float:
         """Test batch scoring functionality"""
         mock_transform.return_value = {
             "payment_history": 0.9,

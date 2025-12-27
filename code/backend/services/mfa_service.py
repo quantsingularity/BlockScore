@@ -34,7 +34,7 @@ class MFAMethod:
 class MFAService:
     """Multi-Factor Authentication service for enhanced security"""
 
-    def __init__(self, db_session: Session) -> Any:
+    def __init__(self, db_session: Session) -> None:
         self.db = db_session
         self.audit_service = AuditService(db_session)
         self.totp_issuer = "BlockScore"

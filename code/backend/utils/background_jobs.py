@@ -14,7 +14,7 @@ from celery.result import AsyncResult
 class JobManager:
     """Background job manager using Celery"""
 
-    def __init__(self, app_config: Dict[str, Any]) -> Any:
+    def __init__(self, app_config: Dict[str, Any]) -> None:
         self.config = app_config
         self.logger = logging.getLogger(__name__)
         self.celery = self._create_celery_app()

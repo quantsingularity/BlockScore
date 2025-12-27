@@ -24,7 +24,7 @@ from models.user import User
 class CreditScoringService:
     """Advanced credit scoring service with AI models and blockchain integration"""
 
-    def __init__(self, db: Any) -> Any:
+    def __init__(self, db: Any) -> None:
         self.db = db
         self.logger = logging.getLogger(__name__)
         self.model = None

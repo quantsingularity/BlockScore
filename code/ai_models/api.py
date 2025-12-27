@@ -1,3 +1,4 @@
+from typing import Any, Dict
 import os
 from datetime import datetime
 import joblib
@@ -74,7 +75,7 @@ def preprocess_blockchain_data(credit_history: Any) -> Any:
     return pd.DataFrame([features])
 
 
-def calculate_score_factors(features: Any, prediction: Any) -> Any:
+def calculate_score_factors(features: Any, prediction: Any) -> Dict[str, Any]:
     """
     Calculate contributing factors to the credit score
 
@@ -183,7 +184,7 @@ def health_check() -> Any:
 
 
 @app.route("/predict", methods=["POST"])
-def predict() -> Any:
+def predict() -> Dict[str, Any]:
     """
     Endpoint for credit score prediction
 

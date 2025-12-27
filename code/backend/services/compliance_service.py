@@ -18,7 +18,7 @@ from models.user import KYCStatus, User, UserProfile
 class ComplianceService:
     """Comprehensive compliance service for financial regulations"""
 
-    def __init__(self, db: Any) -> Any:
+    def __init__(self, db: Any) -> None:
         self.db = db
         self.logger = logging.getLogger(__name__)
         self.kyc_requirements = {

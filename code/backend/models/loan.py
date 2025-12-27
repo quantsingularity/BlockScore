@@ -105,7 +105,7 @@ class LoanApplication(db.Model):
     )
     loan = db.relationship("Loan", backref="application", uselist=False)
 
-    def generate_application_number(self) -> Any:
+    def generate_application_number(self) -> str:
         """Generate unique application number"""
         timestamp = datetime.now().strftime("%Y%m%d")
         import random
@@ -113,7 +113,7 @@ class LoanApplication(db.Model):
         random_part = str(random.randint(1000, 9999))
         return f"APP{timestamp}{random_part}"
 
-    def get_application_data(self) -> Any:
+    def get_application_data(self) -> Dict[str, Any]:
         """Get parsed application data"""
         if self.application_data:
             try:
@@ -126,7 +126,7 @@ class LoanApplication(db.Model):
         """Set application data as JSON"""
         self.application_data = json.dumps(data) if data else None
 
-    def get_risk_assessment(self) -> Any:
+    def get_risk_assessment(self) -> Dict[str, Any]:
         """Get parsed risk assessment"""
         if self.risk_assessment:
             try:
@@ -229,7 +229,7 @@ class Loan(db.Model):
         "LoanPayment", backref="loan", cascade="all, delete-orphan"
     )
 
-    def generate_loan_number(self) -> Any:
+    def generate_loan_number(self) -> str:
         """Generate unique loan number"""
         timestamp = datetime.now().strftime("%Y%m%d")
         import random
@@ -237,7 +237,7 @@ class Loan(db.Model):
         random_part = str(random.randint(10000, 99999))
         return f"LN{timestamp}{random_part}"
 
-    def calculate_remaining_balance(self) -> Any:
+    def calculate_remaining_balance(self) -> float:
         """Calculate remaining balance based on payments"""
         total_payments = sum(
             (
@@ -342,13 +342,13 @@ class LoanPayment(db.Model):
             return False
         return datetime.now().date() > self.due_date
 
-    def days_late(self) -> Any:
+    def days_late(self) -> int:
         """Calculate days late"""
         if not self.is_late():
             return 0
         return (datetime.now().date() - self.due_date).days
 
-    def get_processor_response(self) -> Any:
+    def get_processor_response(self) -> Dict[str, Any]:
         """Get parsed processor response"""
         if self.processor_response:
             try:

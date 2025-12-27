@@ -7,7 +7,7 @@ import logging
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 import joblib
 import numpy as np
 import pandas as pd
@@ -82,7 +82,7 @@ class AdvancedCreditScoringModel:
     Advanced credit scoring model with regulatory compliance and fairness considerations
     """
 
-    def __init__(self, config: ModelConfig) -> Any:
+    def __init__(self, config: ModelConfig) -> None:
         self.config = config
         self.models = {}
         self.ensemble_model = None

@@ -27,7 +27,7 @@ class AuthService:
 
     def __init__(
         self, db: Any, bcrypt: Bcrypt, redis_client: Optional[redis.Redis] = None
-    ) -> Any:
+    ) -> None:
         self.db = db
         self.bcrypt = bcrypt
         self.redis = redis_client

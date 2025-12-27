@@ -5,6 +5,7 @@ This module provides utilities for integrating the Python scoring model with the
 It includes functions for data transformation, model inference, and API communication.
 """
 
+from typing import Any, Dict
 import os
 from datetime import datetime
 import joblib
@@ -80,7 +81,7 @@ def transform_blockchain_data(credit_history: Any) -> Any:
     return features
 
 
-def predict_score(features: Any) -> Any:
+def predict_score(features: Any) -> Dict[str, Any]:
     """
     Predict credit score based on features
 
@@ -100,7 +101,7 @@ def predict_score(features: Any) -> Any:
     return int(prediction)
 
 
-def calculate_score_factors(features: Any, prediction: Any) -> Any:
+def calculate_score_factors(features: Any, prediction: Any) -> Dict[str, Any]:
     """
     Calculate contributing factors to the credit score
 
@@ -196,7 +197,7 @@ def calculate_score_factors(features: Any, prediction: Any) -> Any:
     return factors
 
 
-def batch_score(credit_histories: Any) -> Any:
+def batch_score(credit_histories: Any) -> float:
     """
     Process multiple credit histories for batch scoring
 

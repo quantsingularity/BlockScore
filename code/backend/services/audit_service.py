@@ -15,7 +15,7 @@ from models.audit import AuditEventType, AuditLog, AuditSeverity
 class AuditService:
     """Comprehensive audit service for financial compliance and security monitoring"""
 
-    def __init__(self, db: Any) -> Any:
+    def __init__(self, db: Any) -> None:
         self.db = db
         self.logger = logging.getLogger(__name__)
         self.sensitive_fields = {

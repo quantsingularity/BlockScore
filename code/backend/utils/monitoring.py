@@ -33,7 +33,7 @@ class MetricPoint:
 class PerformanceMonitor:
     """Real-time performance monitoring system"""
 
-    def __init__(self, retention_hours: int = 24) -> Any:
+    def __init__(self, retention_hours: int = 24) -> None:
         self.retention_hours = retention_hours
         self.metrics = defaultdict(lambda: deque(maxlen=10000))
         self.alerts = []

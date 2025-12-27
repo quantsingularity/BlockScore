@@ -1,3 +1,4 @@
+from typing import Any, Dict
 import json
 import os
 import sys
@@ -55,7 +56,7 @@ class TestModelAPI(unittest.TestCase):
     @patch("server.calculate_score_factors")
     def test_predict_endpoint(
         self, mock_factors: Any, mock_predict: Any, mock_transform: Any
-    ) -> Any:
+    ) -> Dict[str, Any]:
         """Test prediction endpoint"""
         mock_transform.return_value = {
             "payment_history": 0.9,
@@ -105,7 +106,7 @@ class TestModelAPI(unittest.TestCase):
     @patch("server.calculate_score_factors")
     def test_batch_predict_endpoint(
         self, mock_factors: Any, mock_predict: Any, mock_transform: Any
-    ) -> Any:
+    ) -> Dict[str, Any]:
         """Test batch prediction endpoint"""
         mock_transform.return_value = {
             "payment_history": 0.9,
