@@ -546,17 +546,115 @@ class MFAService:
 
     def _is_mfa_locked(self, user_id: int) -> bool:
         """Check if user is locked due to failed MFA attempts"""
-        return False
+        try:
+            user = User.query.get(user_id)
+            if not user or not user.profile:
+                return False
+            if (
+                hasattr(user.profile, "mfa_lockout_until")
+                and user.profile.mfa_lockout_until
+            ):
+                if datetime.now(timezone.utc) < user.profile.mfa_lockout_until:
+                    return True
+                user.profile.mfa_lockout_until = None
+                user.profile.mfa_failed_attempts = 0
+                self.db.commit()
+            return False
+        except Exception:
+            return False
 
     def _increment_mfa_failed_attempts(self, user_id: int) -> Any:
+        """Increment failed MFA attempts counter and lock if threshold exceeded"""
+        try:
+            user = User.query.get(user_id)
+            if not user or not user.profile:
+                return
+            if not hasattr(user.profile, "mfa_failed_attempts"):
+                user.profile.mfa_failed_attempts = 0
+            user.profile.mfa_failed_attempts = (
+                user.profile.mfa_failed_attempts or 0
+            ) + 1
+            if user.profile.mfa_failed_attempts >= self.max_failed_attempts:
+                user.profile.mfa_lockout_until = datetime.now(timezone.utc) + timedelta(
+                    seconds=self.lockout_duration
+                )
+                user.profile.mfa_failed_attempts = 0
+            self.db.commit()
+        except Exception as e:
+            current_app.logger.error(
+                f"Failed to increment MFA attempts for user {user_id}: {e}"
+            )
         """Increment failed MFA attempts counter"""
 
     def _reset_mfa_failed_attempts(self, user_id: int) -> Any:
+        """Reset failed MFA attempts counter after successful verification"""
+        try:
+            user = User.query.get(user_id)
+            if not user or not user.profile:
+                return
+            user.profile.mfa_failed_attempts = 0
+            user.profile.mfa_lockout_until = None
+            self.db.commit()
+        except Exception as e:
+            current_app.logger.error(
+                f"Failed to reset MFA attempts for user {user_id}: {e}"
+            )
         """Reset failed MFA attempts counter"""
 
     def _is_sms_rate_limited(self, user_id: int) -> bool:
         """Check if SMS sending is rate limited for user"""
-        return False
+        try:
+            user = User.query.get(user_id)
+            if not user or not user.profile:
+                return False
+            if (
+                hasattr(user.profile, "last_sms_sent_at")
+                and user.profile.last_sms_sent_at
+            ):
+                time_since_last_sms = (
+                    datetime.now(timezone.utc) - user.profile.last_sms_sent_at
+                ).total_seconds()
+                if time_since_last_sms < 60:
+                    return True
+            if hasattr(user.profile, "sms_sent_count_today"):
+                today_start = datetime.now(timezone.utc).replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+                if (
+                    hasattr(user.profile, "sms_count_reset_at")
+                    and user.profile.sms_count_reset_at
+                ):
+                    if user.profile.sms_count_reset_at < today_start:
+                        return False
+                if (user.profile.sms_sent_count_today or 0) >= 10:
+                    return True
+            return False
+        except Exception:
+            return False
 
     def _update_sms_rate_limit(self, user_id: int) -> Any:
         """Update SMS rate limiting counter"""
+        try:
+            user = User.query.get(user_id)
+            if not user or not user.profile:
+                return
+            today_start = datetime.now(timezone.utc).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+            if (
+                not hasattr(user.profile, "sms_count_reset_at")
+                or not user.profile.sms_count_reset_at
+                or user.profile.sms_count_reset_at < today_start
+            ):
+                user.profile.sms_sent_count_today = 1
+                user.profile.sms_count_reset_at = datetime.now(timezone.utc)
+            else:
+                user.profile.sms_sent_count_today = (
+                    user.profile.sms_sent_count_today or 0
+                ) + 1
+            user.profile.last_sms_sent_at = datetime.now(timezone.utc)
+            self.db.commit()
+        except Exception as e:
+            current_app.logger.error(
+                f"Failed to update SMS rate limit for user {user_id}: {e}"
+            )

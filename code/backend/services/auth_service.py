@@ -360,7 +360,11 @@ class AuthService:
                 if session:
                     self.redis.delete(f"session:{session.session_token}")
             else:
-                pass
+                sessions = UserSession.query.filter_by(
+                    user_id=user_id, is_active=True
+                ).all()
+                for session in sessions:
+                    self.redis.delete(f"session:{session.session_token}")
         except Exception as e:
             logger.info(f"Failed to remove cached sessions: {e}")
 

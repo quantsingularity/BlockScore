@@ -282,7 +282,18 @@ class AuditService:
             AuditLog.event_timestamp <= end_date,
         )
         if compliance_types:
-            pass
+            query = query.filter(
+                AuditLog.event_type.in_(
+                    [AuditEventType.COMPLIANCE_CHECK]
+                    + [
+                        getattr(
+                            AuditEventType, ct.upper(), AuditEventType.COMPLIANCE_CHECK
+                        )
+                        for ct in compliance_types
+                        if hasattr(AuditEventType, ct.upper())
+                    ]
+                )
+            )
         logs = query.all()
         total_events = len(logs)
         events_by_type = {}
