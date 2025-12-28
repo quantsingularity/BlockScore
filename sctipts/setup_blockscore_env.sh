@@ -15,7 +15,7 @@ set -e
 
 echo "Starting BlockScore project setup..."
 
-PROJECT_DIR="/projects_extracted/BlockScore"
+PROJECT_DIR="/BlockScore"
 
 if [ ! -d "${PROJECT_DIR}" ]; then
   echo "Error: Project directory ${PROJECT_DIR} not found."
