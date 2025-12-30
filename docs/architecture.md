@@ -1,118 +1,160 @@
-# BlockScore Architecture Documentation
+# BlockScore Architecture Overview
 
-## System Overview
+## System Architecture
 
-BlockScore is a decentralized credit scoring system that combines blockchain technology, artificial intelligence, and quantitative finance to provide fair and transparent credit assessments.
-
-## High-Level Architecture
+BlockScore follows a modular microservices architecture combining blockchain, AI, and traditional web technologies.
 
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Frontend  │────▶│    Backend   │────▶│  Blockchain │
-│   (React)   │     │   (Node.js)  │     │  (Ethereum) │
-└─────────────┘     └──────────────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │   AI Models  │
-                    │   (Python)   │
-                    └──────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                         FRONTEND LAYER                       │
+│  ┌──────────────────┐           ┌──────────────────┐       │
+│  │   Web Dashboard  │           │   Mobile App     │       │
+│  │   (React)        │           │  (React Native)  │       │
+│  └─────────┬────────┘           └─────────┬────────┘       │
+└────────────┼──────────────────────────────┼────────────────┘
+             │                               │
+             │         HTTP/REST             │
+             └───────────────┬───────────────┘
+                             │
+┌────────────────────────────┼────────────────────────────────┐
+│                      BACKEND API LAYER                       │
+│             ┌───────────────┴──────────────┐                │
+│             │   Flask API Server           │                │
+│             │   (Python 3.8+)              │                │
+│             │                               │                │
+│             │  - Authentication (JWT)       │                │
+│             │  - Credit API                 │                │
+│             │  - Loan API                   │                │
+│             │  - Audit Logging              │                │
+│             └─────────┬──────┬──────┬──────┘                │
+└───────────────────────┼──────┼──────┼───────────────────────┘
+                        │      │      │
+         ┌──────────────┘      │      └─────────────────┐
+         │                     │                         │
+┌────────┴────────┐   ┌────────┴─────────┐   ┌─────────┴──────────┐
+│   AI/ML Layer   │   │  Blockchain      │   │    Data Layer      │
+│                 │   │     Layer        │   │                    │
+│  ┌───────────┐  │   │  ┌────────────┐ │   │  ┌──────────────┐  │
+│  │ XGBoost   │  │   │  │ Ethereum/  │ │   │  │ PostgreSQL   │  │
+│  │ Models    │  │   │  │ Polygon    │ │   │  │    or        │  │
+│  ├───────────┤  │   │  ├────────────┤ │   │  │  SQLite      │  │
+│  │ Fraud     │  │   │  │ Smart      │ │   │  └──────────────┘  │
+│  │ Detection │  │   │  │ Contracts  │ │   │                    │
+│  ├───────────┤  │   │  │ (Solidity) │ │   │  ┌──────────────┐  │
+│  │ Risk      │  │   │  └────────────┘ │   │  │    Redis     │  │
+│  │ Analytics │  │   │                 │   │  │  (Optional)  │  │
+│  └───────────┘  │   └─────────────────┘   │  └──────────────┘  │
+└─────────────────┘                          └────────────────────┘
 ```
 
 ## Component Details
 
-### 1. Frontend Layer
+### Frontend Layer
 
-- **Technology**: React.js
-- **Key Components**:
-    - User authentication interface
-    - Credit score dashboard
-    - Transaction history viewer
-    - Loan application forms
-    - Wallet integration (MetaMask)
+- **Web Dashboard**: React + Material-UI, Web3 integration
+- **Mobile App**: React Native for iOS & Android
 
-### 2. Backend Layer
+### Backend API Layer
 
-- **Technology**: Node.js with Express
-- **Responsibilities**:
-    - API endpoint management
-    - Business logic implementation
-    - Data validation and processing
-    - Integration with blockchain and AI models
-    - Authentication and authorization
+- **Framework**: Flask (Python)
+- **Authentication**: JWT with Flask-JWT-Extended
+- **Rate Limiting**: Flask-Limiter with Redis
+- **Database ORM**: SQLAlchemy
+- **Validation**: Marshmallow schemas
 
-### 3. Blockchain Layer
+### AI/ML Layer
 
-- **Technology**: Ethereum/Polygon
-- **Smart Contracts**:
-    - CreditScore.sol: Manages credit score data
-    - LoanAgreement.sol: Handles loan terms and conditions
-    - DataRegistry.sol: Stores transaction history
+- **Credit Scoring**: XGBoost, Random Forest
+- **Fraud Detection**: Anomaly detection algorithms
+- **Risk Analytics**: VaR, Sharpe ratio calculations
+- **Feature Engineering**: Automated from blockchain data
 
-### 4. AI/ML Layer
+### Blockchain Layer
 
-- **Technology**: Python (TensorFlow/PyTorch)
-- **Models**:
-    - Credit risk assessment
-    - Fraud detection
-    - Payment behavior prediction
+- **Networks**: Ethereum, Polygon
+- **Smart Contracts**: Solidity 0.8.0
+- **Web3 Library**: Web3.py (backend), Web3.js (frontend)
+
+### Data Layer
+
+- **Primary DB**: PostgreSQL (production), SQLite (development)
+- **Cache**: Redis for sessions and rate limiting
+- **Blockchain**: On-chain credit records
 
 ## Data Flow
 
-1. **User Interaction**:
+### Credit Score Calculation
 
-    ```
-    User → Frontend → Backend → Blockchain
-    ```
+```
+User Request → API Authentication → Fetch Blockchain Data
+                                           ↓
+                              AI Model Preprocessing
+                                           ↓
+                              Credit Score Calculation
+                                           ↓
+                              Store in Database
+                                           ↓
+                              Return Score + Factors
+```
 
-2. **Credit Score Calculation**:
+### Loan Application
 
-    ```
-    Transaction Data → AI Models → Credit Score → Blockchain
-    ```
+```
+User Submits → API Validation → Check Credit Score
+                                       ↓
+                              Calculate Approval Probability
+                                       ↓
+                              Store Application in DB
+                                       ↓
+                              Optional: Create Smart Contract
+                                       ↓
+                              Return Application Status
+```
 
-3. **Loan Processing**:
-    ```
-    Loan Application → Risk Assessment → Smart Contract → Approval/Rejection
-    ```
+## Module Mapping
+
+| Module          | Files                             | Purpose                |
+| --------------- | --------------------------------- | ---------------------- |
+| Backend API     | `code/backend/app.py`             | Main Flask application |
+| Models          | `code/backend/models/*.py`        | Database models        |
+| Services        | `code/backend/services/*.py`      | Business logic         |
+| AI Models       | `code/ai_models/*.py`             | ML models and training |
+| Smart Contracts | `code/blockchain/contracts/*.sol` | Solidity contracts     |
+| Web Frontend    | `web-frontend/src/`               | React components       |
+| Mobile Frontend | `mobile-frontend/`                | React Native app       |
+
+## Deployment Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│                    Load Balancer                      │
+│                    (Nginx/ALB)                        │
+└────────────────────────┬─────────────────────────────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │               │
+    ┌─────┴────┐   ┌─────┴────┐   ┌─────┴────┐
+    │ Backend  │   │ Backend  │   │ Backend  │
+    │ Instance │   │ Instance │   │ Instance │
+    └─────┬────┘   └─────┬────┘   └─────┬────┘
+          │              │               │
+          └──────────────┼───────────────┘
+                         │
+          ┌──────────────┴──────────────┐
+          │                              │
+    ┌─────┴────────┐           ┌────────┴──────┐
+    │  PostgreSQL  │           │     Redis     │
+    │   Cluster    │           │    Cluster    │
+    └──────────────┘           └───────────────┘
+```
 
 ## Security Architecture
 
-### Authentication
+- **Authentication**: JWT tokens (15min access, 7day refresh)
+- **Authorization**: Role-based access control
+- **Encryption**: Bcrypt for passwords, HTTPS for transport
+- **Rate Limiting**: Per-endpoint and per-user limits
+- **Audit Logging**: All sensitive operations logged
+- **Input Validation**: Schema-based validation on all endpoints
 
-- JWT-based authentication
-- Web3 wallet integration
-- Multi-factor authentication for sensitive operations
-
-### Data Protection
-
-- End-to-end encryption for sensitive data
-- Off-chain storage for private information
-- On-chain hashed references
-
-## Scalability Considerations
-
-### Current Limitations
-
-- Transaction throughput
-- AI model processing time
-- Blockchain gas costs
-
-### Scaling Solutions
-
-- Layer 2 solutions for blockchain
-- Distributed AI processing
-- Caching strategies
-
-## Monitoring and Maintenance
-
-### System Health Monitoring
-
-- Smart contract events
-- API endpoint metrics
-- Model performance metrics
-
-### Backup and Recovery
-
-- Database backup procedures
-- Smart contract upgrade strategy
-- Model versioning
+See [Security Guide](SECURITY.md) for details.

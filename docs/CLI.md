@@ -1,0 +1,433 @@
+# BlockScore CLI Reference
+
+Command-line interface documentation for BlockScore scripts and tools.
+
+## Table of Contents
+
+- [Setup Scripts](#setup-scripts)
+- [Deployment Scripts](#deployment-scripts)
+- [Development Scripts](#development-scripts)
+- [Smart Contract Commands](#smart-contract-commands)
+- [Database Commands](#database-commands)
+
+## Setup Scripts
+
+### setup_blockscore_env.sh
+
+Automated environment setup for BlockScore.
+
+**Location**: `sctipts/setup_blockscore_env.sh`
+
+**Usage**:
+
+```bash
+./sctipts/setup_blockscore_env.sh
+```
+
+**What it does**:
+
+1. Creates Python virtual environments (AI models + backend)
+2. Installs Python dependencies from requirements.txt
+3. Installs Node.js dependencies (backend + frontend)
+4. Sets up project structure
+
+**Requirements**: Python 3.8+, Node.js 16+, npm
+
+### run_blockscore.sh
+
+Start all BlockScore services.
+
+**Location**: `sctipts/run_blockscore.sh`
+
+**Usage**:
+
+```bash
+./sctipts/run_blockscore.sh
+```
+
+**Services started**:
+
+- Backend API (Port 5000)
+- Web Frontend (Port 3000)
+- AI Model Server (if configured)
+
+## Deployment Scripts
+
+### smart_contract_deploy.sh
+
+Deploy smart contracts to blockchain network.
+
+**Location**: `sctipts/smart_contract_deploy.sh`
+
+**Usage**:
+
+```bash
+./sctipts/smart_contract_deploy.sh [network]
+```
+
+**Arguments**:
+
+| Argument  | Description               | Example                             |
+| --------- | ------------------------- | ----------------------------------- |
+| `network` | Target blockchain network | `development`, `testnet`, `mainnet` |
+
+**Examples**:
+
+```bash
+# Deploy to local Ganache
+./sctipts/smart_contract_deploy.sh development
+
+# Deploy to Polygon Mumbai testnet
+./sctipts/smart_contract_deploy.sh testnet
+
+# Deploy to Polygon mainnet
+./sctipts/smart_contract_deploy.sh mainnet
+```
+
+### component_restart.sh
+
+Restart specific BlockScore components.
+
+**Location**: `sctipts/component_restart.sh`
+
+**Usage**:
+
+```bash
+./sctipts/component_restart.sh [component]
+```
+
+**Components**:
+
+| Component  | Description               |
+| ---------- | ------------------------- |
+| `backend`  | Restart Flask backend API |
+| `frontend` | Restart React frontend    |
+| `ai_model` | Restart AI model server   |
+| `all`      | Restart all components    |
+
+**Examples**:
+
+```bash
+# Restart backend only
+./sctipts/component_restart.sh backend
+
+# Restart all services
+./sctipts/component_restart.sh all
+```
+
+## Development Scripts
+
+### lint-all.sh
+
+Run linters on entire codebase.
+
+**Location**: `sctipts/lint-all.sh`
+
+**Usage**:
+
+```bash
+./sctipts/lint-all.sh [--fix]
+```
+
+**Flags**:
+
+- `--fix`: Automatically fix linting issues
+
+**What it checks**:
+
+- Python: Black, Flake8, isort
+- JavaScript/TypeScript: ESLint, Prettier
+- Solidity: Solhint
+
+**Example**:
+
+```bash
+# Check for issues
+./sctipts/lint-all.sh
+
+# Auto-fix issues
+./sctipts/lint-all.sh --fix
+```
+
+### code_quality_check.sh
+
+Comprehensive code quality analysis.
+
+**Location**: `sctipts/code_quality_check.sh`
+
+**Usage**:
+
+```bash
+./sctipts/code_quality_check.sh
+```
+
+**Checks performed**:
+
+1. Linting (syntax, style)
+2. Static analysis
+3. Security vulnerabilities
+4. Code complexity
+5. Test coverage
+
+## Smart Contract Commands
+
+### Truffle Commands
+
+**Compile contracts**:
+
+```bash
+cd code/blockchain
+truffle compile
+```
+
+**Run tests**:
+
+```bash
+cd code/blockchain
+truffle test
+```
+
+**Deploy contracts**:
+
+```bash
+cd code/blockchain
+
+# Local development
+truffle migrate --network development
+
+# Mumbai testnet
+truffle migrate --network mumbai
+
+# Polygon mainnet
+truffle migrate --network polygon
+```
+
+**Console**:
+
+```bash
+cd code/blockchain
+truffle console --network development
+```
+
+### Contract Interaction Examples
+
+```javascript
+// In truffle console
+const CreditScore = await CreditScore.deployed();
+
+// Add credit record
+await CreditScore.addCreditRecord('0x742d35Cc6634C0532925a3b844Bc454e4438f44e', 1000, 'loan', 5);
+
+// Get credit profile
+const profile = await CreditScore.getCreditProfile('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+console.log(profile);
+```
+
+## Database Commands
+
+### Flask-SQLAlchemy (Database Initialization)
+
+**Initialize database**:
+
+```bash
+cd code/backend
+source venv/bin/activate
+python -c "from app import create_app, db; app = create_app(); app.app_context().push(); db.create_all()"
+```
+
+### Alembic Migrations (If configured)
+
+**Create migration**:
+
+```bash
+cd code/backend
+alembic revision --autogenerate -m "Description of changes"
+```
+
+**Apply migrations**:
+
+```bash
+cd code/backend
+alembic upgrade head
+```
+
+**Rollback migration**:
+
+```bash
+cd code/backend
+alembic downgrade -1
+```
+
+## Backend API Commands
+
+### Start Development Server
+
+```bash
+cd code/backend
+source venv/bin/activate
+python app.py
+```
+
+### Start Production Server (Gunicorn)
+
+```bash
+cd code/backend
+source venv/bin/activate
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
+```
+
+### Run Tests
+
+```bash
+cd code/backend
+source venv/bin/activate
+pytest
+pytest --cov=. --cov-report=html
+```
+
+## Frontend Commands
+
+### Web Frontend
+
+**Start development server**:
+
+```bash
+cd web-frontend
+npm start
+```
+
+**Build for production**:
+
+```bash
+cd web-frontend
+npm run build
+```
+
+**Run tests**:
+
+```bash
+cd web-frontend
+npm test
+```
+
+### Mobile Frontend
+
+**Start Metro bundler**:
+
+```bash
+cd mobile-frontend
+npm start
+```
+
+**Run on iOS**:
+
+```bash
+cd mobile-frontend
+npm run ios
+```
+
+**Run on Android**:
+
+```bash
+cd mobile-frontend
+npm run android
+```
+
+## AI Model Commands
+
+### Train Model
+
+```bash
+cd code/ai_models/training_scripts
+source venv_ai/bin/activate
+python train_model.py
+```
+
+### Start AI Model Server
+
+```bash
+cd code/ai_models
+source venv_ai/bin/activate
+python api.py
+```
+
+## CLI Command Reference Table
+
+| Command                    | Arguments          | Description                   | Example                                      |
+| -------------------------- | ------------------ | ----------------------------- | -------------------------------------------- |
+| `setup_blockscore_env.sh`  | None               | Setup development environment | `./sctipts/setup_blockscore_env.sh`          |
+| `run_blockscore.sh`        | None               | Start all services            | `./sctipts/run_blockscore.sh`                |
+| `smart_contract_deploy.sh` | `[network]`        | Deploy smart contracts        | `./sctipts/smart_contract_deploy.sh testnet` |
+| `component_restart.sh`     | `[component]`      | Restart specific component    | `./sctipts/component_restart.sh backend`     |
+| `lint-all.sh`              | `[--fix]`          | Run code linters              | `./sctipts/lint-all.sh --fix`                |
+| `code_quality_check.sh`    | None               | Run quality checks            | `./sctipts/code_quality_check.sh`            |
+| `truffle compile`          | None               | Compile Solidity contracts    | `cd code/blockchain && truffle compile`      |
+| `truffle test`             | None               | Run contract tests            | `cd code/blockchain && truffle test`         |
+| `truffle migrate`          | `--network [name]` | Deploy contracts              | `truffle migrate --network mumbai`           |
+| `python app.py`            | None               | Start Flask backend           | `cd code/backend && python app.py`           |
+| `npm start`                | None               | Start React frontend          | `cd web-frontend && npm start`               |
+| `pytest`                   | `[options]`        | Run backend tests             | `cd code/backend && pytest`                  |
+
+## Environment-Specific Commands
+
+### Development
+
+```bash
+# Start local blockchain
+ganache-cli -p 8545
+
+# Start backend (development mode)
+cd code/backend && FLASK_ENV=development python app.py
+
+# Start frontend (development mode)
+cd web-frontend && npm start
+```
+
+### Production
+
+```bash
+# Start backend (production mode)
+cd code/backend && gunicorn -w 4 -b 0.0.0.0:5000 app:app
+
+# Serve frontend build
+cd web-frontend && npm run build
+# Then serve with nginx or similar
+```
+
+## Troubleshooting Commands
+
+### Check Service Status
+
+```bash
+# Check if backend is running
+curl http://localhost:5000/api/health
+
+# Check if frontend is accessible
+curl http://localhost:3000
+
+# Check blockchain connection
+curl -X POST http://localhost:8545 -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+```
+
+### View Logs
+
+```bash
+# Backend logs
+tail -f code/backend/logs/blockscore.log
+
+# Frontend logs (development)
+# Check terminal where npm start is running
+
+# Smart contract deployment logs
+cat code/blockchain/deployment.log
+```
+
+## Next Steps
+
+- [API Reference](API.md) - Explore API endpoints
+- [Configuration](CONFIGURATION.md) - Configure services
+- [Troubleshooting](TROUBLESHOOTING.md) - Common issues
+
+---
+
+**Need Help?** Check the [Troubleshooting Guide](TROUBLESHOOTING.md) or [GitHub Issues](https://github.com/abrar2030/BlockScore/issues).
