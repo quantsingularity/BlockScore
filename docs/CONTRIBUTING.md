@@ -3,7 +3,7 @@
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/abrar2030/BlockScore.git`
+2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/BlockScore.git`
 3. Create a branch: `git checkout -b feature/your-feature`
 4. Make changes and commit: `git commit -m "Add feature"`
 5. Push and open a Pull Request
