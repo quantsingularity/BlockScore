@@ -17,7 +17,7 @@ Before starting, ensure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 
 # Run automated setup script
@@ -206,6 +206,6 @@ cd web-frontend && npm start
 
 1. Check [Troubleshooting Guide](TROUBLESHOOTING.md)
 2. Review logs in `code/backend/` directory
-3. Open an issue on [GitHub](https://github.com/abrar2030/BlockScore/issues)
+3. Open an issue on [GitHub](https://github.com/quantsingularity/BlockScore/issues)
 
 ---

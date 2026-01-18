@@ -430,4 +430,4 @@ cat code/blockchain/deployment.log
 
 ---
 
-**Need Help?** Check the [Troubleshooting Guide](TROUBLESHOOTING.md) or [GitHub Issues](https://github.com/abrar2030/BlockScore/issues).
+**Need Help?** Check the [Troubleshooting Guide](TROUBLESHOOTING.md) or [GitHub Issues](https://github.com/quantsingularity/BlockScore/issues).

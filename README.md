@@ -1,7 +1,7 @@
 # BlockScore
 
-![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/BlockScore/cicd.yml?branch=main&label=CI/CD&logo=github)
-[![Test Coverage](https://img.shields.io/badge/coverage-76%25-yellow)](https://github.com/abrar2030/BlockScore/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/quantsingularity/BlockScore/cicd.yml?branch=main&label=CI/CD&logo=github)
+[![Test Coverage](https://img.shields.io/badge/coverage-76%25-yellow)](https://github.com/quantsingularity/BlockScore/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 📊 Blockchain-Based Credit Scoring Platform
@@ -213,7 +213,7 @@ BlockScore/
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 
 # Run the setup script
@@ -228,7 +228,7 @@ cd BlockScore
 #### Backend Setup
 
 ```bash
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 
 cd code/backend

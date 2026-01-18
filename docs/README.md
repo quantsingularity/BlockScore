@@ -75,7 +75,7 @@ BlockScore is a production-ready platform that revolutionizes credit scoring by:
 
 ## 🔗 Quick Links
 
-- [GitHub Repository](https://github.com/abrar2030/BlockScore)
+- [GitHub Repository](https://github.com/quantsingularity/BlockScore)
 - [Main README](../README.md)
 - [License](../LICENSE)
 

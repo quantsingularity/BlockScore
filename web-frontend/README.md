@@ -64,7 +64,7 @@ Before running the frontend, ensure you have:
 1. **Clone the repository** (if not already done):
 
     ```bash
-    git clone https://github.com/abrar2030/BlockScore.git
+    git clone https://github.com/quantsingularity/BlockScore.git
     cd BlockScore/web-frontend
     ```
 
@@ -330,7 +330,7 @@ PORT=3001 npm start
 
 ### Getting Help
 
-- Check [GitHub Issues](https://github.com/abrar2030/BlockScore/issues)
+- Check [GitHub Issues](https://github.com/quantsingularity/BlockScore/issues)
 - Review backend API documentation
 - Check console logs for specific error messages
 

@@ -45,7 +45,7 @@ The fastest way to get started. Suitable for development and testing.
 
 ```bash
 # Clone repository
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 
 # Make setup script executable
@@ -71,7 +71,7 @@ For advanced users who want full control over the installation process.
 #### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 ```
 
@@ -447,7 +447,7 @@ brew services start mongodb-community  # macOS
 
 ## Additional Resources
 
-- [Official Repository](https://github.com/abrar2030/BlockScore)
+- [Official Repository](https://github.com/quantsingularity/BlockScore)
 - [Troubleshooting Guide](TROUBLESHOOTING.md)
 - [Architecture Overview](ARCHITECTURE.md)
 

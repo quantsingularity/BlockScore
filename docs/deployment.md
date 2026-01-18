@@ -24,7 +24,7 @@ sudo apt install python3 python3-pip nodejs npm postgresql redis-server nginx
 2. Clone and setup:
 
 ```bash
-git clone https://github.com/abrar2030/BlockScore.git
+git clone https://github.com/quantsingularity/BlockScore.git
 cd BlockScore
 ./sctipts/setup_blockscore_env.sh
 ```
