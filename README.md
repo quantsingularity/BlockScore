@@ -33,6 +33,24 @@ BlockScore is an innovative credit scoring platform that leverages blockchain te
 
 BlockScore revolutionizes traditional credit scoring by combining blockchain's immutability with AI's predictive power. The platform creates transparent credit profiles that users own and control, while providing lenders with reliable risk assessment tools based on a broader range of financial behaviors.
 
+## Project Structure
+
+The project is organized into several main components:
+
+```
+BlockScore/
+├── code/                   # Core backend logic, services, and shared utilities
+├── docs/                   # Project documentation
+├── infrastructure/         # DevOps, deployment, and infra-related code
+├── mobile-frontend/        # Mobile application
+├── web-frontend/           # Web dashboard
+├── scripts/                # Automation, setup, and utility scripts
+├── LICENSE                 # License information
+├── README.md               # Project overview and instructions
+├── eslint.config.js        # ESLint configuration
+└── package.json            # Node.js project metadata and dependencies
+```
+
 ## Key Features
 
 ### Blockchain-Based Credit Profiles
