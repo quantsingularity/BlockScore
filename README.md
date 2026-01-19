@@ -17,11 +17,11 @@ BlockScore is an innovative credit scoring platform that leverages blockchain te
 ## Table of Contents
 
 - [Overview](#overview)
+- [Project Structure](#project-structure)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
 - [Development Steps](#development-steps)
-- [Directory Structure](#directory-structure)
 - [Installation and Setup](#installation-and-setup)
 - [Testing](#testing)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -202,21 +202,6 @@ BlockScore/
     - Create interactive visualizations for credit history
     - Implement secure authentication and authorization
     - Develop mobile applications for on-the-go access
-
-## Directory Structure
-
-```
-BlockScore/
-├── code/
-│   ├── ai_models/         # Machine learning models for credit scoring
-│   ├── backend/           # Node.js API server
-│   ├── blockchain/        # Smart contracts and blockchain integration
-│   └── shared/            # Shared utilities and types
-├── docs/                  # Documentation and specifications
-├── infrastructure/        # Deployment and infrastructure code
-├── web-frontend/          # React web application
-├── mobile-frontend/       # React Native mobile application
-```
 
 ## Installation and Setup
 
