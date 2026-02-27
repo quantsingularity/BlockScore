@@ -63,22 +63,22 @@ Before running the frontend, ensure you have:
 
 1. **Clone the repository** (if not already done):
 
-    ```bash
-    git clone https://github.com/quantsingularity/BlockScore.git
-    cd BlockScore/web-frontend
-    ```
+   ```bash
+   git clone https://github.com/quantsingularity/BlockScore.git
+   cd BlockScore/web-frontend
+   ```
 
 2. **Install dependencies**:
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 3. **Create environment file**:
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
 4. **Configure environment variables** (see [Configuration](#configuration))
 
@@ -127,19 +127,19 @@ The app will open at `http://localhost:3000`. Hot-reloading is enabled.
 
 1. **Start the backend**:
 
-    ```bash
-    cd ../code/backend
-    npm install
-    npm start
-    ```
+   ```bash
+   cd ../code/backend
+   npm install
+   npm start
+   ```
 
-    Backend should run on `http://localhost:5000`
+   Backend should run on `http://localhost:5000`
 
 2. **Start the frontend** (in another terminal):
-    ```bash
-    cd web-frontend
-    npm start
-    ```
+   ```bash
+   cd web-frontend
+   npm start
+   ```
 
 The frontend proxies API requests to the backend automatically in development mode.
 
@@ -214,9 +214,9 @@ The frontend integrates with the following backend endpoints:
 
 1. Ensure backend is running on `http://localhost:5000`
 2. Check backend health:
-    ```bash
-    curl http://localhost:5000/health
-    ```
+   ```bash
+   curl http://localhost:5000/health
+   ```
 3. Start frontend and check browser console for API calls
 4. Use browser DevTools Network tab to inspect requests/responses
 
@@ -307,10 +307,10 @@ npm audit fix
 #### 4. **Build Timeouts**
 
 - Increase Node.js memory:
-    ```bash
-    export NODE_OPTIONS="--max-old-space-size=4096"
-    npm run build
-    ```
+  ```bash
+  export NODE_OPTIONS="--max-old-space-size=4096"
+  npm run build
+  ```
 
 #### 5. **Port 3000 Already in Use**
 

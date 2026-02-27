@@ -64,40 +64,40 @@ const token = 'your-access-token-here';
 const headers = { Authorization: `Bearer ${token}` };
 
 async function loanExample() {
-    // Calculate terms
-    const calcRes = await axios.post(
-        `${BASE_URL}/loans/calculate`,
-        { amount: 10000, rate: 5.5, term_months: 36 },
-        { headers },
-    );
+  // Calculate terms
+  const calcRes = await axios.post(
+    `${BASE_URL}/loans/calculate`,
+    { amount: 10000, rate: 5.5, term_months: 36 },
+    { headers }
+  );
 
-    const calc = calcRes.data.data;
-    console.log(`Loan Amount: $${calc.loan_amount.toFixed(2)}`);
-    console.log(`Monthly Payment: $${calc.monthly_payment.toFixed(2)}`);
-    console.log(`Total Interest: $${calc.total_interest.toFixed(2)}`);
-    console.log(`Approval Probability: ${calc.approval_probability}%`);
+  const calc = calcRes.data.data;
+  console.log(`Loan Amount: $${calc.loan_amount.toFixed(2)}`);
+  console.log(`Monthly Payment: $${calc.monthly_payment.toFixed(2)}`);
+  console.log(`Total Interest: $${calc.total_interest.toFixed(2)}`);
+  console.log(`Approval Probability: ${calc.approval_probability}%`);
 
-    // Submit application
-    const appRes = await axios.post(
-        `${BASE_URL}/loans/apply`,
-        {
-            loan_type: 'personal',
-            requested_amount: 10000.0,
-            requested_term_months: 36,
-            requested_rate: 5.5,
-            application_data: {
-                purpose: 'Debt consolidation',
-                employment_status: 'employed',
-                annual_income: 60000,
-            },
-        },
-        { headers },
-    );
+  // Submit application
+  const appRes = await axios.post(
+    `${BASE_URL}/loans/apply`,
+    {
+      loan_type: 'personal',
+      requested_amount: 10000.0,
+      requested_term_months: 36,
+      requested_rate: 5.5,
+      application_data: {
+        purpose: 'Debt consolidation',
+        employment_status: 'employed',
+        annual_income: 60000,
+      },
+    },
+    { headers }
+  );
 
-    const app = appRes.data.data;
-    console.log(`\nApplication #${app.application_number}`);
-    console.log(`Status: ${app.status}`);
-    console.log(`Approval Probability: ${app.approval_probability}%`);
+  const app = appRes.data.data;
+  console.log(`\nApplication #${app.application_number}`);
+  console.log(`Status: ${app.status}`);
+  console.log(`Approval Probability: ${app.approval_probability}%`);
 }
 
 loanExample();

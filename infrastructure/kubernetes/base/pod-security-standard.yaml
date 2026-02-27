@@ -11,29 +11,29 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: blockscore-prod
+  labels:
     name: blockscore-prod
-    labels:
-        name: blockscore-prod
-        pod-security.kubernetes.io/enforce: restricted
-        pod-security.kubernetes.io/audit: restricted
-        pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: blockscore-staging
+  labels:
     name: blockscore-staging
-    labels:
-        name: blockscore-staging
-        pod-security.kubernetes.io/enforce: baseline
-        pod-security.kubernetes.io/audit: restricted
-        pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: blockscore-dev
+  labels:
     name: blockscore-dev
-    labels:
-        name: blockscore-dev
-        pod-security.kubernetes.io/enforce: baseline
-        pod-security.kubernetes.io/audit: baseline
-        pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline

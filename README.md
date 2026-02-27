@@ -180,28 +180,28 @@ BlockScore/
 ## Development Steps
 
 1. **Smart Contract Development**
-    - Write and deploy Solidity contracts to handle credit data
-    - Implement secure identity management and access control
-    - Create on-chain credit score calculation mechanisms
-    - Develop oracle integrations for off-chain data
+   - Write and deploy Solidity contracts to handle credit data
+   - Implement secure identity management and access control
+   - Create on-chain credit score calculation mechanisms
+   - Develop oracle integrations for off-chain data
 
 2. **AI Model Training**
-    - Train models on financial datasets for credit scoring
-    - Implement fraud detection algorithms
-    - Develop risk assessment models
-    - Create behavioral analysis systems
+   - Train models on financial datasets for credit scoring
+   - Implement fraud detection algorithms
+   - Develop risk assessment models
+   - Create behavioral analysis systems
 
 3. **API Integration**
-    - Connect the blockchain and AI models via Node.js APIs
-    - Implement secure data exchange protocols
-    - Create endpoints for third-party integrations
-    - Develop webhook notifications for credit events
+   - Connect the blockchain and AI models via Node.js APIs
+   - Implement secure data exchange protocols
+   - Create endpoints for third-party integrations
+   - Develop webhook notifications for credit events
 
 4. **Frontend Development**
-    - Build a React.js app for users to check and manage credit scores
-    - Create interactive visualizations for credit history
-    - Implement secure authentication and authorization
-    - Develop mobile applications for on-the-go access
+   - Build a React.js app for users to check and manage credit scores
+   - Create interactive visualizations for credit history
+   - Implement secure authentication and authorization
+   - Develop mobile applications for on-the-go access
 
 ## Installation and Setup
 

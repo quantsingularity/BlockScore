@@ -44,40 +44,40 @@ const axios = require('axios');
 const BASE_URL = 'http://localhost:5000/api';
 
 async function authExample() {
-    try {
-        // Register
-        const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
-            email: 'demo@blockscore.io',
-            password: 'SecurePass123!',
-        });
-        console.log('Registered:', registerRes.data);
+  try {
+    // Register
+    const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
+      email: 'demo@blockscore.io',
+      password: 'SecurePass123!',
+    });
+    console.log('Registered:', registerRes.data);
 
-        // Login
-        const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
-            email: 'demo@blockscore.io',
-            password: 'SecurePass123!',
-        });
-        const accessToken = loginRes.data.tokens.access_token;
-        console.log('Logged in, token:', accessToken.substring(0, 20) + '...');
+    // Login
+    const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
+      email: 'demo@blockscore.io',
+      password: 'SecurePass123!',
+    });
+    const accessToken = loginRes.data.tokens.access_token;
+    console.log('Logged in, token:', accessToken.substring(0, 20) + '...');
 
-        // Get profile
-        const profileRes = await axios.get(`${BASE_URL}/profile`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        console.log('Profile:', profileRes.data);
+    // Get profile
+    const profileRes = await axios.get(`${BASE_URL}/profile`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log('Profile:', profileRes.data);
 
-        // Logout
-        const logoutRes = await axios.post(
-            `${BASE_URL}/auth/logout`,
-            {},
-            {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            },
-        );
-        console.log('Logged out:', logoutRes.data);
-    } catch (error) {
-        console.error('Error:', error.response?.data || error.message);
-    }
+    // Logout
+    const logoutRes = await axios.post(
+      `${BASE_URL}/auth/logout`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    console.log('Logged out:', logoutRes.data);
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
 }
 
 authExample();

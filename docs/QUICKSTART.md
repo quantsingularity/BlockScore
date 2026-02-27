@@ -89,15 +89,15 @@ You should see:
 
 ```json
 {
-    "success": true,
-    "status": "healthy",
-    "version": "1.0.0",
-    "services": {
-        "database": "up",
-        "redis": "not_configured",
-        "blockchain": "down",
-        "ai_model": "up"
-    }
+  "success": true,
+  "status": "healthy",
+  "version": "1.0.0",
+  "services": {
+    "database": "up",
+    "redis": "not_configured",
+    "blockchain": "down",
+    "ai_model": "up"
+  }
 }
 ```
 

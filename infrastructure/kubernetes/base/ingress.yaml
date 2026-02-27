@@ -2,32 +2,32 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: blockscore-ingress
-    annotations:
-        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
-        cert-manager.io/cluster-issuer: 'letsencrypt-prod'
-        nginx.ingress.kubernetes.io/rate-limit: '100'
+  name: blockscore-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/rate-limit: '100'
 spec:
-    ingressClassName: nginx
-    tls:
-        - hosts:
-              - blockscore.example.com
-          secretName: blockscore-tls
-    rules:
-        - host: blockscore.example.com
-          http:
-              paths:
-                  - path: /api
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: blockscore-backend
-                            port:
-                                number: 8080
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: blockscore-frontend
-                            port:
-                                number: 80
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - blockscore.example.com
+      secretName: blockscore-tls
+  rules:
+    - host: blockscore.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: blockscore-backend
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blockscore-frontend
+                port:
+                  number: 80

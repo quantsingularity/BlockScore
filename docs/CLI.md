@@ -216,10 +216,17 @@ truffle console --network development
 const CreditScore = await CreditScore.deployed();
 
 // Add credit record
-await CreditScore.addCreditRecord('0x742d35Cc6634C0532925a3b844Bc454e4438f44e', 1000, 'loan', 5);
+await CreditScore.addCreditRecord(
+  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+  1000,
+  'loan',
+  5
+);
 
 // Get credit profile
-const profile = await CreditScore.getCreditProfile('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+const profile = await CreditScore.getCreditProfile(
+  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+);
 console.log(profile);
 ```
 

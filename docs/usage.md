@@ -66,8 +66,8 @@ const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // Add credit record
 await contract.methods
-    .addCreditRecord(userAddress, amount, 'loan', scoreImpact)
-    .send({ from: providerAddress });
+  .addCreditRecord(userAddress, amount, 'loan', scoreImpact)
+  .send({ from: providerAddress });
 ```
 
 See [API Reference](API.md) for complete endpoint documentation.

@@ -242,42 +242,46 @@ File: `code/blockchain/truffle-config.js`
 
 ```javascript
 module.exports = {
-    networks: {
-        development: {
-            host: '127.0.0.1',
-            port: 8545,
-            network_id: '*',
-            gas: 6721975,
-            gasPrice: 20000000000,
-        },
-        mumbai: {
-            provider: () =>
-                new HDWalletProvider(process.env.MNEMONIC, 'https://rpc-mumbai.maticvigil.com'),
-            network_id: 80001,
-            confirmations: 2,
-            timeoutBlocks: 200,
-            skipDryRun: true,
-        },
-        polygon: {
-            provider: () => new HDWalletProvider(process.env.MNEMONIC, 'https://polygon-rpc.com'),
-            network_id: 137,
-            confirmations: 5,
-            timeoutBlocks: 200,
-            skipDryRun: true,
-            gasPrice: 50000000000, // 50 gwei
-        },
+  networks: {
+    development: {
+      host: '127.0.0.1',
+      port: 8545,
+      network_id: '*',
+      gas: 6721975,
+      gasPrice: 20000000000,
     },
-    compilers: {
-        solc: {
-            version: '0.8.0',
-            settings: {
-                optimizer: {
-                    enabled: true,
-                    runs: 200,
-                },
-            },
-        },
+    mumbai: {
+      provider: () =>
+        new HDWalletProvider(
+          process.env.MNEMONIC,
+          'https://rpc-mumbai.maticvigil.com'
+        ),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
     },
+    polygon: {
+      provider: () =>
+        new HDWalletProvider(process.env.MNEMONIC, 'https://polygon-rpc.com'),
+      network_id: 137,
+      confirmations: 5,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      gasPrice: 50000000000, // 50 gwei
+    },
+  },
+  compilers: {
+    solc: {
+      version: '0.8.0',
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+      },
+    },
+  },
 };
 ```
 
@@ -299,21 +303,21 @@ File: `infrastructure/ansible/inventory/hosts.yml`
 
 ```yaml
 all:
-    children:
-        webservers:
-            hosts:
-                web01:
-                    ansible_host: 192.168.1.10
-                    ansible_user: ubuntu
-                web02:
-                    ansible_host: 192.168.1.11
-                    ansible_user: ubuntu
-        databases:
-            hosts:
-                db01:
-                    ansible_host: 192.168.1.20
-                    ansible_user: ubuntu
-                    postgresql_version: 14
+  children:
+    webservers:
+      hosts:
+        web01:
+          ansible_host: 192.168.1.10
+          ansible_user: ubuntu
+        web02:
+          ansible_host: 192.168.1.11
+          ansible_user: ubuntu
+    databases:
+      hosts:
+        db01:
+          ansible_host: 192.168.1.20
+          ansible_user: ubuntu
+          postgresql_version: 14
 ```
 
 ### Docker Configuration
@@ -324,40 +328,40 @@ File: `docker-compose.yml` (to be created)
 version: '3.8'
 
 services:
-    backend:
-        build: ./code/backend
-        ports:
-            - '5000:5000'
-        environment:
-            - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
-            - REDIS_URL=redis://redis:6379/0
-        depends_on:
-            - db
-            - redis
+  backend:
+    build: ./code/backend
+    ports:
+      - '5000:5000'
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
 
-    frontend:
-        build: ./web-frontend
-        ports:
-            - '3000:3000'
-        environment:
-            - REACT_APP_API_URL=http://localhost:5000/api
+  frontend:
+    build: ./web-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
 
-    db:
-        image: postgres:14
-        environment:
-            - POSTGRES_DB=blockscore
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=password
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=blockscore
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-    redis:
-        image: redis:7-alpine
-        ports:
-            - '6379:6379'
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
 
 volumes:
-    postgres_data:
+  postgres_data:
 ```
 
 ## Configuration Examples

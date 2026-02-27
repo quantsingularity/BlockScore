@@ -7,11 +7,11 @@ Complete REST API documentation for BlockScore backend services.
 - [Base URL](#base-url)
 - [Authentication](#authentication)
 - [Endpoints](#endpoints)
-    - [Health & Status](#health--status)
-    - [Authentication](#authentication-endpoints)
-    - [Credit Score](#credit-score-endpoints)
-    - [Loan Management](#loan-management-endpoints)
-    - [User Profile](#user-profile-endpoints)
+  - [Health & Status](#health--status)
+  - [Authentication](#authentication-endpoints)
+  - [Credit Score](#credit-score-endpoints)
+  - [Loan Management](#loan-management-endpoints)
+  - [User Profile](#user-profile-endpoints)
 - [Error Handling](#error-handling)
 - [Rate Limiting](#rate-limiting)
 
@@ -73,17 +73,17 @@ curl -X GET http://localhost:5000/api/health
 
 ```json
 {
-    "success": true,
-    "status": "healthy",
-    "timestamp": "2024-12-30T15:30:00.000Z",
-    "version": "1.0.0",
-    "services": {
-        "database": "up",
-        "redis": "up",
-        "blockchain": "up",
-        "ai_model": "up"
-    },
-    "request_id": "a1b2c3d4"
+  "success": true,
+  "status": "healthy",
+  "timestamp": "2024-12-30T15:30:00.000Z",
+  "version": "1.0.0",
+  "services": {
+    "database": "up",
+    "redis": "up",
+    "blockchain": "up",
+    "ai_model": "up"
+  },
+  "request_id": "a1b2c3d4"
 }
 ```
 
@@ -127,14 +127,14 @@ curl -X POST http://localhost:5000/api/auth/register \
 
 ```json
 {
-    "success": true,
-    "message": "User registered successfully",
-    "user": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "email": "user@example.com",
-        "status": "pending",
-        "created_at": "2024-12-30T15:30:00.000Z"
-    }
+  "success": true,
+  "message": "User registered successfully",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "user@example.com",
+    "status": "pending",
+    "created_at": "2024-12-30T15:30:00.000Z"
+  }
 }
 ```
 
@@ -175,18 +175,18 @@ curl -X POST http://localhost:5000/api/auth/login \
 
 ```json
 {
-    "success": true,
-    "message": "Login successful",
-    "user": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "email": "user@example.com",
-        "status": "active",
-        "last_login": "2024-12-30T15:30:00.000Z"
-    },
-    "tokens": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    }
+  "success": true,
+  "message": "Login successful",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "user@example.com",
+    "status": "active",
+    "last_login": "2024-12-30T15:30:00.000Z"
+  },
+  "tokens": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
@@ -216,8 +216,8 @@ curl -X POST http://localhost:5000/api/auth/logout \
 
 ```json
 {
-    "success": true,
-    "message": "Logout successful"
+  "success": true,
+  "message": "Logout successful"
 }
 ```
 
@@ -253,31 +253,34 @@ curl -X POST http://localhost:5000/api/credit/calculate-score \
 
 ```json
 {
-    "success": true,
-    "data": {
-        "credit_score_id": "cs_123456789",
-        "score": 720,
-        "score_range": {
-            "min": 300,
-            "max": 850
-        },
-        "rating": "Good",
-        "calculated_at": "2024-12-30T15:30:00.000Z",
-        "model_version": "1.2.0",
-        "factors": [
-            {
-                "factor": "Excellent payment history",
-                "impact": "positive",
-                "description": "Consistently repaying debts on time"
-            },
-            {
-                "factor": "Low debt ratio",
-                "impact": "positive",
-                "description": "Low amount of debt relative to income"
-            }
-        ],
-        "recommendations": ["Continue making on-time payments", "Maintain low credit utilization"]
-    }
+  "success": true,
+  "data": {
+    "credit_score_id": "cs_123456789",
+    "score": 720,
+    "score_range": {
+      "min": 300,
+      "max": 850
+    },
+    "rating": "Good",
+    "calculated_at": "2024-12-30T15:30:00.000Z",
+    "model_version": "1.2.0",
+    "factors": [
+      {
+        "factor": "Excellent payment history",
+        "impact": "positive",
+        "description": "Consistently repaying debts on time"
+      },
+      {
+        "factor": "Low debt ratio",
+        "impact": "positive",
+        "description": "Low amount of debt relative to income"
+      }
+    ],
+    "recommendations": [
+      "Continue making on-time payments",
+      "Maintain low credit utilization"
+    ]
+  }
 }
 ```
 
@@ -316,34 +319,34 @@ curl -X GET "http://localhost:5000/api/credit/history?page=1&per_page=20" \
 
 ```json
 {
-    "success": true,
-    "data": {
-        "history": [
-            {
-                "id": "ch_123456",
-                "event_type": "loan_payment",
-                "event_date": "2024-12-15T10:00:00.000Z",
-                "amount": 500.0,
-                "impact": "positive",
-                "description": "On-time loan payment"
-            },
-            {
-                "id": "ch_123457",
-                "event_type": "credit_inquiry",
-                "event_date": "2024-12-10T14:30:00.000Z",
-                "impact": "neutral",
-                "description": "Credit check for loan application"
-            }
-        ],
-        "pagination": {
-            "page": 1,
-            "per_page": 20,
-            "total": 45,
-            "pages": 3,
-            "has_next": true,
-            "has_prev": false
-        }
+  "success": true,
+  "data": {
+    "history": [
+      {
+        "id": "ch_123456",
+        "event_type": "loan_payment",
+        "event_date": "2024-12-15T10:00:00.000Z",
+        "amount": 500.0,
+        "impact": "positive",
+        "description": "On-time loan payment"
+      },
+      {
+        "id": "ch_123457",
+        "event_type": "credit_inquiry",
+        "event_date": "2024-12-10T14:30:00.000Z",
+        "impact": "neutral",
+        "description": "Credit check for loan application"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 45,
+      "pages": 3,
+      "has_next": true,
+      "has_prev": false
     }
+  }
 }
 ```
 
@@ -388,21 +391,21 @@ curl -X POST http://localhost:5000/api/loans/apply \
 
 ```json
 {
-    "success": true,
-    "message": "Loan application submitted successfully",
-    "data": {
-        "id": "la_987654321",
-        "application_number": "LA-2024-001234",
-        "status": "submitted",
-        "loan_type": "personal",
-        "requested_amount": 10000.0,
-        "requested_term_months": 36,
-        "requested_rate": 5.5,
-        "credit_score_at_application": 720,
-        "approval_probability": 78.5,
-        "submitted_at": "2024-12-30T15:30:00.000Z",
-        "estimated_response_time": "24-48 hours"
-    }
+  "success": true,
+  "message": "Loan application submitted successfully",
+  "data": {
+    "id": "la_987654321",
+    "application_number": "LA-2024-001234",
+    "status": "submitted",
+    "loan_type": "personal",
+    "requested_amount": 10000.0,
+    "requested_term_months": 36,
+    "requested_rate": 5.5,
+    "credit_score_at_application": 720,
+    "approval_probability": 78.5,
+    "submitted_at": "2024-12-30T15:30:00.000Z",
+    "estimated_response_time": "24-48 hours"
+  }
 }
 ```
 
@@ -447,17 +450,17 @@ curl -X POST http://localhost:5000/api/loans/calculate \
 
 ```json
 {
-    "success": true,
-    "data": {
-        "loan_amount": 10000.0,
-        "interest_rate": 5.5,
-        "term_months": 36,
-        "monthly_payment": 301.96,
-        "total_payment": 10870.56,
-        "total_interest": 870.56,
-        "approval_probability": 78.5,
-        "credit_score": 720
-    }
+  "success": true,
+  "data": {
+    "loan_amount": 10000.0,
+    "interest_rate": 5.5,
+    "term_months": 36,
+    "monthly_payment": 301.96,
+    "total_payment": 10870.56,
+    "total_interest": 870.56,
+    "approval_probability": 78.5,
+    "credit_score": 720
+  }
 }
 ```
 
@@ -481,21 +484,21 @@ curl -X GET http://localhost:5000/api/profile \
 
 ```json
 {
-    "success": true,
-    "data": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "email": "user@example.com",
-        "status": "active",
-        "created_at": "2024-01-15T10:00:00.000Z",
-        "last_login": "2024-12-30T15:30:00.000Z",
-        "profile": {
-            "wallet_address": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-            "full_name": "John Doe",
-            "kyc_status": "approved",
-            "credit_score": 720,
-            "last_score_update": "2024-12-30T15:30:00.000Z"
-        }
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "user@example.com",
+    "status": "active",
+    "created_at": "2024-01-15T10:00:00.000Z",
+    "last_login": "2024-12-30T15:30:00.000Z",
+    "profile": {
+      "wallet_address": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "full_name": "John Doe",
+      "kyc_status": "approved",
+      "credit_score": 720,
+      "last_score_update": "2024-12-30T15:30:00.000Z"
     }
+  }
 }
 ```
 
@@ -507,10 +510,10 @@ All errors follow this format:
 
 ```json
 {
-    "success": false,
-    "error": "Error Type",
-    "message": "Detailed error message",
-    "request_id": "a1b2c3d4"
+  "success": false,
+  "error": "Error Type",
+  "message": "Detailed error message",
+  "request_id": "a1b2c3d4"
 }
 ```
 
@@ -536,10 +539,10 @@ All errors follow this format:
 
 ```json
 {
-    "success": false,
-    "error": "Bad Request",
-    "message": "The request could not be understood by the server due to malformed syntax.",
-    "request_id": "a1b2c3d4"
+  "success": false,
+  "error": "Bad Request",
+  "message": "The request could not be understood by the server due to malformed syntax.",
+  "request_id": "a1b2c3d4"
 }
 ```
 
@@ -547,10 +550,10 @@ All errors follow this format:
 
 ```json
 {
-    "success": false,
-    "error": "Unauthorized",
-    "message": "Authentication is required to access this resource.",
-    "request_id": "a1b2c3d4"
+  "success": false,
+  "error": "Unauthorized",
+  "message": "Authentication is required to access this resource.",
+  "request_id": "a1b2c3d4"
 }
 ```
 
@@ -558,10 +561,10 @@ All errors follow this format:
 
 ```json
 {
-    "success": false,
-    "error": "Rate Limit Exceeded",
-    "message": "Too many requests. Please try again later.",
-    "request_id": "a1b2c3d4"
+  "success": false,
+  "error": "Rate Limit Exceeded",
+  "message": "Too many requests. Please try again later.",
+  "request_id": "a1b2c3d4"
 }
 ```
 
@@ -633,26 +636,26 @@ const axios = require('axios');
 const BASE_URL = 'http://localhost:5000/api';
 
 async function example() {
-    // Register
-    const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
-        email: 'user@example.com',
-        password: 'SecurePass123!',
-    });
+  // Register
+  const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
+    email: 'user@example.com',
+    password: 'SecurePass123!',
+  });
 
-    // Login
-    const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
-        email: 'user@example.com',
-        password: 'SecurePass123!',
-    });
-    const accessToken = loginRes.data.tokens.access_token;
+  // Login
+  const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
+    email: 'user@example.com',
+    password: 'SecurePass123!',
+  });
+  const accessToken = loginRes.data.tokens.access_token;
 
-    // Calculate Credit Score
-    const scoreRes = await axios.post(
-        `${BASE_URL}/credit/calculate-score`,
-        { walletAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-    );
-    console.log(scoreRes.data);
+  // Calculate Credit Score
+  const scoreRes = await axios.post(
+    `${BASE_URL}/credit/calculate-score`,
+    { walletAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+  console.log(scoreRes.data);
 }
 ```
 

@@ -14,21 +14,21 @@ const config = require('../config');
  * @access Public
  */
 router.get('/score/:address', async (req, res) => {
-    try {
-        const { address } = req.params;
-        const result = await contractService.getCreditScore(address);
+  try {
+    const { address } = req.params;
+    const result = await contractService.getCreditScore(address);
 
-        res.json({
-            success: true,
-            data: result,
-        });
-    } catch (error) {
-        console.error('Error getting credit score:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Failed to get credit score',
-        });
-    }
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error('Error getting credit score:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to get credit score',
+    });
+  }
 });
 
 /**
@@ -37,21 +37,21 @@ router.get('/score/:address', async (req, res) => {
  * @access Public
  */
 router.get('/history/:address', async (req, res) => {
-    try {
-        const { address } = req.params;
-        const history = await contractService.getCreditHistory(address);
+  try {
+    const { address } = req.params;
+    const history = await contractService.getCreditHistory(address);
 
-        res.json({
-            success: true,
-            data: history,
-        });
-    } catch (error) {
-        console.error('Error getting credit history:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Failed to get credit history',
-        });
-    }
+    res.json({
+      success: true,
+      data: history,
+    });
+  } catch (error) {
+    console.error('Error getting credit history:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to get credit history',
+    });
+  }
 });
 
 /**
@@ -60,37 +60,44 @@ router.get('/history/:address', async (req, res) => {
  * @access Private (Credit Provider)
  */
 router.post('/record', verifyToken, isCreditProvider, async (req, res) => {
-    try {
-        const { userAddress, amount, recordType, scoreImpact, privateKey } = req.body;
+  try {
+    const { userAddress, amount, recordType, scoreImpact, privateKey } =
+      req.body;
 
-        if (!userAddress || !amount || !recordType || scoreImpact === undefined || !privateKey) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields',
-            });
-        }
-
-        const receipt = await contractService.addCreditRecord(
-            userAddress,
-            amount,
-            recordType,
-            scoreImpact,
-            privateKey,
-        );
-
-        res.json({
-            success: true,
-            data: {
-                transactionHash: receipt.transactionHash,
-            },
-        });
-    } catch (error) {
-        console.error('Error adding credit record:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Failed to add credit record',
-        });
+    if (
+      !userAddress ||
+      !amount ||
+      !recordType ||
+      scoreImpact === undefined ||
+      !privateKey
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields',
+      });
     }
+
+    const receipt = await contractService.addCreditRecord(
+      userAddress,
+      amount,
+      recordType,
+      scoreImpact,
+      privateKey
+    );
+
+    res.json({
+      success: true,
+      data: {
+        transactionHash: receipt.transactionHash,
+      },
+    });
+  } catch (error) {
+    console.error('Error adding credit record:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to add credit record',
+    });
+  }
 });
 
 /**
@@ -98,37 +105,42 @@ router.post('/record', verifyToken, isCreditProvider, async (req, res) => {
  * @desc Mark a credit record as repaid
  * @access Private (Credit Provider)
  */
-router.post('/record/repaid', verifyToken, isCreditProvider, async (req, res) => {
+router.post(
+  '/record/repaid',
+  verifyToken,
+  isCreditProvider,
+  async (req, res) => {
     try {
-        const { userAddress, recordIndex, privateKey } = req.body;
+      const { userAddress, recordIndex, privateKey } = req.body;
 
-        if (!userAddress || recordIndex === undefined || !privateKey) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields',
-            });
-        }
-
-        const receipt = await contractService.markRecordRepaid(
-            userAddress,
-            recordIndex,
-            privateKey,
-        );
-
-        res.json({
-            success: true,
-            data: {
-                transactionHash: receipt.transactionHash,
-            },
+      if (!userAddress || recordIndex === undefined || !privateKey) {
+        return res.status(400).json({
+          success: false,
+          message: 'Missing required fields',
         });
+      }
+
+      const receipt = await contractService.markRecordRepaid(
+        userAddress,
+        recordIndex,
+        privateKey
+      );
+
+      res.json({
+        success: true,
+        data: {
+          transactionHash: receipt.transactionHash,
+        },
+      });
     } catch (error) {
-        console.error('Error marking record as repaid:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Failed to mark record as repaid',
-        });
+      console.error('Error marking record as repaid:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to mark record as repaid',
+      });
     }
-});
+  }
+);
 
 /**
  * @route POST /api/credit/calculate-score
@@ -136,41 +148,42 @@ router.post('/record/repaid', verifyToken, isCreditProvider, async (req, res) =>
  * @access Public
  */
 router.post('/calculate-score', async (req, res) => {
-    try {
-        const { walletAddress } = req.body;
+  try {
+    const { walletAddress } = req.body;
 
-        if (!walletAddress) {
-            return res.status(400).json({
-                success: false,
-                message: 'Wallet address is required',
-            });
-        }
-
-        // Get blockchain data
-        const creditHistory = await contractService.getCreditHistory(walletAddress);
-
-        // Call Python API for prediction
-        const modelResponse = await axios.post(
-            `${config.modelIntegration.pythonApiUrl}${config.modelIntegration.modelEndpoint}`,
-            { creditHistory },
-        );
-
-        res.json({
-            success: true,
-            data: {
-                address: walletAddress,
-                calculatedScore: modelResponse.data.score,
-                blockchainScore: (await contractService.getCreditScore(walletAddress)).score,
-                factors: modelResponse.data.factors || [],
-            },
-        });
-    } catch (error) {
-        console.error('Error calculating score:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Failed to calculate score',
-        });
+    if (!walletAddress) {
+      return res.status(400).json({
+        success: false,
+        message: 'Wallet address is required',
+      });
     }
+
+    // Get blockchain data
+    const creditHistory = await contractService.getCreditHistory(walletAddress);
+
+    // Call Python API for prediction
+    const modelResponse = await axios.post(
+      `${config.modelIntegration.pythonApiUrl}${config.modelIntegration.modelEndpoint}`,
+      { creditHistory }
+    );
+
+    res.json({
+      success: true,
+      data: {
+        address: walletAddress,
+        calculatedScore: modelResponse.data.score,
+        blockchainScore: (await contractService.getCreditScore(walletAddress))
+          .score,
+        factors: modelResponse.data.factors || [],
+      },
+    });
+  } catch (error) {
+    console.error('Error calculating score:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to calculate score',
+    });
+  }
 });
 
 module.exports = router;
