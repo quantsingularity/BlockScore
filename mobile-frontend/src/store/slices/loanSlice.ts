@@ -3,9 +3,9 @@
  * Redux slice for loan management
  */
 
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import * as loanService from '../../services/loan.service';
-import {Loan, LoanCalculation} from '../../services/loan.service';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import * as loanService from "../../services/loan.service";
+import { Loan, LoanCalculation } from "../../services/loan.service";
 
 export interface LoanState {
   loans: Loan[];
@@ -27,8 +27,8 @@ const initialState: LoanState = {
  * Async thunk for fetching loans by borrower
  */
 export const fetchBorrowerLoans = createAsyncThunk(
-  'loan/fetchBorrowerLoans',
-  async (address: string, {rejectWithValue}) => {
+  "loan/fetchBorrowerLoans",
+  async (address: string, { rejectWithValue }) => {
     try {
       const loans = await loanService.getLoansByBorrower(address);
       return loans;
@@ -42,8 +42,8 @@ export const fetchBorrowerLoans = createAsyncThunk(
  * Async thunk for fetching loan by ID
  */
 export const fetchLoanById = createAsyncThunk(
-  'loan/fetchById',
-  async (loanId: number, {rejectWithValue}) => {
+  "loan/fetchById",
+  async (loanId: number, { rejectWithValue }) => {
     try {
       const loan = await loanService.getLoanById(loanId);
       return loan;
@@ -57,7 +57,7 @@ export const fetchLoanById = createAsyncThunk(
  * Async thunk for creating a loan
  */
 export const createNewLoan = createAsyncThunk(
-  'loan/create',
+  "loan/create",
   async (
     loanData: {
       amount: number;
@@ -65,7 +65,7 @@ export const createNewLoan = createAsyncThunk(
       durationDays: number;
       privateKey: string;
     },
-    {rejectWithValue},
+    { rejectWithValue },
   ) => {
     try {
       const result = await loanService.createLoan(
@@ -85,13 +85,13 @@ export const createNewLoan = createAsyncThunk(
  * Loan slice
  */
 const loanSlice = createSlice({
-  name: 'loan',
+  name: "loan",
   initialState,
   reducers: {
-    clearLoanError: state => {
+    clearLoanError: (state) => {
       state.error = null;
     },
-    resetLoans: state => {
+    resetLoans: (state) => {
       state.loans = [];
       state.currentLoan = null;
       state.calculation = null;
@@ -101,9 +101,9 @@ const loanSlice = createSlice({
       state.calculation = action.payload;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     // Fetch borrower loans
-    builder.addCase(fetchBorrowerLoans.pending, state => {
+    builder.addCase(fetchBorrowerLoans.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -118,7 +118,7 @@ const loanSlice = createSlice({
     });
 
     // Fetch loan by ID
-    builder.addCase(fetchLoanById.pending, state => {
+    builder.addCase(fetchLoanById.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -133,11 +133,11 @@ const loanSlice = createSlice({
     });
 
     // Create loan
-    builder.addCase(createNewLoan.pending, state => {
+    builder.addCase(createNewLoan.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(createNewLoan.fulfilled, state => {
+    builder.addCase(createNewLoan.fulfilled, (state) => {
       state.isLoading = false;
       state.error = null;
     });
@@ -148,6 +148,6 @@ const loanSlice = createSlice({
   },
 });
 
-export const {clearLoanError, resetLoans, setLoanCalculation} =
+export const { clearLoanError, resetLoans, setLoanCalculation } =
   loanSlice.actions;
 export default loanSlice.reducer;

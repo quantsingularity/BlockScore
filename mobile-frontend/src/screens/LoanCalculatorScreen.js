@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,29 +6,29 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-} from 'react-native'; // Import Alert
+} from "react-native"; // Import Alert
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
-} from '../utils/responsive';
-import {Slider, Icon} from '@rneui/themed'; // Import Icon
-import {useNavigation} from '@react-navigation/native'; // Import useNavigation
+} from "../utils/responsive";
+import { Slider, Icon } from "@rneui/themed"; // Import Icon
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 // Define modern color palette (same as other screens)
 const colors = {
-  primary: '#4A90E2', // Modern Blue
-  accent: '#50E3C2', // Teal/Mint Green
-  secondaryAccent: '#F5A623', // Orange
-  background: '#F8F9FA', // Light Gray
-  cardBackground: '#FFFFFF', // White
-  textPrimary: '#333333', // Dark Gray
-  textSecondary: '#777777', // Medium Gray
-  border: '#EAEAEA', // Light Gray
-  success: '#50E3C2',
-  info: '#4A90E2',
-  warning: '#F5A623',
-  error: '#D0021B',
+  primary: "#4A90E2", // Modern Blue
+  accent: "#50E3C2", // Teal/Mint Green
+  secondaryAccent: "#F5A623", // Orange
+  background: "#F8F9FA", // Light Gray
+  cardBackground: "#FFFFFF", // White
+  textPrimary: "#333333", // Dark Gray
+  textSecondary: "#777777", // Medium Gray
+  border: "#EAEAEA", // Light Gray
+  success: "#50E3C2",
+  info: "#4A90E2",
+  warning: "#F5A623",
+  error: "#D0021B",
 };
 
 const LoanCalculatorScreen = () => {
@@ -44,7 +44,7 @@ const LoanCalculatorScreen = () => {
     const numberOfPayments = loanTerm;
 
     if (principal <= 0 || monthlyRate <= 0 || numberOfPayments <= 0) {
-      return '0.00';
+      return "0.00";
     }
 
     const monthlyPayment =
@@ -52,7 +52,7 @@ const LoanCalculatorScreen = () => {
       (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 
     return isNaN(monthlyPayment) || !isFinite(monthlyPayment)
-      ? '0.00'
+      ? "0.00"
       : monthlyPayment.toFixed(2);
   };
 
@@ -69,21 +69,21 @@ const LoanCalculatorScreen = () => {
   };
 
   // Format large numbers for display
-  const formatNumber = num => {
+  const formatNumber = (num) => {
     // Ensure num is a number before formatting
     const numberValue = parseFloat(num);
     if (isNaN(numberValue)) {
-      return '0';
+      return "0";
     }
-    return numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   // Placeholder action for Apply button
   const handleApplyLoan = () => {
     Alert.alert(
-      'Apply for Loan',
-      'This feature is not yet implemented. Loan application functionality requires backend integration.',
-      [{text: 'OK'}],
+      "Apply for Loan",
+      "This feature is not yet implemented. Loan application functionality requires backend integration.",
+      [{ text: "OK" }],
     );
   };
 
@@ -92,7 +92,8 @@ const LoanCalculatorScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton}>
+          style={styles.backButton}
+        >
           <Icon
             name="arrow-back-ios"
             type="material"
@@ -116,7 +117,7 @@ const LoanCalculatorScreen = () => {
           </View>
           <Slider
             value={loanAmount}
-            onValueChange={value => setLoanAmount(value)}
+            onValueChange={(value) => setLoanAmount(value)}
             minimumValue={1000}
             maximumValue={100000}
             step={1000}
@@ -139,7 +140,7 @@ const LoanCalculatorScreen = () => {
           </View>
           <Slider
             value={loanTerm}
-            onValueChange={value => setLoanTerm(value)}
+            onValueChange={(value) => setLoanTerm(value)}
             minimumValue={12}
             maximumValue={84}
             step={12}
@@ -164,7 +165,7 @@ const LoanCalculatorScreen = () => {
           </View>
           <Slider
             value={interestRate}
-            onValueChange={value => setInterestRate(value)}
+            onValueChange={(value) => setInterestRate(value)}
             minimumValue={1}
             maximumValue={20}
             step={0.1}
@@ -229,9 +230,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row', // Align items horizontally
-    alignItems: 'center', // Center items vertically
-    justifyContent: 'space-between', // Space out back button, title, placeholder
+    flexDirection: "row", // Align items horizontally
+    alignItems: "center", // Center items vertically
+    justifyContent: "space-between", // Space out back button, title, placeholder
     paddingVertical: responsiveHeight(2.5),
     paddingHorizontal: responsiveWidth(4),
     backgroundColor: colors.primary,
@@ -243,9 +244,9 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: responsiveFontSize(2.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.cardBackground,
-    textAlign: 'center',
+    textAlign: "center",
   },
   headerPlaceholder: {
     width: responsiveWidth(8), // Match approx width of back button for balance
@@ -259,8 +260,8 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2.5),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -271,7 +272,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.8),
     color: colors.textSecondary,
     marginBottom: responsiveHeight(1.5),
-    fontWeight: '600',
+    fontWeight: "600",
   },
   inputDisplayContainer: {
     backgroundColor: colors.background,
@@ -279,12 +280,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(4),
     borderRadius: 8,
     marginBottom: responsiveHeight(1.5),
-    alignItems: 'center',
+    alignItems: "center",
   },
   inputDisplayValue: {
     fontSize: responsiveFontSize(2.2),
     color: colors.textPrimary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   thumbStyle: {
     height: responsiveHeight(3),
@@ -297,8 +298,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   sliderLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: responsiveHeight(0.5),
   },
   sliderLabel: {
@@ -313,21 +314,21 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   resultsTitle: {
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: responsiveHeight(2.5),
-    textAlign: 'center',
+    textAlign: "center",
   },
   resultRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: responsiveHeight(1.5),
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
@@ -343,31 +344,31 @@ const styles = StyleSheet.create({
   },
   resultValue: {
     fontSize: responsiveFontSize(1.8),
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.textPrimary,
   },
   resultLabelTotal: {
     fontSize: responsiveFontSize(2),
     color: colors.textPrimary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   resultValueTotal: {
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.primary,
   },
   actionButton: {
-    flexDirection: 'row', // Align icon and text
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row", // Align icon and text
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.primary,
     paddingVertical: responsiveHeight(1.8),
     borderRadius: 10,
     marginHorizontal: responsiveWidth(5),
     marginBottom: responsiveHeight(4),
     elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: colors.cardBackground,
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

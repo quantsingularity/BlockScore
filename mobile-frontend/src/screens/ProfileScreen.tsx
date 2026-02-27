@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,56 +8,56 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-} from 'react-native';
+} from "react-native";
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
-} from '../utils/responsive';
-import {Icon} from '@rneui/themed';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {logoutUser, updateWallet} from '../store/slices/authSlice';
+} from "../utils/responsive";
+import { Icon } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { logoutUser, updateWallet } from "../store/slices/authSlice";
 
 const colors = {
-  primary: '#4A90E2',
-  accent: '#50E3C2',
-  background: '#F8F9FA',
-  cardBackground: '#FFFFFF',
-  textPrimary: '#333333',
-  textSecondary: '#777777',
-  border: '#EAEAEA',
-  error: '#D0021B',
+  primary: "#4A90E2",
+  accent: "#50E3C2",
+  background: "#F8F9FA",
+  cardBackground: "#FFFFFF",
+  textPrimary: "#333333",
+  textSecondary: "#777777",
+  border: "#EAEAEA",
+  error: "#D0021B",
 };
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-  const {user, isLoading} = useAppSelector(state => state.auth);
-  const [walletAddress, setWalletAddress] = useState(user?.walletAddress || '');
+  const { user, isLoading } = useAppSelector((state) => state.auth);
+  const [walletAddress, setWalletAddress] = useState(user?.walletAddress || "");
   const [isEditing, setIsEditing] = useState(false);
 
   const handleUpdateWallet = async () => {
     if (!walletAddress.trim()) {
-      Alert.alert('Error', 'Please enter a wallet address');
+      Alert.alert("Error", "Please enter a wallet address");
       return;
     }
 
     try {
       await dispatch(updateWallet(walletAddress)).unwrap();
-      Alert.alert('Success', 'Wallet address updated successfully');
+      Alert.alert("Success", "Wallet address updated successfully");
       setIsEditing(false);
     } catch (error: any) {
-      Alert.alert('Error', error || 'Failed to update wallet address');
+      Alert.alert("Error", error || "Failed to update wallet address");
     }
   };
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      {text: 'Cancel', style: 'cancel'},
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: 'Logout',
-        style: 'destructive',
+        text: "Logout",
+        style: "destructive",
         onPress: () => dispatch(logoutUser()),
       },
     ]);
@@ -68,7 +68,8 @@ const ProfileScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton}>
+          style={styles.backButton}
+        >
           <Icon
             name="arrow-back-ios"
             type="material"
@@ -118,7 +119,8 @@ const ProfileScreen = () => {
               <TouchableOpacity
                 style={styles.saveButton}
                 onPress={handleUpdateWallet}
-                disabled={isLoading}>
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <ActivityIndicator
                     color={colors.cardBackground}
@@ -131,16 +133,18 @@ const ProfileScreen = () => {
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => {
-                  setWalletAddress(user?.walletAddress || '');
+                  setWalletAddress(user?.walletAddress || "");
                   setIsEditing(false);
-                }}>
+                }}
+              >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
               style={styles.editButton}
-              onPress={() => setIsEditing(true)}>
+              onPress={() => setIsEditing(true)}
+            >
               <Icon
                 name="edit"
                 type="material"
@@ -172,9 +176,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: responsiveHeight(2.5),
     paddingHorizontal: responsiveWidth(4),
     backgroundColor: colors.primary,
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: responsiveFontSize(2.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.cardBackground,
   },
   headerPlaceholder: {
@@ -199,10 +203,10 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(2),
     padding: responsiveHeight(3),
     borderRadius: 15,
-    alignItems: 'center',
+    alignItems: "center",
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -211,14 +215,14 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: responsiveFontSize(2.5),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: responsiveHeight(0.5),
   },
   role: {
     fontSize: responsiveFontSize(1.8),
     color: colors.textSecondary,
-    textTransform: 'capitalize',
+    textTransform: "capitalize",
   },
   infoCard: {
     backgroundColor: colors.cardBackground,
@@ -227,14 +231,14 @@ const styles = StyleSheet.create({
     padding: responsiveWidth(5),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   sectionTitle: {
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: responsiveHeight(2),
   },
@@ -242,8 +246,8 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(1),
   },
   walletInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.background,
     borderRadius: 10,
     paddingHorizontal: responsiveWidth(3),
@@ -262,51 +266,51 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: responsiveHeight(1),
   },
   editButtonText: {
     color: colors.primary,
     fontSize: responsiveFontSize(1.8),
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: responsiveWidth(1),
   },
   editButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   saveButton: {
     flex: 1,
     backgroundColor: colors.primary,
     borderRadius: 10,
     paddingVertical: responsiveHeight(1.5),
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: responsiveWidth(2),
   },
   saveButtonText: {
     color: colors.cardBackground,
     fontSize: responsiveFontSize(1.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   cancelButton: {
     flex: 1,
     backgroundColor: colors.background,
     borderRadius: 10,
     paddingVertical: responsiveHeight(1.5),
-    alignItems: 'center',
+    alignItems: "center",
     marginLeft: responsiveWidth(2),
   },
   cancelButtonText: {
     color: colors.textPrimary,
     fontSize: responsiveFontSize(1.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.cardBackground,
     marginHorizontal: responsiveWidth(5),
     marginBottom: responsiveHeight(4),
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
   logoutButtonText: {
     color: colors.error,
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: responsiveWidth(2),
   },
 });

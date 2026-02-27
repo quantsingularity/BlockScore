@@ -8,9 +8,9 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
   AxiosError,
-} from 'axios';
-import {API_CONFIG} from '../config/api.config';
-import {getToken, clearToken} from './storage.service';
+} from "axios";
+import { API_CONFIG } from "../config/api.config";
+import { getToken, clearToken } from "./storage.service";
 
 /**
  * Create axios instance with default configuration
@@ -19,7 +19,7 @@ const httpClient: AxiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -34,7 +34,7 @@ httpClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error('Error getting token:', error);
+      console.error("Error getting token:", error);
     }
     return config;
   },
@@ -59,25 +59,25 @@ httpClient.interceptors.response.use(
           break;
         case 403:
           // Forbidden
-          console.error('Access forbidden');
+          console.error("Access forbidden");
           break;
         case 404:
           // Not found
-          console.error('Resource not found');
+          console.error("Resource not found");
           break;
         case 500:
           // Server error
-          console.error('Server error');
+          console.error("Server error");
           break;
         default:
-          console.error('HTTP error:', error.response.status);
+          console.error("HTTP error:", error.response.status);
       }
     } else if (error.request) {
       // Network error
-      console.error('Network error:', error.message);
+      console.error("Network error:", error.message);
     } else {
       // Other errors
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
     }
     return Promise.reject(error);
   },

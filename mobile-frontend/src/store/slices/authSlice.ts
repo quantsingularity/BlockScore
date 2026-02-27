@@ -3,13 +3,13 @@
  * Redux slice for authentication state management
  */
 
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import * as authService from '../../services/auth.service';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import * as authService from "../../services/auth.service";
 import {
   getUser,
   getToken,
   getWalletAddress,
-} from '../../services/storage.service';
+} from "../../services/storage.service";
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -35,10 +35,10 @@ const initialState: AuthState = {
  * Async thunk for login
  */
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (
-    credentials: {username: string; password: string},
-    {rejectWithValue},
+    credentials: { username: string; password: string },
+    { rejectWithValue },
   ) => {
     try {
       const response = await authService.login(credentials);
@@ -53,8 +53,11 @@ export const loginUser = createAsyncThunk(
  * Async thunk for registration
  */
 export const registerUser = createAsyncThunk(
-  'auth/register',
-  async (userData: {username: string; password: string}, {rejectWithValue}) => {
+  "auth/register",
+  async (
+    userData: { username: string; password: string },
+    { rejectWithValue },
+  ) => {
     try {
       const response = await authService.register(userData);
       return response.data;
@@ -67,7 +70,7 @@ export const registerUser = createAsyncThunk(
 /**
  * Async thunk for logout
  */
-export const logoutUser = createAsyncThunk('auth/logout', async () => {
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
 
@@ -75,7 +78,7 @@ export const logoutUser = createAsyncThunk('auth/logout', async () => {
  * Async thunk for checking stored auth
  */
 export const checkStoredAuth = createAsyncThunk(
-  'auth/checkStored',
+  "auth/checkStored",
   async () => {
     const [user, token, walletAddress] = await Promise.all([
       getUser(),
@@ -85,7 +88,7 @@ export const checkStoredAuth = createAsyncThunk(
 
     if (user && token) {
       return {
-        user: {...user, walletAddress: walletAddress || undefined},
+        user: { ...user, walletAddress: walletAddress || undefined },
         token,
       };
     }
@@ -98,8 +101,8 @@ export const checkStoredAuth = createAsyncThunk(
  * Async thunk for updating wallet address
  */
 export const updateWallet = createAsyncThunk(
-  'auth/updateWallet',
-  async (walletAddress: string, {rejectWithValue}) => {
+  "auth/updateWallet",
+  async (walletAddress: string, { rejectWithValue }) => {
     try {
       await authService.updateWalletAddress(walletAddress);
       return walletAddress;
@@ -113,16 +116,16 @@ export const updateWallet = createAsyncThunk(
  * Auth slice
  */
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    clearError: state => {
+    clearError: (state) => {
       state.error = null;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     // Login
-    builder.addCase(loginUser.pending, state => {
+    builder.addCase(loginUser.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -139,11 +142,11 @@ const authSlice = createSlice({
     });
 
     // Register
-    builder.addCase(registerUser.pending, state => {
+    builder.addCase(registerUser.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(registerUser.fulfilled, state => {
+    builder.addCase(registerUser.fulfilled, (state) => {
       state.isLoading = false;
       state.error = null;
     });
@@ -153,7 +156,7 @@ const authSlice = createSlice({
     });
 
     // Logout
-    builder.addCase(logoutUser.fulfilled, state => {
+    builder.addCase(logoutUser.fulfilled, (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
@@ -181,5 +184,5 @@ const authSlice = createSlice({
   },
 });
 
-export const {clearError} = authSlice.actions;
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;

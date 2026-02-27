@@ -1,33 +1,33 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
-} from '../utils/responsive';
-import {Icon} from '@rneui/themed';
-import {useNavigation} from '@react-navigation/native'; // Import useNavigation
+} from "../utils/responsive";
+import { Icon } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 // Define modern color palette
 const colors = {
-  primary: '#4A90E2', // Modern Blue
-  accent: '#50E3C2', // Teal/Mint Green
-  secondaryAccent: '#F5A623', // Orange
-  background: '#F8F9FA', // Light Gray
-  cardBackground: '#FFFFFF', // White
-  textPrimary: '#333333', // Dark Gray
-  textSecondary: '#777777', // Medium Gray
-  border: '#EAEAEA', // Light Gray
-  success: '#50E3C2', // Using accent for success
-  info: '#4A90E2', // Using primary for info
-  warning: '#F5A623', // Using secondary accent for warning
-  error: '#D0021B', // Red for negative changes
+  primary: "#4A90E2", // Modern Blue
+  accent: "#50E3C2", // Teal/Mint Green
+  secondaryAccent: "#F5A623", // Orange
+  background: "#F8F9FA", // Light Gray
+  cardBackground: "#FFFFFF", // White
+  textPrimary: "#333333", // Dark Gray
+  textSecondary: "#777777", // Medium Gray
+  border: "#EAEAEA", // Light Gray
+  success: "#50E3C2", // Using accent for success
+  info: "#4A90E2", // Using primary for info
+  warning: "#F5A623", // Using secondary accent for warning
+  error: "#D0021B", // Red for negative changes
 };
 
 const DashboardScreen = () => {
@@ -36,58 +36,58 @@ const DashboardScreen = () => {
   // Sample score - replace with dynamic data later
   const userScore = 750;
   const scorePercentage = (userScore / 1000) * 100; // Assuming max score is 1000
-  let scoreDescription = 'Good';
+  let scoreDescription = "Good";
   let scoreColor = colors.info;
 
   if (userScore >= 800) {
-    scoreDescription = 'Excellent';
+    scoreDescription = "Excellent";
     scoreColor = colors.success;
   } else if (userScore >= 700) {
-    scoreDescription = 'Good';
+    scoreDescription = "Good";
     scoreColor = colors.success; // Still positive
   } else if (userScore >= 600) {
-    scoreDescription = 'Fair';
+    scoreDescription = "Fair";
     scoreColor = colors.warning;
   } else {
-    scoreDescription = 'Needs Improvement';
+    scoreDescription = "Needs Improvement";
     scoreColor = colors.warning; // Or a dedicated error color
   }
 
   // Sample Score Factors Data
   const scoreFactors = [
     {
-      name: 'Payment History',
-      impact: 'High',
-      status: 'Excellent',
-      icon: 'check-circle',
+      name: "Payment History",
+      impact: "High",
+      status: "Excellent",
+      icon: "check-circle",
       color: colors.success,
     },
     {
-      name: 'Credit Utilization',
-      impact: 'High',
-      status: 'Good',
-      icon: 'trending-up',
+      name: "Credit Utilization",
+      impact: "High",
+      status: "Good",
+      icon: "trending-up",
       color: colors.success,
     },
     {
-      name: 'Length of Credit History',
-      impact: 'Medium',
-      status: 'Good',
-      icon: 'history',
+      name: "Length of Credit History",
+      impact: "Medium",
+      status: "Good",
+      icon: "history",
       color: colors.success,
     },
     {
-      name: 'Credit Mix',
-      impact: 'Low',
-      status: 'Fair',
-      icon: 'mix',
+      name: "Credit Mix",
+      impact: "Low",
+      status: "Fair",
+      icon: "mix",
       color: colors.warning,
     }, // Custom icon name, might need adjustment
     {
-      name: 'New Credit',
-      impact: 'Low',
-      status: 'Good',
-      icon: 'fiber-new',
+      name: "New Credit",
+      impact: "Low",
+      status: "Good",
+      icon: "fiber-new",
       color: colors.success,
     },
   ];
@@ -101,18 +101,18 @@ const DashboardScreen = () => {
       {/* Score Display */}
       <View style={styles.scoreContainer}>
         <Text style={styles.scoreLabel}>Your BlockScore</Text>
-        <Text style={[styles.scoreValue, {color: scoreColor}]}>
+        <Text style={[styles.scoreValue, { color: scoreColor }]}>
           {userScore}
         </Text>
         <View style={styles.scoreBar}>
           <View
             style={[
               styles.scoreProgress,
-              {width: `${scorePercentage}%`, backgroundColor: scoreColor},
+              { width: `${scorePercentage}%`, backgroundColor: scoreColor },
             ]}
           />
         </View>
-        <Text style={[styles.scoreDescription, {color: scoreColor}]}>
+        <Text style={[styles.scoreDescription, { color: scoreColor }]}>
           {scoreDescription}
         </Text>
       </View>
@@ -167,7 +167,7 @@ const DashboardScreen = () => {
               <Text style={styles.factorName}>{factor.name}</Text>
               <Text style={styles.factorImpact}>Impact: {factor.impact}</Text>
             </View>
-            <Text style={[styles.factorStatus, {color: factor.color}]}>
+            <Text style={[styles.factorStatus, { color: factor.color }]}>
               {factor.status}
             </Text>
           </View>
@@ -178,7 +178,7 @@ const DashboardScreen = () => {
       <View style={styles.actionsContainer}>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => navigation.navigate('LoanCalculator')} // Navigate to Loan Calculator
+          onPress={() => navigation.navigate("LoanCalculator")} // Navigate to Loan Calculator
         >
           <Icon
             name="calculate"
@@ -191,7 +191,7 @@ const DashboardScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => navigation.navigate('CreditHistory')} // Navigate to Credit History
+          onPress={() => navigation.navigate("CreditHistory")} // Navigate to Credit History
         >
           <Icon
             name="timeline"
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: responsiveFontSize(3),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.cardBackground,
-    textAlign: 'center',
+    textAlign: "center",
   },
   scoreContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.cardBackground,
     marginHorizontal: responsiveWidth(5),
     marginTop: responsiveHeight(3),
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
     padding: responsiveHeight(3),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -246,29 +246,29 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: responsiveFontSize(6),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: responsiveHeight(1),
   },
   scoreBar: {
-    width: '90%',
+    width: "90%",
     height: responsiveHeight(1.2),
     backgroundColor: colors.border,
     borderRadius: 10,
     marginVertical: responsiveHeight(1.5),
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   scoreProgress: {
-    height: '100%',
+    height: "100%",
     borderRadius: 10,
   },
   scoreDescription: {
     fontSize: responsiveFontSize(2),
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: responsiveHeight(0.5),
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginHorizontal: responsiveWidth(5),
     marginBottom: responsiveHeight(3),
   },
@@ -277,11 +277,11 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2),
     paddingHorizontal: responsiveWidth(3),
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     width: responsiveWidth(28),
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 3,
   },
@@ -289,11 +289,11 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.6),
     color: colors.textSecondary,
     marginTop: responsiveHeight(1),
-    textAlign: 'center',
+    textAlign: "center",
   },
   statValue: {
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginTop: responsiveHeight(0.5),
   },
@@ -306,20 +306,20 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   sectionTitle: {
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: responsiveHeight(2),
   },
   factorItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: responsiveHeight(1.5),
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   factorName: {
     fontSize: responsiveFontSize(1.9),
     color: colors.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   factorImpact: {
     fontSize: responsiveFontSize(1.5),
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
   factorStatus: {
     fontSize: responsiveFontSize(1.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: responsiveWidth(2),
   },
   // Action Buttons Styles
@@ -353,16 +353,16 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(4),
   },
   actionButton: {
-    flexDirection: 'row', // Align icon and text
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row", // Align icon and text
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.primary,
     paddingVertical: responsiveHeight(1.8),
     borderRadius: 10,
     marginBottom: responsiveHeight(1.5),
     elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: colors.cardBackground,
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

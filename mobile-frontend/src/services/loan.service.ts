@@ -3,8 +3,8 @@
  * Handles loan operations and calculations
  */
 
-import httpClient from './http.client';
-import {API_CONFIG} from '../config/api.config';
+import httpClient from "./http.client";
+import { API_CONFIG } from "../config/api.config";
 
 export interface Loan {
   loanId: number;
@@ -39,11 +39,11 @@ export const getLoanById = async (loanId: number): Promise<Loan> => {
       return response.data.data;
     }
 
-    throw new Error('Failed to get loan details');
+    throw new Error("Failed to get loan details");
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message ||
-        'Failed to get loan details. Please try again.',
+        "Failed to get loan details. Please try again.",
     );
   }
 };
@@ -61,7 +61,7 @@ export const getLoansByBorrower = async (address: string): Promise<Loan[]> => {
       return response.data.data.loans || [];
     }
 
-    throw new Error('Failed to get borrower loans');
+    throw new Error("Failed to get borrower loans");
   } catch (error: any) {
     // If no loans found, return empty array instead of error
     if (error.response?.status === 404) {
@@ -69,7 +69,7 @@ export const getLoansByBorrower = async (address: string): Promise<Loan[]> => {
     }
     throw new Error(
       error.response?.data?.message ||
-        'Failed to get borrower loans. Please try again.',
+        "Failed to get borrower loans. Please try again.",
     );
   }
 };
@@ -95,11 +95,11 @@ export const createLoan = async (
       return response.data.data;
     }
 
-    throw new Error('Failed to create loan');
+    throw new Error("Failed to create loan");
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message ||
-        'Failed to create loan. Please try again.',
+        "Failed to create loan. Please try again.",
     );
   }
 };
@@ -148,23 +148,23 @@ export const calculateLoan = (
  * Format number with commas
  */
 export const formatNumber = (num: number): string => {
-  return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 /**
  * Get loan status text
  */
 export const getLoanStatus = (loan: Loan): string => {
-  if (loan.isRepaid) return 'Repaid';
-  if (!loan.isApproved) return 'Pending';
-  return 'Active';
+  if (loan.isRepaid) return "Repaid";
+  if (!loan.isApproved) return "Pending";
+  return "Active";
 };
 
 /**
  * Get loan status color
  */
 export const getLoanStatusColor = (loan: Loan): string => {
-  if (loan.isRepaid) return '#50E3C2'; // success
-  if (!loan.isApproved) return '#F5A623'; // warning
-  return '#4A90E2'; // info
+  if (loan.isRepaid) return "#50E3C2"; // success
+  if (!loan.isApproved) return "#F5A623"; // warning
+  return "#4A90E2"; // info
 };

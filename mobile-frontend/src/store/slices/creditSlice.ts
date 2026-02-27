@@ -3,9 +3,9 @@
  * Redux slice for credit score and history management
  */
 
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import * as creditService from '../../services/credit.service';
-import {CreditScore, CreditHistory} from '../../services/credit.service';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import * as creditService from "../../services/credit.service";
+import { CreditScore, CreditHistory } from "../../services/credit.service";
 
 export interface CreditState {
   score: CreditScore | null;
@@ -27,8 +27,8 @@ const initialState: CreditState = {
  * Async thunk for fetching credit score
  */
 export const fetchCreditScore = createAsyncThunk(
-  'credit/fetchScore',
-  async (address: string, {rejectWithValue}) => {
+  "credit/fetchScore",
+  async (address: string, { rejectWithValue }) => {
     try {
       const score = await creditService.getCreditScore(address);
       return score;
@@ -42,8 +42,8 @@ export const fetchCreditScore = createAsyncThunk(
  * Async thunk for fetching credit history
  */
 export const fetchCreditHistory = createAsyncThunk(
-  'credit/fetchHistory',
-  async (address: string, {rejectWithValue}) => {
+  "credit/fetchHistory",
+  async (address: string, { rejectWithValue }) => {
     try {
       const history = await creditService.getCreditHistory(address);
       return history;
@@ -57,8 +57,8 @@ export const fetchCreditHistory = createAsyncThunk(
  * Async thunk for fetching score factors
  */
 export const fetchScoreFactors = createAsyncThunk(
-  'credit/fetchFactors',
-  async (address: string, {rejectWithValue}) => {
+  "credit/fetchFactors",
+  async (address: string, { rejectWithValue }) => {
     try {
       const factors = await creditService.getScoreFactors(address);
       return factors;
@@ -72,8 +72,8 @@ export const fetchScoreFactors = createAsyncThunk(
  * Async thunk for calculating credit score
  */
 export const calculateScore = createAsyncThunk(
-  'credit/calculate',
-  async (walletAddress: string, {rejectWithValue}) => {
+  "credit/calculate",
+  async (walletAddress: string, { rejectWithValue }) => {
     try {
       const result = await creditService.calculateCreditScore(walletAddress);
       return result;
@@ -87,22 +87,22 @@ export const calculateScore = createAsyncThunk(
  * Credit slice
  */
 const creditSlice = createSlice({
-  name: 'credit',
+  name: "credit",
   initialState,
   reducers: {
-    clearCreditError: state => {
+    clearCreditError: (state) => {
       state.error = null;
     },
-    resetCredit: state => {
+    resetCredit: (state) => {
       state.score = null;
       state.history = null;
       state.scoreFactors = [];
       state.error = null;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     // Fetch credit score
-    builder.addCase(fetchCreditScore.pending, state => {
+    builder.addCase(fetchCreditScore.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -117,7 +117,7 @@ const creditSlice = createSlice({
     });
 
     // Fetch credit history
-    builder.addCase(fetchCreditHistory.pending, state => {
+    builder.addCase(fetchCreditHistory.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -132,7 +132,7 @@ const creditSlice = createSlice({
     });
 
     // Fetch score factors
-    builder.addCase(fetchScoreFactors.pending, state => {
+    builder.addCase(fetchScoreFactors.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -147,7 +147,7 @@ const creditSlice = createSlice({
     });
 
     // Calculate score
-    builder.addCase(calculateScore.pending, state => {
+    builder.addCase(calculateScore.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
@@ -168,5 +168,5 @@ const creditSlice = createSlice({
   },
 });
 
-export const {clearCreditError, resetCredit} = creditSlice.actions;
+export const { clearCreditError, resetCredit } = creditSlice.actions;
 export default creditSlice.reducer;

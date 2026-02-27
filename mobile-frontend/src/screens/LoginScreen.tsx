@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,57 +10,57 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-} from 'react-native';
+} from "react-native";
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
-} from '../utils/responsive';
-import {Icon} from '@rneui/themed';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {loginUser, clearError} from '../store/slices/authSlice';
+} from "../utils/responsive";
+import { Icon } from "@rneui/themed";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { loginUser, clearError } from "../store/slices/authSlice";
 
 const colors = {
-  primary: '#4A90E2',
-  accent: '#50E3C2',
-  background: '#F8F9FA',
-  cardBackground: '#FFFFFF',
-  textPrimary: '#333333',
-  textSecondary: '#777777',
-  border: '#EAEAEA',
-  error: '#D0021B',
+  primary: "#4A90E2",
+  accent: "#50E3C2",
+  background: "#F8F9FA",
+  cardBackground: "#FFFFFF",
+  textPrimary: "#333333",
+  textSecondary: "#777777",
+  border: "#EAEAEA",
+  error: "#D0021B",
 };
 
-const LoginScreen = ({navigation}: any) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginScreen = ({ navigation }: any) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useAppDispatch();
-  const {isLoading, error} = useAppSelector(state => state.auth);
+  const { isLoading, error } = useAppSelector((state) => state.auth);
 
   const handleLogin = async () => {
     if (!username.trim()) {
-      Alert.alert('Error', 'Please enter your username');
+      Alert.alert("Error", "Please enter your username");
       return;
     }
 
     if (!password.trim()) {
-      Alert.alert('Error', 'Please enter your password');
+      Alert.alert("Error", "Please enter your password");
       return;
     }
 
     try {
-      await dispatch(loginUser({username, password})).unwrap();
+      await dispatch(loginUser({ username, password })).unwrap();
       // Navigation is handled in App.tsx based on auth state
     } catch (err: any) {
-      Alert.alert('Login Failed', err || 'Invalid credentials');
+      Alert.alert("Login Failed", err || "Invalid credentials");
     }
   };
 
   const handleRegister = () => {
     dispatch(clearError());
-    navigation.navigate('Register');
+    navigation.navigate("Register");
   };
 
   React.useEffect(() => {
@@ -72,10 +72,12 @@ const LoginScreen = ({navigation}: any) => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.header}>
           <Icon
             name="account-balance-wallet"
@@ -127,9 +129,10 @@ const LoginScreen = ({navigation}: any) => {
             />
             <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
-              style={styles.eyeIcon}>
+              style={styles.eyeIcon}
+            >
               <Icon
-                name={showPassword ? 'visibility' : 'visibility-off'}
+                name={showPassword ? "visibility" : "visibility-off"}
                 type="material"
                 color={colors.textSecondary}
                 size={responsiveFontSize(2.2)}
@@ -152,7 +155,8 @@ const LoginScreen = ({navigation}: any) => {
           <TouchableOpacity
             style={[styles.loginButton, isLoading && styles.buttonDisabled]}
             onPress={handleLogin}
-            disabled={isLoading}>
+            disabled={isLoading}
+          >
             {isLoading ? (
               <ActivityIndicator color={colors.cardBackground} />
             ) : (
@@ -169,7 +173,8 @@ const LoginScreen = ({navigation}: any) => {
           <TouchableOpacity
             style={styles.registerButton}
             onPress={handleRegister}
-            disabled={isLoading}>
+            disabled={isLoading}
+          >
             <Text style={styles.registerButtonText}>Create New Account</Text>
           </TouchableOpacity>
         </View>
@@ -185,17 +190,17 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: responsiveWidth(7),
     paddingVertical: responsiveHeight(5),
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: responsiveHeight(5),
   },
   title: {
     fontSize: responsiveFontSize(4),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.primary,
     marginTop: responsiveHeight(2),
   },
@@ -209,14 +214,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: responsiveWidth(7),
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.background,
     borderRadius: 10,
     marginBottom: responsiveHeight(2),
@@ -235,9 +240,9 @@ const styles = StyleSheet.create({
     padding: responsiveWidth(2),
   },
   errorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFE5E5',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFE5E5",
     padding: responsiveHeight(1.5),
     borderRadius: 8,
     marginBottom: responsiveHeight(2),
@@ -252,7 +257,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 10,
     paddingVertical: responsiveHeight(2),
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: responsiveHeight(2),
   },
   buttonDisabled: {
@@ -261,11 +266,11 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: colors.cardBackground,
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: responsiveHeight(2),
   },
   divider: {
@@ -283,12 +288,12 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderRadius: 10,
     paddingVertical: responsiveHeight(2),
-    alignItems: 'center',
+    alignItems: "center",
   },
   registerButtonText: {
     color: colors.primary,
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

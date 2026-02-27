@@ -3,14 +3,14 @@
  * Handles user authentication, registration, and wallet management
  */
 
-import httpClient from './http.client';
-import {API_CONFIG} from '../config/api.config';
+import httpClient from "./http.client";
+import { API_CONFIG } from "../config/api.config";
 import {
   saveToken,
   saveUser,
   saveWalletAddress,
   clearAll,
-} from './storage.service';
+} from "./storage.service";
 
 export interface LoginRequest {
   username: string;
@@ -66,7 +66,7 @@ export const login = async (
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || 'Failed to login. Please try again.',
+      error.response?.data?.message || "Failed to login. Please try again.",
     );
   }
 };
@@ -86,7 +86,7 @@ export const register = async (
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || 'Failed to register. Please try again.',
+      error.response?.data?.message || "Failed to register. Please try again.",
     );
   }
 };
@@ -110,7 +110,7 @@ export const updateWalletAddress = async (
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message ||
-        'Failed to update wallet address. Please try again.',
+        "Failed to update wallet address. Please try again.",
     );
   }
 };
@@ -122,7 +122,7 @@ export const logout = async (): Promise<void> => {
   try {
     await clearAll();
   } catch (error) {
-    console.error('Error during logout:', error);
+    console.error("Error during logout:", error);
     throw error;
   }
 };

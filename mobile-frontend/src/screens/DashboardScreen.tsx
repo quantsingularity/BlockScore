@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,43 +7,48 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-} from 'react-native';
+} from "react-native";
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
-} from '../utils/responsive';
-import {Icon} from '@rneui/themed';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {fetchCreditScore, fetchScoreFactors} from '../store/slices/creditSlice';
-import {fetchBorrowerLoans} from '../store/slices/loanSlice';
+} from "../utils/responsive";
+import { Icon } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  fetchCreditScore,
+  fetchScoreFactors,
+} from "../store/slices/creditSlice";
+import { fetchBorrowerLoans } from "../store/slices/loanSlice";
 
 const colors = {
-  primary: '#4A90E2',
-  accent: '#50E3C2',
-  secondaryAccent: '#F5A623',
-  background: '#F8F9FA',
-  cardBackground: '#FFFFFF',
-  textPrimary: '#333333',
-  textSecondary: '#777777',
-  border: '#EAEAEA',
-  success: '#50E3C2',
-  info: '#4A90E2',
-  warning: '#F5A623',
-  error: '#D0021B',
+  primary: "#4A90E2",
+  accent: "#50E3C2",
+  secondaryAccent: "#F5A623",
+  background: "#F8F9FA",
+  cardBackground: "#FFFFFF",
+  textPrimary: "#333333",
+  textSecondary: "#777777",
+  border: "#EAEAEA",
+  success: "#50E3C2",
+  info: "#4A90E2",
+  warning: "#F5A623",
+  error: "#D0021B",
 };
 
 const DashboardScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-  const {user} = useAppSelector(state => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const {
     score,
     scoreFactors,
     isLoading: creditLoading,
-  } = useAppSelector(state => state.credit);
-  const {loans, isLoading: loansLoading} = useAppSelector(state => state.loan);
+  } = useAppSelector((state) => state.credit);
+  const { loans, isLoading: loansLoading } = useAppSelector(
+    (state) => state.loan,
+  );
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -56,7 +61,7 @@ const DashboardScreen = () => {
           dispatch(fetchBorrowerLoans(user.walletAddress)).unwrap(),
         ]);
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error("Error loading data:", error);
       }
     }
   };
@@ -73,36 +78,38 @@ const DashboardScreen = () => {
 
   const userScore = score?.score || 750;
   const scorePercentage = (userScore / 1000) * 100;
-  let scoreDescription = 'Good';
+  let scoreDescription = "Good";
   let scoreColor = colors.info;
 
   if (userScore >= 800) {
-    scoreDescription = 'Excellent';
+    scoreDescription = "Excellent";
     scoreColor = colors.success;
   } else if (userScore >= 700) {
-    scoreDescription = 'Good';
+    scoreDescription = "Good";
     scoreColor = colors.success;
   } else if (userScore >= 600) {
-    scoreDescription = 'Fair';
+    scoreDescription = "Fair";
     scoreColor = colors.warning;
   } else {
-    scoreDescription = 'Needs Improvement';
+    scoreDescription = "Needs Improvement";
     scoreColor = colors.warning;
   }
 
-  const activeLoans = loans.filter(loan => !loan.isRepaid && loan.isApproved);
+  const activeLoans = loans.filter((loan) => !loan.isRepaid && loan.isApproved);
 
   return (
     <ScrollView
       style={styles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      }
+    >
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Credit Dashboard</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Profile' as never)}
-          style={styles.profileButton}>
+          onPress={() => navigation.navigate("Profile" as never)}
+          style={styles.profileButton}
+        >
           <Icon
             name="person"
             type="material"
@@ -121,18 +128,18 @@ const DashboardScreen = () => {
         <>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreLabel}>Your BlockScore</Text>
-            <Text style={[styles.scoreValue, {color: scoreColor}]}>
+            <Text style={[styles.scoreValue, { color: scoreColor }]}>
               {userScore}
             </Text>
             <View style={styles.scoreBar}>
               <View
                 style={[
                   styles.scoreProgress,
-                  {width: `${scorePercentage}%`, backgroundColor: scoreColor},
+                  { width: `${scorePercentage}%`, backgroundColor: scoreColor },
                 ]}
               />
             </View>
-            <Text style={[styles.scoreDescription, {color: scoreColor}]}>
+            <Text style={[styles.scoreDescription, { color: scoreColor }]}>
               {scoreDescription}
             </Text>
           </View>
@@ -157,7 +164,7 @@ const DashboardScreen = () => {
               />
               <Text style={styles.statTitle}>History Length</Text>
               <Text style={styles.statValue}>
-                {score?.lastUpdated ? '5 years' : 'New'}
+                {score?.lastUpdated ? "5 years" : "New"}
               </Text>
             </View>
             <View style={styles.statCard}>
@@ -190,7 +197,7 @@ const DashboardScreen = () => {
                       Impact: {factor.impact}
                     </Text>
                   </View>
-                  <Text style={[styles.factorStatus, {color: factor.color}]}>
+                  <Text style={[styles.factorStatus, { color: factor.color }]}>
                     {factor.status}
                   </Text>
                 </View>
@@ -201,7 +208,8 @@ const DashboardScreen = () => {
           <View style={styles.actionsContainer}>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => navigation.navigate('LoanCalculator' as never)}>
+              onPress={() => navigation.navigate("LoanCalculator" as never)}
+            >
               <Icon
                 name="calculate"
                 type="material"
@@ -213,7 +221,8 @@ const DashboardScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => navigation.navigate('CreditHistory' as never)}>
+              onPress={() => navigation.navigate("CreditHistory" as never)}
+            >
               <Icon
                 name="timeline"
                 type="material"
@@ -236,9 +245,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: responsiveHeight(3),
     paddingHorizontal: responsiveWidth(5),
     backgroundColor: colors.primary,
@@ -247,7 +256,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: responsiveFontSize(3),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.cardBackground,
   },
   profileButton: {
@@ -255,8 +264,8 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: responsiveHeight(10),
   },
   loadingText: {
@@ -265,7 +274,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   scoreContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.cardBackground,
     marginHorizontal: responsiveWidth(5),
     marginTop: responsiveHeight(3),
@@ -273,8 +282,8 @@ const styles = StyleSheet.create({
     padding: responsiveHeight(3),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -285,29 +294,29 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: responsiveFontSize(6),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: responsiveHeight(1),
   },
   scoreBar: {
-    width: '90%',
+    width: "90%",
     height: responsiveHeight(1.2),
     backgroundColor: colors.border,
     borderRadius: 10,
     marginVertical: responsiveHeight(1.5),
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   scoreProgress: {
-    height: '100%',
+    height: "100%",
     borderRadius: 10,
   },
   scoreDescription: {
     fontSize: responsiveFontSize(2),
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: responsiveHeight(0.5),
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginHorizontal: responsiveWidth(5),
     marginBottom: responsiveHeight(3),
   },
@@ -316,11 +325,11 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2),
     paddingHorizontal: responsiveWidth(3),
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     width: responsiveWidth(28),
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 3,
   },
@@ -328,11 +337,11 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.6),
     color: colors.textSecondary,
     marginTop: responsiveHeight(1),
-    textAlign: 'center',
+    textAlign: "center",
   },
   statValue: {
     fontSize: responsiveFontSize(2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginTop: responsiveHeight(0.5),
   },
@@ -344,20 +353,20 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveHeight(2),
     borderRadius: 15,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   sectionTitle: {
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: responsiveHeight(2),
   },
   factorItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: responsiveHeight(1.5),
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
@@ -371,7 +380,7 @@ const styles = StyleSheet.create({
   factorName: {
     fontSize: responsiveFontSize(1.9),
     color: colors.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   factorImpact: {
     fontSize: responsiveFontSize(1.5),
@@ -379,7 +388,7 @@ const styles = StyleSheet.create({
   },
   factorStatus: {
     fontSize: responsiveFontSize(1.8),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: responsiveWidth(2),
   },
   actionsContainer: {
@@ -387,16 +396,16 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(4),
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.primary,
     paddingVertical: responsiveHeight(1.8),
     borderRadius: 10,
     marginBottom: responsiveHeight(1.5),
     elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
@@ -406,7 +415,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: colors.cardBackground,
     fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

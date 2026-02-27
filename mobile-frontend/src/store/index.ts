@@ -2,10 +2,10 @@
  * Redux Store Configuration
  */
 
-import {configureStore} from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
-import creditReducer from './slices/creditSlice';
-import loanReducer from './slices/loanSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./slices/authSlice";
+import creditReducer from "./slices/creditSlice";
+import loanReducer from "./slices/loanSlice";
 
 export const store = configureStore({
   reducer: {
@@ -13,11 +13,11 @@ export const store = configureStore({
     credit: creditReducer,
     loan: loanReducer,
   },
-  middleware: getDefaultMiddleware =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['auth/login/fulfilled'],
+        ignoredActions: ["auth/login/fulfilled"],
       },
     }),
 });

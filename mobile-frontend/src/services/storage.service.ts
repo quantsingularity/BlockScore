@@ -3,13 +3,13 @@
  * Handles secure storage of user data, tokens, and preferences
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Storage keys
 const STORAGE_KEYS = {
-  TOKEN: '@BlockScore:token',
-  USER: '@BlockScore:user',
-  WALLET_ADDRESS: '@BlockScore:walletAddress',
+  TOKEN: "@BlockScore:token",
+  USER: "@BlockScore:user",
+  WALLET_ADDRESS: "@BlockScore:walletAddress",
 };
 
 /**
@@ -19,7 +19,7 @@ export const saveToken = async (token: string): Promise<void> => {
   try {
     await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
   } catch (error) {
-    console.error('Error saving token:', error);
+    console.error("Error saving token:", error);
     throw error;
   }
 };
@@ -31,7 +31,7 @@ export const getToken = async (): Promise<string | null> => {
   try {
     return await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
   } catch (error) {
-    console.error('Error getting token:', error);
+    console.error("Error getting token:", error);
     return null;
   }
 };
@@ -43,7 +43,7 @@ export const clearToken = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
   } catch (error) {
-    console.error('Error clearing token:', error);
+    console.error("Error clearing token:", error);
     throw error;
   }
 };
@@ -55,7 +55,7 @@ export const saveUser = async (user: any): Promise<void> => {
   try {
     await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
   } catch (error) {
-    console.error('Error saving user:', error);
+    console.error("Error saving user:", error);
     throw error;
   }
 };
@@ -68,7 +68,7 @@ export const getUser = async (): Promise<any | null> => {
     const userStr = await AsyncStorage.getItem(STORAGE_KEYS.USER);
     return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
-    console.error('Error getting user:', error);
+    console.error("Error getting user:", error);
     return null;
   }
 };
@@ -80,7 +80,7 @@ export const clearUser = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.USER);
   } catch (error) {
-    console.error('Error clearing user:', error);
+    console.error("Error clearing user:", error);
     throw error;
   }
 };
@@ -92,7 +92,7 @@ export const saveWalletAddress = async (address: string): Promise<void> => {
   try {
     await AsyncStorage.setItem(STORAGE_KEYS.WALLET_ADDRESS, address);
   } catch (error) {
-    console.error('Error saving wallet address:', error);
+    console.error("Error saving wallet address:", error);
     throw error;
   }
 };
@@ -104,7 +104,7 @@ export const getWalletAddress = async (): Promise<string | null> => {
   try {
     return await AsyncStorage.getItem(STORAGE_KEYS.WALLET_ADDRESS);
   } catch (error) {
-    console.error('Error getting wallet address:', error);
+    console.error("Error getting wallet address:", error);
     return null;
   }
 };
@@ -120,7 +120,7 @@ export const clearAll = async (): Promise<void> => {
       STORAGE_KEYS.WALLET_ADDRESS,
     ]);
   } catch (error) {
-    console.error('Error clearing storage:', error);
+    console.error("Error clearing storage:", error);
     throw error;
   }
 };
