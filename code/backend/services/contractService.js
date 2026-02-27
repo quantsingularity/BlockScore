@@ -2,14 +2,14 @@
  * BlockScore API - Contract interaction middleware
  * Handles interaction with Ethereum smart contracts
  */
-const { Web3 } = require('web3');
-const config = require('./config');
+const { Web3 } = require("web3");
+const config = require("./config");
 
 // Contract ABIs
 const CreditScoreABI =
-  require('../blockchain/build/contracts/CreditScore.json').abi;
+  require("../blockchain/build/contracts/CreditScore.json").abi;
 const LoanContractABI =
-  require('../blockchain/build/contracts/LoanContract.json').abi;
+  require("../blockchain/build/contracts/LoanContract.json").abi;
 
 class ContractService {
   constructor() {
@@ -28,22 +28,22 @@ class ContractService {
       if (config.contracts.creditScoreAddress) {
         this.creditScoreContract = new this.web3.eth.Contract(
           CreditScoreABI,
-          config.contracts.creditScoreAddress
+          config.contracts.creditScoreAddress,
         );
       }
 
       if (config.contracts.loanContractAddress) {
         this.loanContract = new this.web3.eth.Contract(
           LoanContractABI,
-          config.contracts.loanContractAddress
+          config.contracts.loanContractAddress,
         );
       }
 
       this.initialized = true;
-      console.log('Contract service initialized successfully');
+      console.log("Contract service initialized successfully");
       return true;
     } catch (error) {
-      console.error('Failed to initialize contract service:', error);
+      console.error("Failed to initialize contract service:", error);
       return false;
     }
   }
@@ -56,12 +56,12 @@ class ContractService {
   getAccountFromPrivateKey(privateKey) {
     try {
       const account = this.web3.eth.accounts.privateKeyToAccount(
-        `0x${privateKey}`
+        `0x${privateKey}`,
       );
       return account.address;
     } catch (error) {
-      console.error('Invalid private key:', error);
-      throw new Error('Invalid private key');
+      console.error("Invalid private key:", error);
+      throw new Error("Invalid private key");
     }
   }
 
@@ -74,7 +74,7 @@ class ContractService {
   async signAndSendTransaction(tx, privateKey) {
     try {
       const account = this.web3.eth.accounts.privateKeyToAccount(
-        `0x${privateKey}`
+        `0x${privateKey}`,
       );
       const signedTx = await account.signTransaction({
         ...tx,
@@ -82,11 +82,11 @@ class ContractService {
       });
 
       const receipt = await this.web3.eth.sendSignedTransaction(
-        signedTx.rawTransaction
+        signedTx.rawTransaction,
       );
       return receipt;
     } catch (error) {
-      console.error('Transaction failed:', error);
+      console.error("Transaction failed:", error);
       throw new Error(`Transaction failed: ${error.message}`);
     }
   }
@@ -98,7 +98,7 @@ class ContractService {
    */
   async getCreditScore(userAddress) {
     if (!this.initialized || !this.creditScoreContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -110,7 +110,7 @@ class ContractService {
         lastUpdated: parseInt(result.lastUpdated),
       };
     } catch (error) {
-      console.error('Failed to get credit score:', error);
+      console.error("Failed to get credit score:", error);
       throw new Error(`Failed to get credit score: ${error.message}`);
     }
   }
@@ -122,7 +122,7 @@ class ContractService {
    */
   async getCreditHistory(userAddress) {
     if (!this.initialized || !this.creditScoreContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -141,7 +141,7 @@ class ContractService {
         scoreImpact: parseInt(record.scoreImpact),
       }));
     } catch (error) {
-      console.error('Failed to get credit history:', error);
+      console.error("Failed to get credit history:", error);
       throw new Error(`Failed to get credit history: ${error.message}`);
     }
   }
@@ -160,10 +160,10 @@ class ContractService {
     amount,
     recordType,
     scoreImpact,
-    privateKey
+    privateKey,
   ) {
     if (!this.initialized || !this.creditScoreContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -173,7 +173,7 @@ class ContractService {
         userAddress,
         amount,
         recordType,
-        scoreImpact
+        scoreImpact,
       );
 
       const data = tx.encodeABI();
@@ -186,7 +186,7 @@ class ContractService {
 
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
-      console.error('Failed to add credit record:', error);
+      console.error("Failed to add credit record:", error);
       throw new Error(`Failed to add credit record: ${error.message}`);
     }
   }
@@ -200,7 +200,7 @@ class ContractService {
    */
   async markRecordRepaid(userAddress, recordIndex, privateKey) {
     if (!this.initialized || !this.creditScoreContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -208,7 +208,7 @@ class ContractService {
 
       const tx = this.creditScoreContract.methods.markRepaid(
         userAddress,
-        recordIndex
+        recordIndex,
       );
       const data = tx.encodeABI();
 
@@ -221,7 +221,7 @@ class ContractService {
 
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
-      console.error('Failed to mark record as repaid:', error);
+      console.error("Failed to mark record as repaid:", error);
       throw new Error(`Failed to mark record as repaid: ${error.message}`);
     }
   }
@@ -236,7 +236,7 @@ class ContractService {
    */
   async createLoan(amount, interestRate, durationDays, privateKey) {
     if (!this.initialized || !this.loanContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -245,7 +245,7 @@ class ContractService {
       const tx = this.loanContract.methods.createLoan(
         amount,
         interestRate,
-        durationDays
+        durationDays,
       );
       const data = tx.encodeABI();
 
@@ -262,7 +262,7 @@ class ContractService {
       const loanCreatedEvent = receipt.logs.find(
         (log) =>
           log.topics[0] ===
-          this.web3.utils.sha3('LoanCreated(uint256,address,uint256)')
+          this.web3.utils.sha3("LoanCreated(uint256,address,uint256)"),
       );
 
       const loanId = parseInt(loanCreatedEvent.topics[1], 16);
@@ -272,7 +272,7 @@ class ContractService {
         loanId,
       };
     } catch (error) {
-      console.error('Failed to create loan:', error);
+      console.error("Failed to create loan:", error);
       throw new Error(`Failed to create loan: ${error.message}`);
     }
   }
@@ -285,7 +285,7 @@ class ContractService {
    */
   async approveLoan(loanId, privateKey) {
     if (!this.initialized || !this.loanContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -303,7 +303,7 @@ class ContractService {
 
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
-      console.error('Failed to approve loan:', error);
+      console.error("Failed to approve loan:", error);
       throw new Error(`Failed to approve loan: ${error.message}`);
     }
   }
@@ -316,7 +316,7 @@ class ContractService {
    */
   async repayLoan(loanId, privateKey) {
     if (!this.initialized || !this.loanContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -334,7 +334,7 @@ class ContractService {
 
       return await this.signAndSendTransaction(txObject, privateKey);
     } catch (error) {
-      console.error('Failed to repay loan:', error);
+      console.error("Failed to repay loan:", error);
       throw new Error(`Failed to repay loan: ${error.message}`);
     }
   }
@@ -346,7 +346,7 @@ class ContractService {
    */
   async getBorrowerLoans(borrowerAddress) {
     if (!this.initialized || !this.loanContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -355,7 +355,7 @@ class ContractService {
         .call();
       return loanIds.map((id) => parseInt(id));
     } catch (error) {
-      console.error('Failed to get borrower loans:', error);
+      console.error("Failed to get borrower loans:", error);
       throw new Error(`Failed to get borrower loans: ${error.message}`);
     }
   }
@@ -367,7 +367,7 @@ class ContractService {
    */
   async getLoanDetails(loanId) {
     if (!this.initialized || !this.loanContract) {
-      throw new Error('Contract service not initialized');
+      throw new Error("Contract service not initialized");
     }
 
     try {
@@ -386,7 +386,7 @@ class ContractService {
         repaymentTimestamp: parseInt(loan.repaymentTimestamp),
       };
     } catch (error) {
-      console.error('Failed to get loan details:', error);
+      console.error("Failed to get loan details:", error);
       throw new Error(`Failed to get loan details: ${error.message}`);
     }
   }

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 // Create context
 const AuthContext = createContext();
@@ -15,16 +15,16 @@ export const AuthProvider = ({ children }) => {
       try {
         // For demo purposes, we'll simulate a logged-in user
         const demoUser = {
-          address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-          name: 'Demo User',
-          balance: '2.5 ETH',
+          address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          name: "Demo User",
+          balance: "2.5 ETH",
         };
 
         setUser(demoUser);
         setIsAuthenticated(true);
         setLoading(false);
       } catch (error) {
-        console.error('Authentication error:', error);
+        console.error("Authentication error:", error);
         setUser(null);
         setIsAuthenticated(false);
         setLoading(false);
@@ -42,15 +42,15 @@ export const AuthProvider = ({ children }) => {
 
       const user = {
         address,
-        name: 'Demo User',
-        balance: '2.5 ETH',
+        name: "Demo User",
+        balance: "2.5 ETH",
       };
 
       setUser(user);
       setIsAuthenticated(true);
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return false;
     } finally {
       setLoading(false);

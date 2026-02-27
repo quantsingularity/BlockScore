@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -12,11 +12,11 @@ import {
   Divider,
   CircularProgress,
   useTheme,
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { useWeb3 } from '../contexts/Web3Context';
-import { calculateLoan } from '../utils/api';
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useWeb3 } from "../contexts/Web3Context";
+import { calculateLoan } from "../utils/api";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -27,8 +27,8 @@ import {
   PointElement,
   LineElement,
   Title,
-} from 'chart.js';
-import { Doughnut, Line } from 'react-chartjs-2';
+} from "chart.js";
+import { Doughnut, Line } from "react-chartjs-2";
 
 ChartJS.register(
   ArcElement,
@@ -38,7 +38,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  Title
+  Title,
 );
 
 const LoanCalculator = () => {
@@ -62,14 +62,14 @@ const LoanCalculator = () => {
       const walletAddress =
         accounts[0] ||
         user?.address ||
-        '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+        "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
 
       // Use the API service to calculate loan eligibility
       const data = await calculateLoan(walletAddress, amount, rate);
       setResult(data);
     } catch (err) {
-      console.error('Error calculating loan:', err);
-      setError('Failed to calculate loan eligibility. Please try again later.');
+      console.error("Error calculating loan:", err);
+      setError("Failed to calculate loan eligibility. Please try again later.");
 
       // For demo purposes, set mock data if API fails
       setResult({
@@ -118,13 +118,13 @@ const LoanCalculator = () => {
     labels: paymentSchedule.slice(0, 12).map((item) => `Month ${item.month}`),
     datasets: [
       {
-        label: 'Principal',
+        label: "Principal",
         data: paymentSchedule.slice(0, 12).map((item) => item.principal),
         backgroundColor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
       },
       {
-        label: 'Interest',
+        label: "Interest",
         data: paymentSchedule.slice(0, 12).map((item) => item.interest),
         backgroundColor: theme.palette.secondary.main,
         borderColor: theme.palette.secondary.main,
@@ -134,7 +134,7 @@ const LoanCalculator = () => {
 
   // Approval probability chart
   const approvalChartData = {
-    labels: ['Approval', 'Rejection'],
+    labels: ["Approval", "Rejection"],
     datasets: [
       {
         data: result
@@ -211,11 +211,11 @@ const LoanCalculator = () => {
                     max={60}
                     step={12}
                     marks={[
-                      { value: 12, label: '1 yr' },
-                      { value: 24, label: '2 yr' },
-                      { value: 36, label: '3 yr' },
-                      { value: 48, label: '4 yr' },
-                      { value: 60, label: '5 yr' },
+                      { value: 12, label: "1 yr" },
+                      { value: 24, label: "2 yr" },
+                      { value: 36, label: "3 yr" },
+                      { value: 48, label: "4 yr" },
+                      { value: 60, label: "5 yr" },
                     ]}
                     valueLabelDisplay="auto"
                     valueLabelFormat={(value) => `${value} months`}
@@ -230,7 +230,7 @@ const LoanCalculator = () => {
                     disabled={loading}
                     sx={{ mt: 2 }}
                   >
-                    {loading ? <CircularProgress size={24} /> : 'Calculate'}
+                    {loading ? <CircularProgress size={24} /> : "Calculate"}
                   </Button>
 
                   {error && (
@@ -251,13 +251,13 @@ const LoanCalculator = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: "100%" }}>
               <CardContent
                 sx={{
                   p: 3,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <Typography variant="h6" gutterBottom>
@@ -267,9 +267,9 @@ const LoanCalculator = () => {
                 {!result ? (
                   <Box
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexGrow: 1,
                     }}
                   >
@@ -283,9 +283,9 @@ const LoanCalculator = () => {
                       <Grid item xs={12} sm={6}>
                         <Box
                           sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
                             mb: 3,
                           }}
                         >
@@ -300,7 +300,7 @@ const LoanCalculator = () => {
                             <Doughnut
                               data={approvalChartData}
                               options={{
-                                cutout: '70%',
+                                cutout: "70%",
                                 plugins: {
                                   legend: {
                                     display: false,
@@ -323,10 +323,10 @@ const LoanCalculator = () => {
                               fontWeight: 600,
                               color:
                                 result.approval_probability > 70
-                                  ? 'success.main'
+                                  ? "success.main"
                                   : result.approval_probability > 50
-                                    ? 'primary.main'
-                                    : 'warning.main',
+                                    ? "primary.main"
+                                    : "warning.main",
                             }}
                           >
                             {result.approval_probability.toFixed(1)}%
@@ -339,7 +339,7 @@ const LoanCalculator = () => {
                           elevation={0}
                           sx={{
                             p: 2,
-                            bgcolor: 'background.default',
+                            bgcolor: "background.default",
                             borderRadius: 2,
                           }}
                         >
@@ -354,8 +354,8 @@ const LoanCalculator = () => {
 
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                               mb: 1,
                             }}
                           >
@@ -369,8 +369,8 @@ const LoanCalculator = () => {
 
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                               mb: 1,
                             }}
                           >
@@ -382,8 +382,8 @@ const LoanCalculator = () => {
 
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                               mb: 1,
                             }}
                           >
@@ -397,8 +397,8 @@ const LoanCalculator = () => {
 
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                               mb: 1,
                             }}
                           >
@@ -412,8 +412,8 @@ const LoanCalculator = () => {
 
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                             }}
                           >
                             <Typography variant="body2" color="text.secondary">
@@ -422,7 +422,7 @@ const LoanCalculator = () => {
                             <Typography variant="body2" fontWeight={500}>
                               $
                               {(result.monthly_payment * term - amount).toFixed(
-                                2
+                                2,
                               )}
                             </Typography>
                           </Box>
@@ -445,7 +445,7 @@ const LoanCalculator = () => {
                                 beginAtZero: true,
                                 title: {
                                   display: true,
-                                  text: 'Amount ($)',
+                                  text: "Amount ($)",
                                 },
                               },
                             },
@@ -457,8 +457,8 @@ const LoanCalculator = () => {
                     <Box
                       sx={{
                         mt: 3,
-                        display: 'flex',
-                        justifyContent: 'center',
+                        display: "flex",
+                        justifyContent: "center",
                       }}
                     >
                       <Button variant="outlined" color="primary" sx={{ mr: 2 }}>

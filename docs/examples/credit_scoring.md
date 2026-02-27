@@ -44,10 +44,10 @@ for event in history["data"]["history"]:
 ## JavaScript Example
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const BASE_URL = 'http://localhost:5000/api';
-const token = 'your-access-token-here';
+const BASE_URL = "http://localhost:5000/api";
+const token = "your-access-token-here";
 const headers = { Authorization: `Bearer ${token}` };
 
 async function creditScoreExample() {
@@ -55,15 +55,15 @@ async function creditScoreExample() {
   const scoreRes = await axios.post(
     `${BASE_URL}/credit/calculate-score`,
     {
-      walletAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+      walletAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
       force_recalculation: false,
     },
-    { headers }
+    { headers },
   );
 
-  console.log('Credit Score:', scoreRes.data.data.score);
-  console.log('Rating:', scoreRes.data.data.rating);
-  console.log('\nFactors:');
+  console.log("Credit Score:", scoreRes.data.data.score);
+  console.log("Rating:", scoreRes.data.data.rating);
+  console.log("\nFactors:");
   scoreRes.data.data.factors.forEach((f) => {
     console.log(`  - ${f.factor} (${f.impact})`);
   });
@@ -73,10 +73,10 @@ async function creditScoreExample() {
     `${BASE_URL}/credit/history?page=1&per_page=10`,
     {
       headers,
-    }
+    },
   );
 
-  console.log('\nCredit History:');
+  console.log("\nCredit History:");
   historyRes.data.data.history.forEach((event) => {
     console.log(`  - ${event.event_date}: ${event.description}`);
   });

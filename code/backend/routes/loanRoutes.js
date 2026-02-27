@@ -1,17 +1,17 @@
 /**
  * API routes for loan operations
  */
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const contractService = require('../services/contractService');
-const { verifyToken, isAdmin } = require('../middleware/auth');
+const contractService = require("../services/contractService");
+const { verifyToken, isAdmin } = require("../middleware/auth");
 
 /**
  * @route GET /api/loans/:loanId
  * @desc Get loan details by ID
  * @access Public
  */
-router.get('/:loanId', async (req, res) => {
+router.get("/:loanId", async (req, res) => {
   try {
     const { loanId } = req.params;
     const loan = await contractService.getLoanDetails(parseInt(loanId));
@@ -21,10 +21,10 @@ router.get('/:loanId', async (req, res) => {
       data: loan,
     });
   } catch (error) {
-    console.error('Error getting loan details:', error);
+    console.error("Error getting loan details:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to get loan details',
+      message: error.message || "Failed to get loan details",
     });
   }
 });
@@ -34,14 +34,14 @@ router.get('/:loanId', async (req, res) => {
  * @desc Get all loans for a borrower
  * @access Public
  */
-router.get('/borrower/:address', async (req, res) => {
+router.get("/borrower/:address", async (req, res) => {
   try {
     const { address } = req.params;
     const loanIds = await contractService.getBorrowerLoans(address);
 
     // Get details for each loan
     const loanPromises = loanIds.map((id) =>
-      contractService.getLoanDetails(id)
+      contractService.getLoanDetails(id),
     );
     const loans = await Promise.all(loanPromises);
 
@@ -53,10 +53,10 @@ router.get('/borrower/:address', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error getting borrower loans:', error);
+    console.error("Error getting borrower loans:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to get borrower loans',
+      message: error.message || "Failed to get borrower loans",
     });
   }
 });
@@ -66,14 +66,14 @@ router.get('/borrower/:address', async (req, res) => {
  * @desc Create a new loan
  * @access Private
  */
-router.post('/create', verifyToken, async (req, res) => {
+router.post("/create", verifyToken, async (req, res) => {
   try {
     const { amount, interestRate, durationDays, privateKey } = req.body;
 
     if (!amount || !interestRate || !durationDays || !privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields',
+        message: "Missing required fields",
       });
     }
 
@@ -81,7 +81,7 @@ router.post('/create', verifyToken, async (req, res) => {
       amount,
       interestRate,
       durationDays,
-      privateKey
+      privateKey,
     );
 
     res.json({
@@ -92,10 +92,10 @@ router.post('/create', verifyToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error creating loan:', error);
+    console.error("Error creating loan:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to create loan',
+      message: error.message || "Failed to create loan",
     });
   }
 });
@@ -105,7 +105,7 @@ router.post('/create', verifyToken, async (req, res) => {
  * @desc Approve a loan
  * @access Private (Admin)
  */
-router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
+router.post("/approve/:loanId", verifyToken, isAdmin, async (req, res) => {
   try {
     const { loanId } = req.params;
     const { privateKey } = req.body;
@@ -113,13 +113,13 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
     if (!privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Private key is required',
+        message: "Private key is required",
       });
     }
 
     const receipt = await contractService.approveLoan(
       parseInt(loanId),
-      privateKey
+      privateKey,
     );
 
     res.json({
@@ -129,10 +129,10 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error approving loan:', error);
+    console.error("Error approving loan:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to approve loan',
+      message: error.message || "Failed to approve loan",
     });
   }
 });
@@ -142,7 +142,7 @@ router.post('/approve/:loanId', verifyToken, isAdmin, async (req, res) => {
  * @desc Repay a loan
  * @access Private
  */
-router.post('/repay/:loanId', verifyToken, async (req, res) => {
+router.post("/repay/:loanId", verifyToken, async (req, res) => {
   try {
     const { loanId } = req.params;
     const { privateKey } = req.body;
@@ -150,13 +150,13 @@ router.post('/repay/:loanId', verifyToken, async (req, res) => {
     if (!privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Private key is required',
+        message: "Private key is required",
       });
     }
 
     const receipt = await contractService.repayLoan(
       parseInt(loanId),
-      privateKey
+      privateKey,
     );
 
     res.json({
@@ -166,10 +166,10 @@ router.post('/repay/:loanId', verifyToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error repaying loan:', error);
+    console.error("Error repaying loan:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to repay loan',
+      message: error.message || "Failed to repay loan",
     });
   }
 });

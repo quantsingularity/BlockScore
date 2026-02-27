@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, TextField, Paper, Typography } from '@mui/material';
+import React, { useState } from "react";
+import { Button, TextField, Paper, Typography } from "@mui/material";
 
 export default function LoanCalculator() {
   const [amount, setAmount] = useState(1000);
@@ -8,15 +8,15 @@ export default function LoanCalculator() {
 
   const calculate = async () => {
     try {
-      const response = await fetch('/api/loans/calculate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/loans/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, rate }),
       });
       const data = await response.json();
       setResult(data);
     } catch (error) {
-      console.error('Error calculating loan:', error);
+      console.error("Error calculating loan:", error);
       // Set mock result on error
       setResult({ approval_probability: 75 });
     }

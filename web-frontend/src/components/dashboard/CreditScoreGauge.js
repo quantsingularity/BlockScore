@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import React from "react";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const CreditScoreGauge = ({ score }) => {
   // Calculate percentage for the progress circle (score range is 300-850)
@@ -7,20 +7,20 @@ const CreditScoreGauge = ({ score }) => {
 
   // Determine color based on score
   const getColor = (score) => {
-    if (score >= 750) return '#4caf50'; // Green - Excellent
-    if (score >= 700) return '#3f51b5'; // Blue - Good
-    if (score >= 650) return '#ff9800'; // Orange - Fair
-    if (score >= 600) return '#ff5722'; // Deep Orange - Poor
-    return '#f44336'; // Red - Very Poor
+    if (score >= 750) return "#4caf50"; // Green - Excellent
+    if (score >= 700) return "#3f51b5"; // Blue - Good
+    if (score >= 650) return "#ff9800"; // Orange - Fair
+    if (score >= 600) return "#ff5722"; // Deep Orange - Poor
+    return "#f44336"; // Red - Very Poor
   };
 
   return (
     <Box
       sx={{
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <CircularProgress
@@ -28,14 +28,14 @@ const CreditScoreGauge = ({ score }) => {
         value={100}
         size={200}
         thickness={4}
-        sx={{ color: (theme) => theme.palette.grey[200], position: 'absolute' }}
+        sx={{ color: (theme) => theme.palette.grey[200], position: "absolute" }}
       />
       <CircularProgress
         variant="determinate"
         value={normalizedScore}
         size={200}
         thickness={4}
-        sx={{ color: getColor(score), position: 'absolute' }}
+        sx={{ color: getColor(score), position: "absolute" }}
       />
       <Box
         sx={{
@@ -43,11 +43,11 @@ const CreditScoreGauge = ({ score }) => {
           left: 0,
           bottom: 0,
           right: 0,
-          position: 'absolute',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'column',
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
         }}
       >
         <Typography

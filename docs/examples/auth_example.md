@@ -40,31 +40,31 @@ print("Logout:", response.json())
 ## JavaScript Example
 
 ```javascript
-const axios = require('axios');
-const BASE_URL = 'http://localhost:5000/api';
+const axios = require("axios");
+const BASE_URL = "http://localhost:5000/api";
 
 async function authExample() {
   try {
     // Register
     const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
-      email: 'demo@blockscore.io',
-      password: 'SecurePass123!',
+      email: "demo@blockscore.io",
+      password: "SecurePass123!",
     });
-    console.log('Registered:', registerRes.data);
+    console.log("Registered:", registerRes.data);
 
     // Login
     const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
-      email: 'demo@blockscore.io',
-      password: 'SecurePass123!',
+      email: "demo@blockscore.io",
+      password: "SecurePass123!",
     });
     const accessToken = loginRes.data.tokens.access_token;
-    console.log('Logged in, token:', accessToken.substring(0, 20) + '...');
+    console.log("Logged in, token:", accessToken.substring(0, 20) + "...");
 
     // Get profile
     const profileRes = await axios.get(`${BASE_URL}/profile`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log('Profile:', profileRes.data);
+    console.log("Profile:", profileRes.data);
 
     // Logout
     const logoutRes = await axios.post(
@@ -72,11 +72,11 @@ async function authExample() {
       {},
       {
         headers: { Authorization: `Bearer ${accessToken}` },
-      }
+      },
     );
-    console.log('Logged out:', logoutRes.data);
+    console.log("Logged out:", logoutRes.data);
   } catch (error) {
-    console.error('Error:', error.response?.data || error.message);
+    console.error("Error:", error.response?.data || error.message);
   }
 }
 

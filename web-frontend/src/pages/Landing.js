@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 import {
   Box,
   Typography,
@@ -9,12 +9,12 @@ import {
   Card,
   CardContent,
   useTheme,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SecurityIcon from "@mui/icons-material/Security";
+import SpeedIcon from "@mui/icons-material/Speed";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 const Landing = () => {
   const theme = useTheme();
@@ -42,49 +42,49 @@ const Landing = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        bgcolor: 'background.default',
-        overflow: 'hidden',
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        overflow: "hidden",
       }}
     >
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%)',
+          background: "linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%)",
           pt: { xs: 10, md: 15 },
           pb: { xs: 12, md: 18 },
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
+          color: "white",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
         {/* Background decoration */}
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: -100,
             right: -100,
             width: 400,
             height: 400,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: "50%",
+            background: "rgba(255, 255, 255, 0.1)",
             zIndex: 0,
           }}
         />
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             bottom: -150,
             left: -150,
             width: 300,
             height: 300,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: "50%",
+            background: "rgba(255, 255, 255, 0.05)",
             zIndex: 0,
           }}
         />
 
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -126,12 +126,12 @@ const Landing = () => {
                     size="large"
                     color="secondary"
                     endIcon={<ArrowForwardIcon />}
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate("/dashboard")}
                     sx={{
                       py: 1.5,
                       px: 4,
                       borderRadius: 2,
-                      boxShadow: '0 8px 16px rgba(245, 0, 87, 0.24)',
+                      boxShadow: "0 8px 16px rgba(245, 0, 87, 0.24)",
                     }}
                   >
                     Get Started
@@ -150,10 +150,10 @@ const Landing = () => {
                     src="/hero-image.svg"
                     alt="BlockScore Hero"
                     sx={{
-                      width: '100%',
+                      width: "100%",
                       maxWidth: 500,
-                      display: 'block',
-                      mx: 'auto',
+                      display: "block",
+                      mx: "auto",
                     }}
                   />
                 </motion.div>
@@ -192,9 +192,9 @@ const Landing = () => {
                   sx={{ fontSize: 50, color: theme.palette.primary.main }}
                 />
               ),
-              title: 'Secure & Transparent',
+              title: "Secure & Transparent",
               description:
-                'All credit data is securely stored on the blockchain, ensuring transparency and immutability.',
+                "All credit data is securely stored on the blockchain, ensuring transparency and immutability.",
             },
             {
               icon: (
@@ -202,9 +202,9 @@ const Landing = () => {
                   sx={{ fontSize: 50, color: theme.palette.primary.main }}
                 />
               ),
-              title: 'Real-time Updates',
+              title: "Real-time Updates",
               description:
-                'Credit scores are updated in real-time as new transactions are recorded on the blockchain.',
+                "Credit scores are updated in real-time as new transactions are recorded on the blockchain.",
             },
             {
               icon: (
@@ -212,9 +212,9 @@ const Landing = () => {
                   sx={{ fontSize: 50, color: theme.palette.primary.main }}
                 />
               ),
-              title: 'Fair Lending',
+              title: "Fair Lending",
               description:
-                'AI-powered scoring models ensure fair and unbiased credit assessment for all users.',
+                "AI-powered scoring models ensure fair and unbiased credit assessment for all users.",
             },
           ].map((feature, index) => (
             <Grid item xs={12} md={4} key={index}>
@@ -226,12 +226,12 @@ const Landing = () => {
                 <Card
                   className="card-hover-effect"
                   sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                     p: 3,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                 >
                   <Box sx={{ mb: 2 }}>{feature.icon}</Box>
@@ -261,7 +261,7 @@ const Landing = () => {
       {/* CTA Section */}
       <Box
         sx={{
-          bgcolor: 'primary.light',
+          bgcolor: "primary.light",
           py: 8,
           mt: 8,
         }}
@@ -276,11 +276,11 @@ const Landing = () => {
               sx={{
                 p: 4,
                 borderRadius: 4,
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)',
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                background: "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
               }}
             >
-              <CardContent sx={{ textAlign: 'center' }}>
+              <CardContent sx={{ textAlign: "center" }}>
                 <Typography
                   variant="h4"
                   component="h3"
@@ -295,7 +295,7 @@ const Landing = () => {
                 <Typography
                   variant="body1"
                   color="text.secondary"
-                  sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
+                  sx={{ mb: 4, maxWidth: 600, mx: "auto" }}
                 >
                   Join thousands of users who are already benefiting from our
                   decentralized credit scoring system. Check your score, apply
@@ -304,7 +304,7 @@ const Landing = () => {
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate("/dashboard")}
                   sx={{
                     py: 1.5,
                     px: 4,
@@ -322,10 +322,10 @@ const Landing = () => {
       {/* Footer */}
       <Box
         sx={{
-          bgcolor: 'background.paper',
+          bgcolor: "background.paper",
           py: 6,
-          borderTop: '1px solid',
-          borderColor: 'divider',
+          borderTop: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Container maxWidth="lg">

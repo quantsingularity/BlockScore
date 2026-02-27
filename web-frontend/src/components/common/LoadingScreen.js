@@ -1,17 +1,17 @@
-import React from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
+import React from "react";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 
 const LoadingScreen = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        bgcolor: 'background.default',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        bgcolor: "background.default",
       }}
     >
       <motion.div

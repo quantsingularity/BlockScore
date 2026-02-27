@@ -57,10 +57,10 @@ print(f"Approval Probability: {application['approval_probability']}%")
 ## JavaScript Example
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const BASE_URL = 'http://localhost:5000/api';
-const token = 'your-access-token-here';
+const BASE_URL = "http://localhost:5000/api";
+const token = "your-access-token-here";
 const headers = { Authorization: `Bearer ${token}` };
 
 async function loanExample() {
@@ -68,7 +68,7 @@ async function loanExample() {
   const calcRes = await axios.post(
     `${BASE_URL}/loans/calculate`,
     { amount: 10000, rate: 5.5, term_months: 36 },
-    { headers }
+    { headers },
   );
 
   const calc = calcRes.data.data;
@@ -81,17 +81,17 @@ async function loanExample() {
   const appRes = await axios.post(
     `${BASE_URL}/loans/apply`,
     {
-      loan_type: 'personal',
+      loan_type: "personal",
       requested_amount: 10000.0,
       requested_term_months: 36,
       requested_rate: 5.5,
       application_data: {
-        purpose: 'Debt consolidation',
-        employment_status: 'employed',
+        purpose: "Debt consolidation",
+        employment_status: "employed",
         annual_income: 60000,
       },
     },
-    { headers }
+    { headers },
   );
 
   const app = appRes.data.data;

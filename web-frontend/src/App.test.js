@@ -1,34 +1,34 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
-import App from './App';
-import theme from './theme';
-import { AuthProvider } from './contexts/AuthContext';
-import { Web3Provider } from './contexts/Web3Context';
-import { CreditProvider } from './contexts/CreditContext';
+import React from "react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { ThemeProvider } from "@mui/material";
+import App from "./App";
+import theme from "./theme";
+import { AuthProvider } from "./contexts/AuthContext";
+import { Web3Provider } from "./contexts/Web3Context";
+import { CreditProvider } from "./contexts/CreditContext";
 
 // Mock contexts
-jest.mock('./contexts/AuthContext', () => ({
+jest.mock("./contexts/AuthContext", () => ({
   AuthProvider: ({ children }) => <div>{children}</div>,
   useAuth: () => ({
-    user: { address: '0x123', name: 'Test User' },
+    user: { address: "0x123", name: "Test User" },
     isAuthenticated: true,
     loading: false,
   }),
 }));
 
-jest.mock('./contexts/Web3Context', () => ({
+jest.mock("./contexts/Web3Context", () => ({
   Web3Provider: ({ children }) => <div>{children}</div>,
   useWeb3: () => ({
     web3: {},
-    accounts: ['0x123'],
+    accounts: ["0x123"],
     networkId: 1,
     loading: false,
   }),
 }));
 
-jest.mock('./contexts/CreditContext', () => ({
+jest.mock("./contexts/CreditContext", () => ({
   CreditProvider: ({ children }) => <div>{children}</div>,
   useCredit: () => ({
     creditData: { score: 720 },
@@ -37,7 +37,7 @@ jest.mock('./contexts/CreditContext', () => ({
   }),
 }));
 
-const renderWithProviders = (ui, { route = '/' } = {}) => {
+const renderWithProviders = (ui, { route = "/" } = {}) => {
   return render(
     <MemoryRouter initialEntries={[route]}>
       <ThemeProvider theme={theme}>
@@ -47,44 +47,44 @@ const renderWithProviders = (ui, { route = '/' } = {}) => {
           </Web3Provider>
         </AuthProvider>
       </ThemeProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 };
 
-describe('App Component', () => {
-  test('renders without crashing', () => {
+describe("App Component", () => {
+  test("renders without crashing", () => {
     renderWithProviders(<App />);
   });
 
-  test('shows loading screen initially', () => {
+  test("shows loading screen initially", () => {
     renderWithProviders(<App />);
     // Loading screen should appear briefly
     expect(
       screen.getByText(/Loading BlockScore/i) ||
-        screen.queryByRole('progressbar')
+        screen.queryByRole("progressbar"),
     ).toBeTruthy();
   });
 
-  test('renders landing page on root route', async () => {
-    renderWithProviders(<App />, { route: '/' });
+  test("renders landing page on root route", async () => {
+    renderWithProviders(<App />, { route: "/" });
     await waitFor(
       () => {
         // Wait for loading to finish
-        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+        expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
       },
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
   });
 
-  test('renders not found page for invalid route', async () => {
-    renderWithProviders(<App />, { route: '/invalid-route' });
+  test("renders not found page for invalid route", async () => {
+    renderWithProviders(<App />, { route: "/invalid-route" });
     await waitFor(
       () => {
         expect(
-          screen.queryByText(/404/i) || screen.queryByText(/not found/i)
+          screen.queryByText(/404/i) || screen.queryByText(/not found/i),
         ).toBeTruthy();
       },
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
   });
 });

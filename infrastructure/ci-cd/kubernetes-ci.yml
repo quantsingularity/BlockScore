@@ -4,11 +4,11 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'infrastructure/kubernetes/**'
+      - "infrastructure/kubernetes/**"
   pull_request:
     branches: [main]
     paths:
-      - 'infrastructure/kubernetes/**'
+      - "infrastructure/kubernetes/**"
 
 env:
   KUBECTL_VERSION: v1.27.0
@@ -139,7 +139,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: devops-team,security-team
           minimum-approvals: 2
-          issue-title: 'Production Kubernetes Deployment Approval'
+          issue-title: "Production Kubernetes Deployment Approval"
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name blockscore-prod-cluster

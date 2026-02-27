@@ -631,29 +631,29 @@ print(response.json())
 ### JavaScript/Node.js
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = "http://localhost:5000/api";
 
 async function example() {
   // Register
   const registerRes = await axios.post(`${BASE_URL}/auth/register`, {
-    email: 'user@example.com',
-    password: 'SecurePass123!',
+    email: "user@example.com",
+    password: "SecurePass123!",
   });
 
   // Login
   const loginRes = await axios.post(`${BASE_URL}/auth/login`, {
-    email: 'user@example.com',
-    password: 'SecurePass123!',
+    email: "user@example.com",
+    password: "SecurePass123!",
   });
   const accessToken = loginRes.data.tokens.access_token;
 
   // Calculate Credit Score
   const scoreRes = await axios.post(
     `${BASE_URL}/credit/calculate-score`,
-    { walletAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
-    { headers: { Authorization: `Bearer ${accessToken}` } }
+    { walletAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" },
+    { headers: { Authorization: `Bearer ${accessToken}` } },
   );
   console.log(scoreRes.data);
 }

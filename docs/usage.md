@@ -57,16 +57,16 @@ curl -X POST http://localhost:5000/api/loans/apply \
 
 ```javascript
 // Web3.js example
-const Web3 = require('web3');
-const web3 = new Web3('http://localhost:8545');
+const Web3 = require("web3");
+const web3 = new Web3("http://localhost:8545");
 
 // Load contract
-const contractABI = require('./CreditScore.json');
+const contractABI = require("./CreditScore.json");
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // Add credit record
 await contract.methods
-  .addCreditRecord(userAddress, amount, 'loan', scoreImpact)
+  .addCreditRecord(userAddress, amount, "loan", scoreImpact)
   .send({ from: providerAddress });
 ```
 

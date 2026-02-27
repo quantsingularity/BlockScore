@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Grid,
@@ -11,17 +11,17 @@ import {
   Paper,
   Chip,
   useTheme,
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { useWeb3 } from '../contexts/Web3Context';
-import { useCredit } from '../contexts/CreditContext';
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useWeb3 } from "../contexts/Web3Context";
+import { useCredit } from "../contexts/CreditContext";
 
 // Components
-import CreditScoreGauge from '../components/dashboard/CreditScoreGauge';
-import TransactionHistory from '../components/dashboard/TransactionHistory';
-import CreditFactors from '../components/dashboard/CreditFactors';
-import QuickActions from '../components/dashboard/QuickActions';
+import CreditScoreGauge from "../components/dashboard/CreditScoreGauge";
+import TransactionHistory from "../components/dashboard/TransactionHistory";
+import CreditFactors from "../components/dashboard/CreditFactors";
+import QuickActions from "../components/dashboard/QuickActions";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -33,10 +33,10 @@ const Dashboard = () => {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '80vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
         }}
       >
         <CircularProgress />
@@ -67,12 +67,12 @@ const Dashboard = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: "100%" }}>
               <CardContent
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                   p: 3,
                 }}
               >
@@ -80,7 +80,7 @@ const Dashboard = () => {
                   Your Credit Score
                 </Typography>
 
-                <Box sx={{ my: 2, width: '100%', maxWidth: 250 }}>
+                <Box sx={{ my: 2, width: "100%", maxWidth: 250 }}>
                   <CreditScoreGauge score={creditData?.score || 0} />
                 </Box>
 
@@ -92,34 +92,34 @@ const Dashboard = () => {
                   Last updated: {new Date().toLocaleDateString()}
                 </Typography>
 
-                <Divider sx={{ width: '100%', my: 2 }} />
+                <Divider sx={{ width: "100%", my: 2 }} />
 
-                <Box sx={{ width: '100%' }}>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="body2" gutterBottom>
                     Score Category:
                   </Typography>
                   <Chip
                     label={
                       creditData?.score >= 750
-                        ? 'Excellent'
+                        ? "Excellent"
                         : creditData?.score >= 700
-                          ? 'Good'
+                          ? "Good"
                           : creditData?.score >= 650
-                            ? 'Fair'
+                            ? "Fair"
                             : creditData?.score >= 600
-                              ? 'Poor'
-                              : 'Very Poor'
+                              ? "Poor"
+                              : "Very Poor"
                     }
                     color={
                       creditData?.score >= 750
-                        ? 'success'
+                        ? "success"
                         : creditData?.score >= 700
-                          ? 'primary'
+                          ? "primary"
                           : creditData?.score >= 650
-                            ? 'info'
+                            ? "info"
                             : creditData?.score >= 600
-                              ? 'warning'
-                              : 'error'
+                              ? "warning"
+                              : "error"
                     }
                     sx={{ fontWeight: 500 }}
                   />
@@ -136,7 +136,7 @@ const Dashboard = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: "100%" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
                   Credit Factors
@@ -155,7 +155,7 @@ const Dashboard = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: "100%" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
                   Quick Actions

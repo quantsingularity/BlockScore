@@ -26,20 +26,20 @@ Main contract for managing credit records and scores.
 
 ```javascript
 // Deploy contract
-const CreditScore = artifacts.require('CreditScore');
+const CreditScore = artifacts.require("CreditScore");
 const instance = await CreditScore.deployed();
 
 // Add credit record
 await instance.addCreditRecord(
-  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+  "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
   1000, // amount
-  'loan', // record type
-  5 // score impact
+  "loan", // record type
+  5, // score impact
 );
 
 // Get credit profile
 const profile = await instance.getCreditProfile(
-  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+  "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
 );
 console.log(profile.score.toString());
 ```

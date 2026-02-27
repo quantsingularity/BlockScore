@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Typography,
@@ -6,7 +6,7 @@ import {
   Grid,
   Paper,
   useTheme,
-} from '@mui/material';
+} from "@mui/material";
 
 const CreditFactors = ({ features }) => {
   const theme = useTheme();
@@ -26,7 +26,7 @@ const CreditFactors = ({ features }) => {
   const normalizedTotalLoans = Math.min((data.total_loans / 10) * 100, 100); // Assuming 10+ loans is max
   const normalizedAvgAmount = Math.min(
     (data.avg_loan_amount / 5000) * 100,
-    100
+    100,
   ); // Assuming $5000+ is max
 
   // Get color based on value
@@ -47,15 +47,15 @@ const CreditFactors = ({ features }) => {
             elevation={0}
             sx={{
               p: 2,
-              bgcolor: 'background.default',
+              bgcolor: "background.default",
               borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
               Repayment History
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Box sx={{ width: '100%', mr: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box sx={{ width: "100%", mr: 1 }}>
                 <LinearProgress
                   variant="determinate"
                   value={normalizedRepaidRatio}
@@ -63,7 +63,7 @@ const CreditFactors = ({ features }) => {
                     height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
-                    '& .MuiLinearProgress-bar': {
+                    "& .MuiLinearProgress-bar": {
                       backgroundColor: getColorForValue(normalizedRepaidRatio),
                     },
                   }}
@@ -74,7 +74,7 @@ const CreditFactors = ({ features }) => {
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {data.repaid_ratio < 0.6 ? 'Needs improvement' : 'Good standing'}
+              {data.repaid_ratio < 0.6 ? "Needs improvement" : "Good standing"}
             </Typography>
           </Paper>
         </Grid>
@@ -85,15 +85,15 @@ const CreditFactors = ({ features }) => {
             elevation={0}
             sx={{
               p: 2,
-              bgcolor: 'background.default',
+              bgcolor: "background.default",
               borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
               Loan Count
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Box sx={{ width: '100%', mr: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box sx={{ width: "100%", mr: 1 }}>
                 <LinearProgress
                   variant="determinate"
                   value={normalizedTotalLoans}
@@ -101,7 +101,7 @@ const CreditFactors = ({ features }) => {
                     height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
-                    '& .MuiLinearProgress-bar': {
+                    "& .MuiLinearProgress-bar": {
                       backgroundColor: getColorForValue(normalizedTotalLoans),
                     },
                   }}
@@ -112,7 +112,7 @@ const CreditFactors = ({ features }) => {
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {data.total_loans < 3 ? 'Limited history' : 'Established history'}
+              {data.total_loans < 3 ? "Limited history" : "Established history"}
             </Typography>
           </Paper>
         </Grid>
@@ -123,15 +123,15 @@ const CreditFactors = ({ features }) => {
             elevation={0}
             sx={{
               p: 2,
-              bgcolor: 'background.default',
+              bgcolor: "background.default",
               borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
               Average Loan Amount
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Box sx={{ width: '100%', mr: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box sx={{ width: "100%", mr: 1 }}>
                 <LinearProgress
                   variant="determinate"
                   value={normalizedAvgAmount}
@@ -139,7 +139,7 @@ const CreditFactors = ({ features }) => {
                     height: 8,
                     borderRadius: 4,
                     backgroundColor: theme.palette.grey[200],
-                    '& .MuiLinearProgress-bar': {
+                    "& .MuiLinearProgress-bar": {
                       backgroundColor: getColorForValue(normalizedAvgAmount),
                     },
                   }}
@@ -150,7 +150,7 @@ const CreditFactors = ({ features }) => {
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {data.avg_loan_amount < 1000 ? 'Small loans' : 'Moderate loans'}
+              {data.avg_loan_amount < 1000 ? "Small loans" : "Moderate loans"}
             </Typography>
           </Paper>
         </Grid>

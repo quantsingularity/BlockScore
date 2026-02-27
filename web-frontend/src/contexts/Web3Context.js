@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import Web3 from 'web3';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import Web3 from "web3";
 
 // Create context
 const Web3Context = createContext();
@@ -22,7 +22,7 @@ export const Web3Provider = ({ children }) => {
 
           try {
             // Request account access if needed
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            await window.ethereum.request({ method: "eth_requestAccounts" });
 
             // Get accounts
             const accs = await web3Instance.eth.getAccounts();
@@ -33,18 +33,18 @@ export const Web3Provider = ({ children }) => {
             setNetworkId(netId);
 
             // Listen for account changes
-            window.ethereum.on('accountsChanged', (newAccounts) => {
+            window.ethereum.on("accountsChanged", (newAccounts) => {
               setAccounts(newAccounts);
             });
 
             // Listen for chain changes
-            window.ethereum.on('chainChanged', () => {
+            window.ethereum.on("chainChanged", () => {
               window.location.reload();
             });
           } catch (error) {
             // User denied account access
-            console.error('User denied account access');
-            setError('Please connect your wallet to use this application');
+            console.error("User denied account access");
+            setError("Please connect your wallet to use this application");
           }
         }
         // Legacy dapp browsers
@@ -63,15 +63,15 @@ export const Web3Provider = ({ children }) => {
         // Fallback - use local provider
         else {
           // For demo purposes, we'll use a mock provider
-          const web3Instance = new Web3('http://localhost:8545');
+          const web3Instance = new Web3("http://localhost:8545");
           setWeb3(web3Instance);
           setError(
-            'No Ethereum browser extension detected. Using read-only mode.'
+            "No Ethereum browser extension detected. Using read-only mode.",
           );
         }
       } catch (error) {
-        console.error('Error initializing web3:', error);
-        setError('Failed to connect to blockchain network');
+        console.error("Error initializing web3:", error);
+        setError("Failed to connect to blockchain network");
       } finally {
         setLoading(false);
       }

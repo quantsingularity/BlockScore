@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Typography, Button, Container } from '@mui/material';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Box, Typography, Button, Container } from "@mui/material";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -10,12 +10,12 @@ const NotFound = () => {
     <Container maxWidth="md">
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '80vh',
-          textAlign: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "80vh",
+          textAlign: "center",
           py: 8,
         }}
       >
@@ -28,11 +28,11 @@ const NotFound = () => {
             variant="h1"
             component="h1"
             sx={{
-              fontSize: { xs: '6rem', md: '10rem' },
+              fontSize: { xs: "6rem", md: "10rem" },
               fontWeight: 700,
-              background: 'linear-gradient(45deg, #3f51b5 30%, #f50057 90%)',
-              backgroundClip: 'text',
-              textFillColor: 'transparent',
+              background: "linear-gradient(45deg, #3f51b5 30%, #f50057 90%)",
+              backgroundClip: "text",
+              textFillColor: "transparent",
               mb: 2,
             }}
           >
@@ -81,12 +81,12 @@ const NotFound = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             sx={{ mr: 2 }}
           >
             Go to Dashboard
           </Button>
-          <Button variant="outlined" size="large" onClick={() => navigate('/')}>
+          <Button variant="outlined" size="large" onClick={() => navigate("/")}>
             Back to Home
           </Button>
         </motion.div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Grid,
@@ -15,18 +15,18 @@ import {
   Chip,
   Paper,
   useTheme,
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { useWeb3 } from '../contexts/Web3Context';
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useWeb3 } from "../contexts/Web3Context";
 
 // Icons
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import HistoryIcon from '@mui/icons-material/History';
-import SecurityIcon from '@mui/icons-material/Security';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import HistoryIcon from "@mui/icons-material/History";
+import SecurityIcon from "@mui/icons-material/Security";
+import SettingsIcon from "@mui/icons-material/Settings";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const Profile = () => {
   const theme = useTheme();
@@ -36,11 +36,11 @@ const Profile = () => {
   const walletAddress =
     accounts[0] ||
     user?.address ||
-    '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+    "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
 
   // Format wallet address for display
   const formatAddress = (address) => {
-    if (!address) return '';
+    if (!address) return "";
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
@@ -48,17 +48,17 @@ const Profile = () => {
   const getNetworkName = (id) => {
     switch (id) {
       case 1:
-        return 'Ethereum Mainnet';
+        return "Ethereum Mainnet";
       case 3:
-        return 'Ropsten Testnet';
+        return "Ropsten Testnet";
       case 4:
-        return 'Rinkeby Testnet';
+        return "Rinkeby Testnet";
       case 5:
-        return 'Goerli Testnet';
+        return "Goerli Testnet";
       case 42:
-        return 'Kovan Testnet';
+        return "Kovan Testnet";
       default:
-        return 'Unknown Network';
+        return "Unknown Network";
     }
   };
 
@@ -89,9 +89,9 @@ const Profile = () => {
               <CardContent sx={{ p: 3 }}>
                 <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                     mb: 3,
                   }}
                 >
@@ -99,7 +99,7 @@ const Profile = () => {
                     sx={{
                       width: 80,
                       height: 80,
-                      bgcolor: 'primary.main',
+                      bgcolor: "primary.main",
                       mb: 2,
                     }}
                   >
@@ -107,7 +107,7 @@ const Profile = () => {
                   </Avatar>
 
                   <Typography variant="h6" align="center" gutterBottom>
-                    {user?.name || 'Wallet User'}
+                    {user?.name || "Wallet User"}
                   </Typography>
 
                   <Chip
@@ -182,9 +182,9 @@ const Profile = () => {
                       elevation={0}
                       sx={{
                         p: 2,
-                        bgcolor: 'background.default',
+                        bgcolor: "background.default",
                         borderRadius: 2,
-                        height: '100%',
+                        height: "100%",
                       }}
                     >
                       <Typography
@@ -196,7 +196,7 @@ const Profile = () => {
                       </Typography>
                       <Typography
                         variant="h4"
-                        sx={{ fontWeight: 600, color: 'primary.main' }}
+                        sx={{ fontWeight: 600, color: "primary.main" }}
                       >
                         720
                       </Typography>
@@ -211,9 +211,9 @@ const Profile = () => {
                       elevation={0}
                       sx={{
                         p: 2,
-                        bgcolor: 'background.default',
+                        bgcolor: "background.default",
                         borderRadius: 2,
-                        height: '100%',
+                        height: "100%",
                       }}
                     >
                       <Typography
@@ -237,9 +237,9 @@ const Profile = () => {
                       elevation={0}
                       sx={{
                         p: 2,
-                        bgcolor: 'background.default',
+                        bgcolor: "background.default",
                         borderRadius: 2,
-                        height: '100%',
+                        height: "100%",
                       }}
                     >
                       <Typography
@@ -251,7 +251,7 @@ const Profile = () => {
                       </Typography>
                       <Typography
                         variant="h4"
-                        sx={{ fontWeight: 600, color: 'success.main' }}
+                        sx={{ fontWeight: 600, color: "success.main" }}
                       >
                         98%
                       </Typography>
@@ -273,29 +273,29 @@ const Profile = () => {
                 <List>
                   {[
                     {
-                      factor: 'Payment History',
-                      status: 'Excellent',
+                      factor: "Payment History",
+                      status: "Excellent",
                       description:
-                        'You have a strong history of on-time payments',
+                        "You have a strong history of on-time payments",
                       positive: true,
                     },
                     {
-                      factor: 'Credit Utilization',
-                      status: 'Good',
+                      factor: "Credit Utilization",
+                      status: "Good",
                       description:
-                        'Your current loan amount is well within your capacity',
+                        "Your current loan amount is well within your capacity",
                       positive: true,
                     },
                     {
-                      factor: 'Credit Age',
-                      status: 'Fair',
-                      description: 'Your credit history is relatively new',
+                      factor: "Credit Age",
+                      status: "Fair",
+                      description: "Your credit history is relatively new",
                       positive: false,
                     },
                     {
-                      factor: 'Credit Mix',
-                      status: 'Poor',
-                      description: 'You have limited variety in credit types',
+                      factor: "Credit Mix",
+                      status: "Poor",
+                      description: "You have limited variety in credit types",
                       positive: false,
                     },
                   ].map((item, index) => (
@@ -305,7 +305,7 @@ const Profile = () => {
                         py: 1.5,
                         px: 2,
                         mb: 1,
-                        bgcolor: 'background.default',
+                        bgcolor: "background.default",
                         borderRadius: 2,
                       }}
                     >
@@ -320,8 +320,8 @@ const Profile = () => {
                         primary={
                           <Box
                             sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
+                              display: "flex",
+                              justifyContent: "space-between",
                             }}
                           >
                             <Typography variant="body1" fontWeight={500}>
@@ -331,13 +331,13 @@ const Profile = () => {
                               label={item.status}
                               size="small"
                               color={
-                                item.status === 'Excellent'
-                                  ? 'success'
-                                  : item.status === 'Good'
-                                    ? 'primary'
-                                    : item.status === 'Fair'
-                                      ? 'warning'
-                                      : 'error'
+                                item.status === "Excellent"
+                                  ? "success"
+                                  : item.status === "Good"
+                                    ? "primary"
+                                    : item.status === "Fair"
+                                      ? "warning"
+                                      : "error"
                               }
                               sx={{ fontWeight: 500 }}
                             />
@@ -349,7 +349,7 @@ const Profile = () => {
                   ))}
                 </List>
 
-                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
                   <Button variant="contained" color="primary">
                     View Detailed Report
                   </Button>
@@ -375,9 +375,9 @@ const Profile = () => {
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                   {[
                     {
-                      title: 'Diversify Your Credit Mix',
+                      title: "Diversify Your Credit Mix",
                       description:
-                        'Consider adding different types of credit to your portfolio, such as a small secured loan.',
+                        "Consider adding different types of credit to your portfolio, such as a small secured loan.",
                       icon: (
                         <SettingsIcon
                           sx={{
@@ -388,9 +388,9 @@ const Profile = () => {
                       ),
                     },
                     {
-                      title: 'Build Credit History',
+                      title: "Build Credit History",
                       description:
-                        'Continue making on-time payments to establish a longer credit history.',
+                        "Continue making on-time payments to establish a longer credit history.",
                       icon: (
                         <HistoryIcon
                           sx={{
@@ -401,9 +401,9 @@ const Profile = () => {
                       ),
                     },
                     {
-                      title: 'Monitor Your Score',
+                      title: "Monitor Your Score",
                       description:
-                        'Regularly check your credit score to track improvements and detect issues early.',
+                        "Regularly check your credit score to track improvements and detect issues early.",
                       icon: (
                         <SecurityIcon
                           sx={{
@@ -419,12 +419,12 @@ const Profile = () => {
                         elevation={0}
                         sx={{
                           p: 2,
-                          height: '100%',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          textAlign: 'center',
-                          bgcolor: 'background.default',
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          bgcolor: "background.default",
                           borderRadius: 2,
                         }}
                       >

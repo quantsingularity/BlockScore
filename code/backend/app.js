@@ -1,16 +1,16 @@
 /**
  * Main application file for BlockScore API
  */
-const express = require('express');
-const cors = require('cors');
-const config = require('./config');
-const contractService = require('./services/contractService');
-const authService = require('./services/authService');
+const express = require("express");
+const cors = require("cors");
+const config = require("./config");
+const contractService = require("./services/contractService");
+const authService = require("./services/authService");
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
-const creditRoutes = require('./routes/creditRoutes');
-const loanRoutes = require('./routes/loanRoutes');
+const authRoutes = require("./routes/authRoutes");
+const creditRoutes = require("./routes/creditRoutes");
+const loanRoutes = require("./routes/loanRoutes");
 
 // Initialize Express app
 const app = express();
@@ -27,13 +27,13 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/credit', creditRoutes);
-app.use('/api/loans', loanRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/credit", creditRoutes);
+app.use("/api/loans", loanRoutes);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date() });
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date() });
 });
 
 // Error handling middleware
@@ -41,8 +41,8 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
     success: false,
-    message: 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    message: "Internal server error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
   });
 });
 
@@ -55,9 +55,9 @@ const initServices = async () => {
     // Initialize contract service
     await contractService.init();
 
-    console.log('Services initialized successfully');
+    console.log("Services initialized successfully");
   } catch (error) {
-    console.error('Failed to initialize services:', error);
+    console.error("Failed to initialize services:", error);
     process.exit(1);
   }
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, Link } from '@mui/material';
+import React from "react";
+import { Box, Typography, Link } from "@mui/material";
 
 const Footer = () => {
   return (
@@ -7,10 +7,10 @@ const Footer = () => {
       component="footer"
       sx={{
         py: 3,
-        mt: 'auto',
-        textAlign: 'center',
-        borderTop: '1px solid',
-        borderColor: 'divider',
+        mt: "auto",
+        textAlign: "center",
+        borderTop: "1px solid",
+        borderColor: "divider",
       }}
     >
       <Typography variant="body2" color="text.secondary">

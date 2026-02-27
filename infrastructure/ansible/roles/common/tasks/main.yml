@@ -2,14 +2,14 @@
 # roles/common/tasks/main.yml
 - name: Update all packages
   ansible.builtin.dnf:
-    name: '*'
+    name: "*"
     state: latest
     update_only: yes
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: Update all packages (RHEL 7 / CentOS 7)
   ansible.builtin.yum:
-    name: '*'
+    name: "*"
     state: latest
     update_only: yes
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int < 8
@@ -46,7 +46,7 @@
 
 - name: Configure firewall services
   ansible.posix.firewalld:
-    service: '{{ item }}'
+    service: "{{ item }}"
     permanent: yes
     state: enabled
     immediate: yes

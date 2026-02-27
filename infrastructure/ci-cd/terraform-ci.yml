@@ -4,11 +4,11 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'infrastructure/terraform/**'
+      - "infrastructure/terraform/**"
   pull_request:
     branches: [main]
     paths:
-      - 'infrastructure/terraform/**'
+      - "infrastructure/terraform/**"
 
 env:
   TF_VERSION: 1.6.0
@@ -263,7 +263,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: devops-team
           minimum-approvals: 2
-          issue-title: 'Production Terraform Deployment Approval'
+          issue-title: "Production Terraform Deployment Approval"
 
       - name: Terraform Apply
         run: |

@@ -244,9 +244,9 @@ File: `code/blockchain/truffle-config.js`
 module.exports = {
   networks: {
     development: {
-      host: '127.0.0.1',
+      host: "127.0.0.1",
       port: 8545,
-      network_id: '*',
+      network_id: "*",
       gas: 6721975,
       gasPrice: 20000000000,
     },
@@ -254,7 +254,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           process.env.MNEMONIC,
-          'https://rpc-mumbai.maticvigil.com'
+          "https://rpc-mumbai.maticvigil.com",
         ),
       network_id: 80001,
       confirmations: 2,
@@ -263,7 +263,7 @@ module.exports = {
     },
     polygon: {
       provider: () =>
-        new HDWalletProvider(process.env.MNEMONIC, 'https://polygon-rpc.com'),
+        new HDWalletProvider(process.env.MNEMONIC, "https://polygon-rpc.com"),
       network_id: 137,
       confirmations: 5,
       timeoutBlocks: 200,
@@ -273,7 +273,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: '0.8.0',
+      version: "0.8.0",
       settings: {
         optimizer: {
           enabled: true,
@@ -325,13 +325,13 @@ all:
 File: `docker-compose.yml` (to be created)
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
     build: ./code/backend
     ports:
-      - '5000:5000'
+      - "5000:5000"
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/blockscore
       - REDIS_URL=redis://redis:6379/0
@@ -342,7 +342,7 @@ services:
   frontend:
     build: ./web-frontend
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:5000/api
 
@@ -358,7 +358,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
 volumes:
   postgres_data:

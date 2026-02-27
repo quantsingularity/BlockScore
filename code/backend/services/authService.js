@@ -1,9 +1,9 @@
 /**
  * User authentication service for BlockScore API
  */
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const config = require('../config');
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const config = require("../config");
 
 // In-memory user store (would be replaced with database in production)
 const users = {};
@@ -16,15 +16,15 @@ class AuthService {
    * @param {string} role - User role (user, provider, admin)
    * @returns {Object} - User object (without password)
    */
-  registerUser(username, password, role = 'user') {
+  registerUser(username, password, role = "user") {
     if (users[username]) {
-      throw new Error('Username already exists');
+      throw new Error("Username already exists");
     }
 
-    const salt = crypto.randomBytes(16).toString('hex');
+    const salt = crypto.randomBytes(16).toString("hex");
     const hash = crypto
-      .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
-      .toString('hex');
+      .pbkdf2Sync(password, salt, 1000, 64, "sha512")
+      .toString("hex");
 
     const user = {
       username,
@@ -54,14 +54,14 @@ class AuthService {
   authenticateUser(username, password) {
     const user = users[username];
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const hash = crypto
-      .pbkdf2Sync(password, user.salt, 1000, 64, 'sha512')
-      .toString('hex');
+      .pbkdf2Sync(password, user.salt, 1000, 64, "sha512")
+      .toString("hex");
     if (hash !== user.hash) {
-      throw new Error('Invalid password');
+      throw new Error("Invalid password");
     }
 
     const token = jwt.sign(
@@ -71,12 +71,12 @@ class AuthService {
         walletAddress: user.walletAddress,
       },
       config.api.jwtSecret,
-      { expiresIn: config.api.jwtExpiration }
+      { expiresIn: config.api.jwtExpiration },
     );
 
     return {
       success: true,
-      message: 'Authentication successful',
+      message: "Authentication successful",
       token,
       user: {
         username: user.username,
@@ -95,7 +95,7 @@ class AuthService {
   updateWalletAddress(username, walletAddress) {
     const user = users[username];
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     user.walletAddress = walletAddress;
@@ -112,9 +112,9 @@ class AuthService {
    */
   init() {
     // Create default admin if not exists
-    if (!users['admin']) {
-      this.registerUser('admin', 'admin123', 'admin');
-      console.log('Default admin user created');
+    if (!users["admin"]) {
+      this.registerUser("admin", "admin123", "admin");
+      console.log("Default admin user created");
     }
   }
 }

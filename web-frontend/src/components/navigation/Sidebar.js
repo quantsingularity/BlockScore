@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -11,16 +11,16 @@ import {
   useMediaQuery,
   Collapse,
   Typography,
-} from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+} from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Icons
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import CalculateIcon from '@mui/icons-material/Calculate';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import HistoryIcon from '@mui/icons-material/History';
-import SettingsIcon from '@mui/icons-material/Settings';
-import HelpIcon from '@mui/icons-material/Help';
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import HistoryIcon from "@mui/icons-material/History";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HelpIcon from "@mui/icons-material/Help";
 
 const drawerWidth = 240;
 
@@ -28,7 +28,7 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
 
   const [open, setOpen] = useState({
     transactions: false,
@@ -44,34 +44,34 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
 
   const menuItems = [
     {
-      text: 'Dashboard',
+      text: "Dashboard",
       icon: <DashboardIcon />,
-      path: '/dashboard',
+      path: "/dashboard",
     },
     {
-      text: 'Loan Calculator',
+      text: "Loan Calculator",
       icon: <CalculateIcon />,
-      path: '/loan-calculator',
+      path: "/loan-calculator",
     },
     {
-      text: 'Wallet',
+      text: "Wallet",
       icon: <AccountBalanceWalletIcon />,
-      path: '/profile',
+      path: "/profile",
     },
     {
-      text: 'Transaction History',
+      text: "Transaction History",
       icon: <HistoryIcon />,
-      path: '/history',
+      path: "/history",
     },
     {
-      text: 'Settings',
+      text: "Settings",
       icon: <SettingsIcon />,
-      path: '/settings',
+      path: "/settings",
     },
     {
-      text: 'Help & Support',
+      text: "Help & Support",
       icon: <HelpIcon />,
-      path: '/help',
+      path: "/help",
     },
   ];
 
@@ -80,9 +80,9 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
       <Box
         sx={{
           height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
       >
@@ -106,25 +106,25 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
             sx={{
               mb: 0.5,
               py: 1,
-              borderRadius: '8px',
+              borderRadius: "8px",
               mx: 1,
-              '&:hover': {
-                backgroundColor: 'rgba(63, 81, 181, 0.08)',
+              "&:hover": {
+                backgroundColor: "rgba(63, 81, 181, 0.08)",
               },
               ...(location.pathname === item.path && {
-                backgroundColor: 'rgba(63, 81, 181, 0.12)',
-                '&:hover': {
-                  backgroundColor: 'rgba(63, 81, 181, 0.16)',
+                backgroundColor: "rgba(63, 81, 181, 0.12)",
+                "&:hover": {
+                  backgroundColor: "rgba(63, 81, 181, 0.16)",
                 },
-                '&::before': {
+                "&::before": {
                   content: '""',
-                  position: 'absolute',
+                  position: "absolute",
                   left: 0,
-                  top: '25%',
-                  height: '50%',
+                  top: "25%",
+                  height: "50%",
                   width: 4,
                   backgroundColor: theme.palette.primary.main,
-                  borderRadius: '0 4px 4px 0',
+                  borderRadius: "0 4px 4px 0",
                 },
               }),
             }}
@@ -176,11 +176,11 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
           keepMounted: true, // Better open performance on mobile
         }}
         sx={{
-          display: { xs: 'block', sm: 'none' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
             width: drawerWidth,
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
           },
         }}
       >
@@ -191,12 +191,12 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: 'none', sm: 'block' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
+          display: { xs: "none", sm: "block" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
             width: drawerWidth,
             borderRight: `1px solid ${theme.palette.divider}`,
-            boxShadow: 'none',
+            boxShadow: "none",
           },
         }}
         open

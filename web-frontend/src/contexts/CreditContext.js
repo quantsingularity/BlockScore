@@ -1,11 +1,11 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 import {
   getCreditScore,
   getCreditHistory,
   calculateCreditScore,
-} from '../utils/api';
-import { useAuth } from './AuthContext';
-import { useWeb3 } from './Web3Context';
+} from "../utils/api";
+import { useAuth } from "./AuthContext";
+import { useWeb3 } from "./Web3Context";
 
 // Create context
 const CreditContext = createContext();
@@ -28,7 +28,7 @@ export const CreditProvider = ({ children }) => {
       const address = walletAddress || accounts[0] || user?.address;
 
       if (!address) {
-        throw new Error('No wallet address available');
+        throw new Error("No wallet address available");
       }
 
       // Try to get credit score from blockchain first
@@ -37,7 +37,7 @@ export const CreditProvider = ({ children }) => {
         data = await getCreditScore(address);
       } catch (apiError) {
         // If blockchain call fails, try calculating with AI
-        console.log('Blockchain call failed, trying AI calculation...');
+        console.log("Blockchain call failed, trying AI calculation...");
         data = await calculateCreditScore(address);
       }
 
@@ -46,7 +46,7 @@ export const CreditProvider = ({ children }) => {
       try {
         history = await getCreditHistory(address);
       } catch (historyError) {
-        console.log('Could not fetch credit history:', historyError.message);
+        console.log("Could not fetch credit history:", historyError.message);
       }
 
       const creditInfo = {
@@ -64,8 +64,8 @@ export const CreditProvider = ({ children }) => {
       setCreditData(creditInfo);
       return creditInfo;
     } catch (err) {
-      console.error('Error fetching credit score:', err);
-      setError('Failed to load credit score data. Using demo data.');
+      console.error("Error fetching credit score:", err);
+      setError("Failed to load credit score data. Using demo data.");
 
       // For demo purposes, set mock data if API fails
       const mockData = {
@@ -73,7 +73,7 @@ export const CreditProvider = ({ children }) => {
           walletAddress ||
           accounts[0] ||
           user?.address ||
-          '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
         score: 720,
         features: {
           total_loans: 5,
