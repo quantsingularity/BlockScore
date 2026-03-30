@@ -11,9 +11,14 @@ from datetime import datetime
 import joblib
 import numpy as np
 import pandas as pd
-from core.logging import get_logger
+import logging
 
-logger = get_logger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
+
 model_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "credit_scoring_model.pkl"
 )

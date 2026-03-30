@@ -31,11 +31,15 @@ from services.auth_service import AuthService
 from services.blockchain_service import BlockchainService
 from services.compliance_service import ComplianceService
 from services.credit_service import CreditScoringService
-from core.logging import get_logger
 from typing import Any, Dict, Tuple
 import uuid
+import logging
 
-logger = get_logger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 def create_app(config_name: str = "default") -> Flask:
