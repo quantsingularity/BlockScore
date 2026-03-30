@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 Comprehensive Test Suite for Compliance Service
 Tests for KYC/AML, audit trails, and regulatory compliance features

@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 Comprehensive Test Suite for Multi-Factor Authentication Service
 Tests for TOTP, SMS, backup codes, and security features
