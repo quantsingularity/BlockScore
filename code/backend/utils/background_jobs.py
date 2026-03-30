@@ -93,9 +93,7 @@ class JobManager:
                 task_options["countdown"] = countdown
             elif eta:
                 task_options["eta"] = eta
-            self.celery.send_task(
-                task_name, args=args, kwargs=kwargs, **task_options
-            )
+            self.celery.send_task(task_name, args=args, kwargs=kwargs, **task_options)
             self.job_registry[job_id] = {
                 "task_name": task_name,
                 "submitted_at": datetime.now(timezone.utc),
