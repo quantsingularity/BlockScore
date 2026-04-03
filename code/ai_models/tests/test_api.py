@@ -1,13 +1,13 @@
-import json
 import os
 import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import json
+import server
 import unittest
 from typing import Any, Dict
 from unittest.mock import patch
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import server
-
 
 class TestModelAPI(unittest.TestCase):
     """Test cases for the model API server"""

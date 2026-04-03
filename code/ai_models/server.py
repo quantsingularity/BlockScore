@@ -5,15 +5,15 @@ This module provides a Flask API server for the BlockScore credit scoring model.
 It exposes endpoints for health checks and credit score prediction.
 """
 
-import logging
 import os
 import sys
-from datetime import datetime, timezone
-from typing import Any, Dict
-
-from flask import Flask, jsonify, request
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import logging
+from typing import Any, Dict
+from datetime import datetime, timezone
+from flask import Flask, jsonify, request
 from model_integration import (
     calculate_score_factors,
     predict_score,
