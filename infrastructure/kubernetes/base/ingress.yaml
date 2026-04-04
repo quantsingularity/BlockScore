@@ -2,32 +2,38 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blockscore-ingress
+  name: "{{ .Values.appName }}-ingress"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "{{ .Values.ingress.certManager.issuer }}"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/use-regex: "false"
 spec:
-  ingressClassName: nginx
+  ingressClassName: "{{ .Values.ingress.class }}"
   tls:
     - hosts:
-        - blockscore.example.com
-      secretName: blockscore-tls
+        - "{{ .Values.ingress.host }}"
+      secretName: "{{ .Values.appName }}-tls"
   rules:
-    - host: blockscore.example.com
+    - host: "{{ .Values.ingress.host }}"
       http:
         paths:
           - path: /api
             pathType: Prefix
             backend:
               service:
-                name: blockscore-backend
+                name: "{{ .Values.appName }}-backend"
                 port:
-                  number: 8080
+                  number: { { .Values.backend.servicePort } }
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: blockscore-frontend
+                name: "{{ .Values.appName }}-frontend"
                 port:
-                  number: 80
+                  number: { { .Values.frontend.servicePort } }

@@ -16,12 +16,17 @@ spec:
       labels:
         app: "{{ .Values.appName }}-database"
     spec:
+      securityContext:
+        runAsNonRoot: false
+        fsGroup: 999
+      terminationGracePeriodSeconds: 60
       containers:
         - name: "{{ .Values.appName }}-database"
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
           imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
           ports:
             - containerPort: { { .Values.database.containerPort } }
+              name: mysql
           resources:
             limits:
               cpu: "{{ .Values.database.resources.limits.cpu }}"
@@ -50,22 +55,32 @@ spec:
           livenessProbe:
             exec:
               command:
-                ["mysqladmin", "ping", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-            initialDelaySeconds: 30
+                - "sh"
+                - "-c"
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD} 2>/dev/null"
+            initialDelaySeconds: 60
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             exec:
               command:
-                [
-                  "mysql",
-                  "-u",
-                  "root",
-                  "-p${MYSQL_ROOT_PASSWORD}",
-                  "-e",
-                  "SELECT 1",
-                ]
-            initialDelaySeconds: 5
+                - "sh"
+                - "-c"
+                - "mysql -u root -p${MYSQL_ROOT_PASSWORD} -e 'SELECT 1' 2>/dev/null"
+            initialDelaySeconds: 20
             periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD} 2>/dev/null"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 30
   volumeClaimTemplates:
     - metadata:
         name: "{{ .Values.appName }}-database-data"

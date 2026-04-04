@@ -1,5 +1,5 @@
 ---
-- name: Restart Nginx
+- name: Restart SSH
   ansible.builtin.systemd:
-    name: nginx
+    name: sshd
     state: restarted

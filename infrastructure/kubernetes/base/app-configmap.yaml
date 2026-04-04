@@ -6,9 +6,10 @@ metadata:
 data:
   API_URL: "{{ .Values.backend.apiUrl }}"
   REDIS_HOST: "{{ .Values.appName }}-redis"
-  REDIS_PORT: "{{ .Values.redis.containerPort }}"
+  REDIS_PORT: "{{ .Values.redis.containerPort | toString }}"
   DATABASE_HOST: "{{ .Values.appName }}-database"
-  DATABASE_PORT: "{{ .Values.database.containerPort }}"
+  DATABASE_PORT: "{{ .Values.database.containerPort | toString }}"
   DATABASE_NAME: "{{ .Values.database.name }}"
   DATABASE_USER: "{{ .Values.database.user }}"
   LOG_LEVEL: "{{ .Values.logLevel }}"
+  ENVIRONMENT: "{{ .Values.environment }}"

@@ -1,0 +1,58 @@
+version: "3.9"
+
+# Development overrides - use with:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+      target: builder
+    image: blockscore/backend:dev
+    container_name: blockscore-backend-dev
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: mysql://appuser:devpassword@database:3306/blockscoredb
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: dev-jwt-secret-not-for-production
+      PORT: 8080
+      LOG_LEVEL: debug
+    volumes:
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json:ro
+    command: ["node", "--watch", "src/index.js"]
+    read_only: false
+    tmpfs: []
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+      target: builder
+      args:
+        REACT_APP_API_URL: http://localhost:8080/api
+        REACT_APP_ENV: development
+    image: blockscore/frontend:dev
+    container_name: blockscore-frontend-dev
+    environment:
+      REACT_APP_API_URL: http://localhost:8080/api
+      REACT_APP_ENV: development
+    volumes:
+      - ./src:/app/src:ro
+    ports:
+      - "3000:3000"
+    command: ["npm", "start"]
+    read_only: false
+    tmpfs: []
+
+  database:
+    environment:
+      MYSQL_ROOT_PASSWORD: devroot
+      MYSQL_PASSWORD: devpassword
+    ports:
+      - "3306:3306"
+
+  redis:
+    ports:
+      - "6379:6379"

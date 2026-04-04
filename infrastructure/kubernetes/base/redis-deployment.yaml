@@ -15,12 +15,17 @@ spec:
       labels:
         app: "{{ .Values.appName }}-redis"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        fsGroup: 999
       containers:
         - name: "{{ .Values.appName }}-redis"
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: "{{ .Values.redis.image.pullPolicy }}"
           ports:
             - containerPort: { { .Values.redis.containerPort } }
+              name: redis
           resources:
             limits:
               cpu: "{{ .Values.redis.resources.limits.cpu }}"
@@ -28,20 +33,34 @@ spec:
             requests:
               cpu: "{{ .Values.redis.resources.requests.cpu }}"
               memory: "{{ .Values.redis.resources.requests.memory }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           livenessProbe:
             exec:
               command: ["redis-cli", "ping"]
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             exec:
               command: ["redis-cli", "ping"]
             initialDelaySeconds: 5
             periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
           volumeMounts:
             - name: "{{ .Values.appName }}-redis-data"
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: "{{ .Values.appName }}-redis-data"
           persistentVolumeClaim:
             claimName: "{{ .Values.appName }}-redis-pvc"
+        - name: tmp
+          emptyDir: {}

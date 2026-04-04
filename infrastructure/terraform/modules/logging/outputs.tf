@@ -9,6 +9,11 @@ output "audit_logs_bucket_name" {
   value       = aws_s3_bucket.audit_logs.id
 }
 
+output "audit_logs_bucket_arn" {
+  description = "The ARN of the S3 bucket for audit logs."
+  value       = aws_s3_bucket.audit_logs.arn
+}
+
 output "cloudtrail_arn" {
   description = "The ARN of the CloudTrail trail."
   value       = aws_cloudtrail.main.arn

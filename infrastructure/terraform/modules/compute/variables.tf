@@ -17,6 +17,7 @@ variable "instance_type" {
 variable "key_name" {
   description = "The name of the EC2 Key Pair to use for SSH access."
   type        = string
+  default     = null
 }
 
 variable "security_group_ids" {
@@ -29,15 +30,25 @@ variable "iam_instance_profile_name" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "The ID of the VPC."
+  type        = string
+}
+
 variable "subnet_ids" {
-  description = "A list of subnet IDs where the Auto Scaling Group will launch instances."
+  description = "A list of private subnet IDs where the Auto Scaling Group will launch instances."
   type        = list(string)
 }
 
-variable "target_group_arns" {
-  description = "A list of target group ARNs for the Auto Scaling Group."
+variable "public_subnet_ids" {
+  description = "A list of public subnet IDs for the Application Load Balancer."
   type        = list(string)
-  default     = []
+}
+
+variable "acm_certificate_arn" {
+  description = "The ARN of the ACM certificate for the ALB HTTPS listener."
+  type        = string
+  default     = null
 }
 
 variable "min_size" {
@@ -67,4 +78,11 @@ variable "root_volume_size" {
 variable "kms_key_arn" {
   description = "The ARN of the KMS key for EBS encryption."
   type        = string
+  default     = null
+}
+
+variable "access_logs_bucket" {
+  description = "S3 bucket for ALB access logs. Set to null to disable."
+  type        = string
+  default     = null
 }

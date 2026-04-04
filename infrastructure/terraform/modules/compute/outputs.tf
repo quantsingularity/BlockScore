@@ -1,24 +1,30 @@
 output "autoscaling_group_id" {
   description = "ID of the Auto Scaling Group"
-  value       = try(aws_autoscaling_group.main[0].id, null)
+  value       = aws_autoscaling_group.main.id
 }
 
 output "autoscaling_group_name" {
   description = "Name of the Auto Scaling Group"
-  value       = try(aws_autoscaling_group.main[0].name, null)
+  value       = aws_autoscaling_group.main.name
 }
 
 output "launch_template_id" {
   description = "ID of the Launch Template"
-  value       = try(aws_launch_template.main.id, null)
+  value       = aws_launch_template.main.id
 }
 
 output "alb_dns_name" {
   description = "DNS name of the Application Load Balancer"
-  value       = try(aws_lb.main[0].dns_name, "")
+  value       = aws_lb.main.dns_name
 }
 
 output "alb_arn" {
   description = "ARN of the Application Load Balancer"
-  value       = try(aws_lb.main[0].arn, null)
+  value       = aws_lb.main.arn
 }
+
+output "target_group_arn" {
+  description = "ARN of the ALB target group"
+  value       = aws_lb_target_group.main.arn
+}
+

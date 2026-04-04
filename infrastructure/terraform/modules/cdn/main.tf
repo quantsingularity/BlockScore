@@ -1,5 +1,9 @@
-resource "aws_cloudfront_origin_access_identity" "main" {
-  comment = "OAI for ${var.project_name}-${var.environment}"
+resource "aws_cloudfront_origin_access_control" "main" {
+  name                              = "${var.project_name}-${var.environment}-oac"
+  description                       = "OAC for ${var.project_name}-${var.environment}"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "main" {
@@ -10,17 +14,26 @@ resource "aws_cloudfront_distribution" "main" {
     dynamic "s3_origin_config" {
       for_each = var.origin_type == "s3" ? [1] : []
       content {
-        origin_access_identity = aws_cloudfront_origin_access_identity.main.cloudfront_access_identity_path
+        origin_access_identity = ""
+      }
+    }
+
+    dynamic "origin_access_control_id" {
+      for_each = var.origin_type == "s3" ? [1] : []
+      content {
+        value = aws_cloudfront_origin_access_control.main.id
       }
     }
 
     dynamic "custom_origin_config" {
       for_each = var.origin_type == "custom" ? [1] : []
       content {
-        http_port              = 80
-        https_port             = 443
-        origin_protocol_policy = "https-only"
-        origin_ssl_protocols   = ["TLSv1.2"]
+        http_port                = 80
+        https_port               = 443
+        origin_protocol_policy   = "https-only"
+        origin_ssl_protocols     = ["TLSv1.2"]
+        origin_read_timeout      = 60
+        origin_keepalive_timeout = 60
       }
     }
   }
@@ -50,7 +63,7 @@ resource "aws_cloudfront_distribution" "main" {
     compress               = true
   }
 
-  # Cache behavior for API endpoints
+  # Cache behavior for API endpoints — bypass cache
   ordered_cache_behavior {
     path_pattern     = "/api/*"
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -59,7 +72,7 @@ resource "aws_cloudfront_distribution" "main" {
 
     forwarded_values {
       query_string = true
-      headers      = ["Authorization", "CloudFront-Forwarded-Proto"]
+      headers      = ["Authorization", "CloudFront-Forwarded-Proto", "Origin", "Accept"]
 
       cookies {
         forward = "all"
@@ -85,7 +98,7 @@ resource "aws_cloudfront_distribution" "main" {
     cloudfront_default_certificate = var.custom_ssl_certificate_arn == null ? true : false
     acm_certificate_arn            = var.custom_ssl_certificate_arn
     ssl_support_method             = var.custom_ssl_certificate_arn != null ? "sni-only" : null
-    minimum_protocol_version       = var.custom_ssl_certificate_arn != null ? "TLSv1.2_2021" : null
+    minimum_protocol_version       = var.custom_ssl_certificate_arn != null ? "TLSv1.2_2021" : "TLSv1.2_2021"
   }
 
   web_acl_id = var.web_acl_arn

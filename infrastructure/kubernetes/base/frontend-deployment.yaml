@@ -15,12 +15,19 @@ spec:
       labels:
         app: "{{ .Values.appName }}-frontend"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        fsGroup: 101
+      imagePullSecrets:
+        - name: "{{ .Values.imagePullSecrets }}"
       containers:
         - name: "{{ .Values.appName }}-frontend"
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: "{{ .Values.frontend.image.pullPolicy }}"
           ports:
             - containerPort: { { .Values.frontend.containerPort } }
+              name: http
           resources:
             limits:
               cpu: "{{ .Values.frontend.resources.limits.cpu }}"
@@ -33,17 +40,39 @@ spec:
               value: "{{ .Values.frontend.apiUrl }}"
             - name: REACT_APP_ENV
               value: "{{ .Values.environment }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           livenessProbe:
             httpGet:
-              path: /
-              port: { { .Values.frontend.containerPort } }
+              path: /healthz
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
-              port: { { .Values.frontend.containerPort } }
+              path: /healthz
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 5
-      imagePullSecrets:
-        - name: "{{ .Values.imagePullSecrets }}"
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

@@ -2,20 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blockscore-backend
+  name: "{{ .Values.appName }}-backend"
   labels:
-    app: blockscore-backend
-    version: v1.0.0
+    app: "{{ .Values.appName }}-backend"
+    version: "{{ .Values.backend.image.tag }}"
 spec:
-  replicas: 3
+  replicas: { { .Values.backend.replicas } }
   selector:
     matchLabels:
-      app: blockscore-backend
+      app: "{{ .Values.appName }}-backend"
   template:
     metadata:
       labels:
-        app: blockscore-backend
-        version: v1.0.0
+        app: "{{ .Values.appName }}-backend"
+        version: "{{ .Values.backend.image.tag }}"
     spec:
       serviceAccountName: blockscore-service-account
       securityContext:
@@ -24,39 +24,46 @@ spec:
         fsGroup: 2000
         seccompProfile:
           type: RuntimeDefault
+      imagePullSecrets:
+        - name: "{{ .Values.imagePullSecrets }}"
       containers:
         - name: backend
-          image: blockscore/backend:1.0.0 # Use specific version tag
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: "{{ .Values.backend.image.pullPolicy }}"
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: { { .Values.backend.containerPort } }
               protocol: TCP
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: blockscore-secrets
+                  name: "{{ .Values.appName }}-secrets"
                   key: database-url
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
-                  name: blockscore-secrets
+                  name: "{{ .Values.appName }}-secrets"
                   key: redis-url
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: blockscore-secrets
+                  name: "{{ .Values.appName }}-secrets"
                   key: jwt-secret
             - name: NODE_ENV
               value: "production"
+            - name: PORT
+              value: "{{ .Values.backend.containerPort }}"
+          envFrom:
+            - configMapRef:
+                name: "{{ .Values.appName }}-config"
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "{{ .Values.backend.resources.requests.memory }}"
+              cpu: "{{ .Values.backend.resources.requests.cpu }}"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "{{ .Values.backend.resources.limits.memory }}"
+              cpu: "{{ .Values.backend.resources.limits.cpu }}"
           livenessProbe:
             httpGet:
               path: /health
@@ -73,6 +80,13 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 20
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true

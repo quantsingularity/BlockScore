@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: blockscore-network-policy
+  name: blockscore-backend-network-policy
   namespace: default
 spec:
   podSelector:
     matchLabels:
-      app: blockscore
+      app: blockscore-backend
   policyTypes:
     - Ingress
     - Egress
@@ -15,13 +15,6 @@ spec:
         - podSelector:
             matchLabels:
               app: blockscore-frontend
-        - podSelector:
-            matchLabels:
-              app: blockscore-backend
-      ports:
-        - protocol: TCP
-          port: 8080
-    - from:
         - namespaceSelector:
             matchLabels:
               name: ingress-nginx
@@ -39,20 +32,52 @@ spec:
     - to:
         - podSelector:
             matchLabels:
-              app: redis
+              app: blockscore-redis
       ports:
         - protocol: TCP
           port: 6379
-    - to: []
-      ports:
+    - ports:
         - protocol: TCP
           port: 53
         - protocol: UDP
           port: 53
-    - to: []
-      ports:
+    - ports:
         - protocol: TCP
           port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: blockscore-frontend-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: blockscore-frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: blockscore-backend
+      ports:
+        - protocol: TCP
+          port: 8080
+    - ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -70,13 +95,12 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: blockscore
+              app: blockscore-backend
       ports:
         - protocol: TCP
           port: 3306
   egress:
-    - to: []
-      ports:
+    - ports:
         - protocol: TCP
           port: 53
         - protocol: UDP
@@ -85,12 +109,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: redis-network-policy
+  name: blockscore-redis-network-policy
   namespace: default
 spec:
   podSelector:
     matchLabels:
-      app: redis
+      app: blockscore-redis
   policyTypes:
     - Ingress
     - Egress
@@ -98,13 +122,12 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: blockscore
+              app: blockscore-backend
       ports:
         - protocol: TCP
           port: 6379
   egress:
-    - to: []
-      ports:
+    - ports:
         - protocol: TCP
           port: 53
         - protocol: UDP

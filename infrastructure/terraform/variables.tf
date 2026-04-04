@@ -7,11 +7,17 @@ variable "aws_region" {
 variable "environment" {
   description = "Environment name (dev, staging, prod)"
   type        = string
+
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be one of: dev, staging, prod."
+  }
 }
 
 variable "app_name" {
   description = "Application name"
   type        = string
+  default     = "blockscore"
 }
 
 variable "vpc_cidr" {
@@ -45,9 +51,33 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "SSH key name"
+  description = "SSH key name (optional)"
   type        = string
   default     = null
+}
+
+variable "acm_certificate_arn" {
+  description = "ARN of the ACM certificate for the ALB HTTPS listener"
+  type        = string
+  default     = null
+}
+
+variable "asg_min_size" {
+  description = "Minimum size of the Auto Scaling Group"
+  type        = number
+  default     = 1
+}
+
+variable "asg_max_size" {
+  description = "Maximum size of the Auto Scaling Group"
+  type        = number
+  default     = 3
+}
+
+variable "asg_desired_capacity" {
+  description = "Desired capacity of the Auto Scaling Group"
+  type        = number
+  default     = 2
 }
 
 variable "db_instance_class" {
@@ -59,6 +89,7 @@ variable "db_instance_class" {
 variable "db_name" {
   description = "Database name"
   type        = string
+  default     = "blockscoredb"
 }
 
 variable "db_username" {
@@ -71,13 +102,21 @@ variable "db_password" {
   description = "Database password"
   type        = string
   sensitive   = true
+
+  validation {
+    condition     = length(var.db_password) >= 12
+    error_message = "Database password must be at least 12 characters long."
+  }
+}
+
+variable "db_allocated_storage" {
+  description = "Allocated storage for the RDS instance in GB"
+  type        = number
+  default     = 20
 }
 
 variable "default_tags" {
   description = "Default tags for all resources"
   type        = map(string)
-  default     = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  default     = {}
 }

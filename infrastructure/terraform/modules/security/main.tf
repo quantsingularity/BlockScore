@@ -1,3 +1,46 @@
+resource "aws_kms_key" "main" {
+  description             = "KMS key for ${var.project_name}-${var.environment} encryption"
+  deletion_window_in_days = var.environment == "prod" ? 30 : 7
+  enable_key_rotation     = true
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-kms-key"
+    Environment = var.environment
+  }
+}
+
+resource "aws_kms_alias" "main" {
+  name          = "alias/${var.project_name}-${var.environment}"
+  target_key_id = aws_kms_key.main.key_id
+}
+
+resource "aws_iam_role" "rds_monitoring_role" {
+  name = "${var.project_name}-${var.environment}-rds-monitoring-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "monitoring.rds.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-rds-monitoring-role"
+    Environment = var.environment
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "rds_monitoring_policy" {
+  role       = aws_iam_role.rds_monitoring_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
 resource "aws_security_group" "web_waf" {
   name        = "${var.project_name}-${var.environment}-web-waf-sg"
   description = "Security group for web application firewall (WAF)"
@@ -36,9 +79,9 @@ resource "aws_security_group" "app_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 8080 # Example application port
-    to_port     = 8080
-    protocol    = "tcp"
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
     security_groups = [aws_security_group.web_waf.id]
   }
 
@@ -61,9 +104,9 @@ resource "aws_security_group" "db_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 3306 # Example database port (MySQL)
-    to_port     = 3306
-    protocol    = "tcp"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
     security_groups = [aws_security_group.app_sg.id]
   }
 
@@ -80,7 +123,6 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
-# Example of IAM Role for EC2 instances with SSM access
 resource "aws_iam_role" "ec2_instance_role" {
   name = "${var.project_name}-${var.environment}-ec2-instance-role"
 
@@ -108,7 +150,13 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+resource "aws_iam_role_policy_attachment" "ec2_cloudwatch_policy" {
+  role       = aws_iam_role.ec2_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "${var.project_name}-${var.environment}-ec2-instance-profile"
   role = aws_iam_role.ec2_instance_role.name
 }
+

@@ -1,45 +1,90 @@
 ---
-# roles/database/tasks/main.yml
 - name: Install database packages
-  yum:
+  ansible.builtin.package:
     name:
       - mariadb-server
       - mariadb
       - python3-PyMySQL
     state: present
 
-- name: Configure MariaDB
-  template:
-    src: my.cnf.j2
-    dest: /etc/my.cnf.d/server.cnf
-  notify: Restart MariaDB
-
-- name: Start and enable MariaDB
-  systemd:
+- name: Start and enable MariaDB before configuration
+  ansible.builtin.systemd:
     name: mariadb
     state: started
-    enabled: yes
+    enabled: true
+
+- name: Configure MariaDB
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf.d/server.cnf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart MariaDB
+
+- name: Flush handlers to restart MariaDB with new config
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure MariaDB is running
+  ansible.builtin.systemd:
+    name: mariadb
+    state: started
 
 - name: Set root password
-  mysql_user:
+  community.mysql.mysql_user:
     name: root
     password: "{{ db_root_password }}"
-    host_all: yes
+    host_all: true
     state: present
+    login_unix_socket: /var/lib/mysql/mysql.sock
+  no_log: true
+
+- name: Remove anonymous users
+  community.mysql.mysql_user:
+    name: ""
+    host_all: true
+    state: absent
+    login_user: root
+    login_password: "{{ db_root_password }}"
+  no_log: true
+
+- name: Remove test database
+  community.mysql.mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ db_root_password }}"
+  no_log: true
+
+- name: Remove remote root access
+  community.mysql.mysql_query:
+    query: "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+    login_user: root
+    login_password: "{{ db_root_password }}"
+  no_log: true
+
+- name: Flush privileges
+  community.mysql.mysql_query:
+    query: "FLUSH PRIVILEGES"
+    login_user: root
+    login_password: "{{ db_root_password }}"
   no_log: true
 
 - name: Create application database
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ db_name }}"
     state: present
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
     login_user: root
     login_password: "{{ db_root_password }}"
+  no_log: true
 
 - name: Create application database user
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ db_user }}"
     password: "{{ db_password }}"
-    priv: "{{ db_name }}.*:ALL"
+    priv: "{{ db_name }}.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,INDEX,ALTER,LOCK TABLES,EXECUTE,CREATE VIEW,SHOW VIEW"
     host: "%"
     state: present
     login_user: root

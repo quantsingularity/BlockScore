@@ -23,8 +23,8 @@ resource "aws_wafv2_web_acl" "main" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                 = "CommonRuleSetMetric"
-      sampled_requests_enabled    = true
+      metric_name                = "CommonRuleSetMetric"
+      sampled_requests_enabled   = true
     }
   }
 
@@ -45,8 +45,8 @@ resource "aws_wafv2_web_acl" "main" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                 = "KnownBadInputsRuleSetMetric"
-      sampled_requests_enabled    = true
+      metric_name                = "KnownBadInputsRuleSetMetric"
+      sampled_requests_enabled   = true
     }
   }
 
@@ -67,14 +67,36 @@ resource "aws_wafv2_web_acl" "main" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                 = "SQLiRuleSetMetric"
-      sampled_requests_enabled    = true
+      metric_name                = "SQLiRuleSetMetric"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AWSManagedRulesAmazonIpReputationList"
+    priority = 4
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "IpReputationListMetric"
+      sampled_requests_enabled   = true
     }
   }
 
   rule {
     name     = "RateLimitRule"
-    priority = 4
+    priority = 5
 
     action {
       block {}
@@ -89,15 +111,15 @@ resource "aws_wafv2_web_acl" "main" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                 = "RateLimitRuleMetric"
-      sampled_requests_enabled    = true
+      metric_name                = "RateLimitRuleMetric"
+      sampled_requests_enabled   = true
     }
   }
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                 = "${var.project_name}-${var.environment}-web-acl"
-    sampled_requests_enabled    = true
+    metric_name                = "${var.project_name}-${var.environment}-web-acl"
+    sampled_requests_enabled   = true
   }
 
   tags = {
@@ -106,9 +128,19 @@ resource "aws_wafv2_web_acl" "main" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "waf_logs" {
+  name              = "aws-waf-logs-${var.project_name}-${var.environment}"
+  retention_in_days = 90
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-waf-logs"
+    Environment = var.environment
+  }
+}
+
 resource "aws_wafv2_web_acl_logging_configuration" "main" {
   resource_arn            = aws_wafv2_web_acl.main.arn
-  log_destination_configs = [var.log_destination_arn]
+  log_destination_configs = ["${aws_cloudwatch_log_group.waf_logs.arn}:*"]
 
   redacted_fields {
     single_header {
