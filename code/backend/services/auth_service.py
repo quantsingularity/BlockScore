@@ -411,7 +411,8 @@ class AuthService:
             if not validation["valid"]:
                 return {"success": False, "message": validation["message"]}
 
-            user.set_password(new_password)
+            user.password_hash = self._hash_password(new_password)
+            user.password_changed_at = datetime.now(timezone.utc)
             user.password_reset_token = None
             user.password_reset_expires = None
             self.db.session.add(user)
@@ -437,7 +438,8 @@ class AuthService:
             if not validation["valid"]:
                 return {"success": False, "message": validation["message"]}
 
-            user.set_password(new_password)
+            user.password_hash = self._hash_password(new_password)
+            user.password_changed_at = datetime.now(timezone.utc)
             self.db.session.add(user)
             self.db.session.commit()
             return {"success": True, "message": "Password changed successfully"}
@@ -765,10 +767,13 @@ class AuthService:
         severity: AuditSeverity = AuditSeverity.LOW,
     ) -> None:
         try:
+            et_value = (
+                event_type.value if hasattr(event_type, "value") else str(event_type)
+            )
             log = AuditLog(
                 id=str(uuid.uuid4()),
-                event_type=event_type,
-                event_category=event_type.value.split("_")[0],
+                event_type=et_value,
+                event_category=et_value.split("_")[0],
                 event_description=description,
                 severity=severity,
                 user_id=user_id,
@@ -785,7 +790,7 @@ class AuthService:
         try:
             audit_log = AuditLog(
                 id=str(uuid.uuid4()),
-                event_type=AuditEventType.SECURITY_ALERT,
+                event_type=AuditEventType.SECURITY_ALERT.value,
                 event_category="security",
                 event_description=f"Security alert: {alert_type}",
                 severity=AuditSeverity.HIGH,

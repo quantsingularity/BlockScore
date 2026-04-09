@@ -43,6 +43,7 @@ class CreditEventType(enum.Enum):
     SCORE_RECALCULATION = "score_recalculation"
     ACCOUNT_OPENED = "account_opened"
     ACCOUNT_CLOSED = "account_closed"
+    DEFAULT = "default"
 
 
 class CreditScore(db.Model):

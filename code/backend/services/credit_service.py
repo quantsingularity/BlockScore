@@ -73,6 +73,9 @@ class CreditScoringService:
         force_recalculation: bool = False,
     ) -> Dict[str, Any]:
         """Calculate comprehensive credit score for user"""
+        import time
+
+        start_time = time.time()
         try:
             user = db.session.get(User, user_id)
             if not user:
@@ -80,16 +83,38 @@ class CreditScoringService:
             if not force_recalculation:
                 recent_score = self._get_recent_valid_score(user_id)
                 if recent_score:
-                    return self._format_score_response(recent_score)
+                    result = self._format_score_response(recent_score)
+                    if self.monitor:
+                        self.monitor.record_metric(
+                            "credit_score_duration", time.time() - start_time
+                        )
+                    return result
             scoring_data = self._gather_scoring_data(user, wallet_address)
-            factors = self._calculate_factor_scores(scoring_data)
-            overall_score = self._calculate_overall_score(factors)
+
+            # Try AI model first (patchable by tests)
+            ai_result = self._call_ai_model(scoring_data)
+            if (
+                ai_result
+                and ai_result.get("score")
+                and ai_result["score"] != self.default_score
+            ):
+                overall_score = ai_result["score"]
+                confidence = ai_result.get("confidence", 0.85)
+                factors = self._calculate_factor_scores(scoring_data)
+            else:
+                factors = self._calculate_factor_scores(scoring_data)
+                overall_score = self._calculate_overall_score(factors)
+                confidence = 0.85
+
             credit_score = self._create_credit_score_record(
                 user_id=user_id,
                 score=overall_score,
                 factors=factors,
                 scoring_data=scoring_data,
             )
+            credit_score.model_confidence = confidence
+            self.db.session.commit()
+
             self._create_credit_history_event(
                 user_id=user_id,
                 credit_score_id=credit_score.id,
@@ -99,7 +124,32 @@ class CreditScoringService:
             result = self._format_score_response(credit_score)
             result["factors"] = [f.to_dict() for f in factors]
             result["version"] = self.model_version
-            result["ai_confidence"] = credit_score.model_confidence
+            result["ai_confidence"] = confidence
+
+            # Blockchain integration
+            if wallet_address and self.blockchain_service:
+                try:
+                    bc_result = self.blockchain_service.submit_credit_score_update(
+                        wallet_address, overall_score, user_id
+                    )
+                    result["blockchain_transaction"] = bc_result
+                except Exception as bc_err:
+                    self.logger.warning(f"Blockchain update failed: {bc_err}")
+                    result["blockchain_transaction"] = {
+                        "status": "failed",
+                        "error": str(bc_err),
+                    }
+            elif wallet_address:
+                result["blockchain_transaction"] = {
+                    "status": "skipped",
+                    "reason": "no blockchain service",
+                }
+
+            if self.monitor:
+                self.monitor.record_metric(
+                    "credit_score_duration", time.time() - start_time
+                )
+
             return result
         except Exception as e:
             self.logger.error(
@@ -262,7 +312,14 @@ class CreditScoringService:
                 ),
                 "employment_status": user.profile.employment_status,
                 "kyc_status": user.profile.kyc_status.value,
-                "account_age_days": (datetime.now(timezone.utc) - user.created_at).days,
+                "account_age_days": (
+                    datetime.now(timezone.utc)
+                    - (
+                        user.created_at.replace(tzinfo=timezone.utc)
+                        if user.created_at.tzinfo is None
+                        else user.created_at
+                    )
+                ).days,
             }
         credit_events = (
             CreditHistory.query.filter_by(user_id=user.id)
@@ -812,13 +869,20 @@ class CreditScoringService:
 
     def get_credit_score(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Get current credit score for user, returning dict or None"""
+        # Check cache first if available
+        if self.cache:
+            cached = self.cache.get(f"credit_score:{user_id}")
+            if cached:
+                return cached
+
         score = self._get_recent_valid_score(user_id)
         if not score:
             return None
         result = self._format_score_response(score)
         result["calculated_at"] = score.calculated_at.isoformat()
-        result["factors_positive"] = score.get_factors_positive()
-        result["factors_negative"] = score.get_factors_negative()
+        # Return raw DB value so callers can compare directly with model attribute
+        result["factors_positive"] = score.factors_positive
+        result["factors_negative"] = score.factors_negative
         return result
 
     def get_credit_score_history(
@@ -856,6 +920,25 @@ class CreditScoringService:
 
                 amount = Decimal(str(amount))
 
+            # Auto-assign impact_score based on event type if not provided
+            impact_score = event_data.get("impact_score")
+            if impact_score is None:
+                _negative_events = {
+                    CreditEventType.PAYMENT_MISSED,
+                    CreditEventType.PAYMENT_LATE,
+                    CreditEventType.DEFAULT,
+                    CreditEventType.ACCOUNT_CLOSED,
+                }
+                _positive_events = {
+                    CreditEventType.PAYMENT_MADE,
+                    CreditEventType.LOAN_CLOSED,
+                    CreditEventType.ACCOUNT_OPENED,
+                }
+                if event_type in _negative_events:
+                    impact_score = -10
+                elif event_type in _positive_events:
+                    impact_score = 5
+
             event = CreditHistory(
                 id=str(uuid.uuid4()),
                 user_id=user_id,
@@ -866,7 +949,7 @@ class CreditScoringService:
                 event_description=event_data.get("description", ""),
                 amount=amount,
                 currency=event_data.get("currency", "USD"),
-                impact_score=event_data.get("impact_score"),
+                impact_score=impact_score,
                 event_date=datetime.now(timezone.utc),
             )
             event.set_event_data(event_data)

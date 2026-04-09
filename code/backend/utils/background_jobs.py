@@ -443,9 +443,7 @@ if celery_app is not None:
                 hour=0, minute=0, second=0, microsecond=0
             )
             start_date = end_date - timedelta(days=1)
-            report = compliance_service.generate_compliance_report(
-                start_date, end_date
-            )
+            report = compliance_service.generate_compliance_report(start_date, end_date)
             return {
                 "report_date": start_date.date().isoformat(),
                 "summary": report.get("summary", {}),
@@ -517,17 +515,13 @@ else:
         logging.warning("Celery unavailable; calculate_credit_score_async is a no-op")
 
     def batch_calculate_credit_scores(*args: Any, **kwargs: Any) -> None:
-        logging.warning(
-            "Celery unavailable; batch_calculate_credit_scores is a no-op"
-        )
+        logging.warning("Celery unavailable; batch_calculate_credit_scores is a no-op")
 
     def update_pending_transactions(*args: Any, **kwargs: Any) -> None:
         logging.warning("Celery unavailable; update_pending_transactions is a no-op")
 
     def submit_blockchain_transaction(*args: Any, **kwargs: Any) -> None:
-        logging.warning(
-            "Celery unavailable; submit_blockchain_transaction is a no-op"
-        )
+        logging.warning("Celery unavailable; submit_blockchain_transaction is a no-op")
 
     def perform_kyc_assessment(*args: Any, **kwargs: Any) -> None:
         logging.warning("Celery unavailable; perform_kyc_assessment is a no-op")

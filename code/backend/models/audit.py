@@ -32,6 +32,18 @@ class AuditEventType(enum.Enum):
     MFA_SETUP = "mfa_setup"
     MFA_DISABLED = "mfa_disabled"
     MFA_VERIFIED = "mfa_verified"
+    MFA_VERIFICATION = "mfa_verification"
+    MFA_BACKUP_CODES_REGENERATED = "mfa_backup_codes_regenerated"
+
+    def __eq__(self, other):
+        if isinstance(other, AuditEventType):
+            return self.value == other.value
+        if isinstance(other, str):
+            return self.value == other
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.value)
 
 
 class AuditSeverity(enum.Enum):
@@ -67,7 +79,7 @@ class ComplianceStatus(enum.Enum):
 class AuditLog(db.Model):
     __tablename__ = "audit_logs"
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    event_type = db.Column(db.Enum(AuditEventType), nullable=False, index=True)
+    event_type = db.Column(db.String(100), nullable=False, index=True)
     event_category = db.Column(
         db.String(50), nullable=False, index=True, default="general"
     )
@@ -75,6 +87,14 @@ class AuditLog(db.Model):
     severity = db.Column(
         db.Enum(AuditSeverity), default=AuditSeverity.LOW, nullable=False
     )
+
+    def __init__(self, **kwargs):
+        # Coerce AuditEventType enum to its string value so the String column accepts it
+        et = kwargs.get("event_type")
+        if et is not None and hasattr(et, "value"):
+            kwargs["event_type"] = et.value
+        super().__init__(**kwargs)
+
     user_id = db.Column(db.String(36), nullable=True, index=True)
     session_id = db.Column(db.String(36), nullable=True, index=True)
     ip_address = db.Column(db.String(45), nullable=True)
@@ -157,7 +177,11 @@ class AuditLog(db.Model):
     def to_dict(self) -> Dict[str, Any]:
         return {
             "id": self.id,
-            "event_type": self.event_type.value,
+            "event_type": (
+                self.event_type.value
+                if hasattr(self.event_type, "value")
+                else self.event_type
+            ),
             "event_category": self.event_category,
             "event_description": self.event_description,
             "severity": self.severity.value,

@@ -55,9 +55,12 @@ class AuditService:
     ) -> AuditLog:
         """Log a comprehensive audit event"""
         try:
+            et_value = (
+                event_type.value if hasattr(event_type, "value") else str(event_type)
+            )
             audit_log = AuditLog(
                 id=str(uuid.uuid4()),
-                event_type=event_type,
+                event_type=et_value,
                 event_category=self._get_event_category(event_type),
                 event_description=event_description,
                 severity=severity,
